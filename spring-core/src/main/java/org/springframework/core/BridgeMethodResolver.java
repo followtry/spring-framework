@@ -67,6 +67,7 @@ public final class BridgeMethodResolver {
 	 */
 	public static Method findBridgedMethod(Method bridgeMethod) {
 		if (!bridgeMethod.isBridge()) {
+			//如果方法不是桥接方法，则直接返回
 			return bridgeMethod;
 		}
 		Method bridgedMethod = cache.get(bridgeMethod);
@@ -117,6 +118,7 @@ public final class BridgeMethodResolver {
 		Method previousMethod = null;
 		boolean sameSig = true;
 		for (Method candidateMethod : candidateMethods) {
+			//判断是否是桥接方法
 			if (isBridgeMethodFor(bridgeMethod, candidateMethod, bridgeMethod.getDeclaringClass())) {
 				return candidateMethod;
 			}
@@ -179,6 +181,7 @@ public final class BridgeMethodResolver {
 	private static Method findGenericDeclaration(Method bridgeMethod) {
 		// Search parent types for method that has same signature as bridge.
 		Class<?> superclass = bridgeMethod.getDeclaringClass().getSuperclass();
+		//循环从父类里查询是否有符合条件的桥接方法的原方法
 		while (superclass != null && Object.class != superclass) {
 			Method method = searchForMatch(superclass, bridgeMethod);
 			if (method != null && !method.isBridge()) {
@@ -187,6 +190,7 @@ public final class BridgeMethodResolver {
 			superclass = superclass.getSuperclass();
 		}
 
+		//获取所有的接口，然后在所有接口里查找是否有符合条件的桥接方法的原方法
 		Class<?>[] interfaces = ClassUtils.getAllInterfacesForClass(bridgeMethod.getDeclaringClass());
 		return searchInterfaces(interfaces, bridgeMethod);
 	}
@@ -196,9 +200,11 @@ public final class BridgeMethodResolver {
 		for (Class<?> ifc : interfaces) {
 			Method method = searchForMatch(ifc, bridgeMethod);
 			if (method != null && !method.isBridge()) {
+				//如果获取到指定的方法不是桥接方法，则认为该方法即原始方法
 				return method;
 			}
 			else {
+				//从父接口里查询是否有符合条件的method
 				method = searchInterfaces(ifc.getInterfaces(), bridgeMethod);
 				if (method != null) {
 					return method;
@@ -216,6 +222,7 @@ public final class BridgeMethodResolver {
 	@Nullable
 	private static Method searchForMatch(Class<?> type, Method bridgeMethod) {
 		try {
+			//获取指定名称和参数类型的已声明的方法
 			return type.getDeclaredMethod(bridgeMethod.getName(), bridgeMethod.getParameterTypes());
 		}
 		catch (NoSuchMethodException ex) {
