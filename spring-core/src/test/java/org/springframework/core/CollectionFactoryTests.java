@@ -194,6 +194,22 @@ class CollectionFactoryTests {
 	}
 
 	@Test
+	void createApproximateMapFromNonEmptySortedMap() {
+		TreeMap<String, String> treeMap = new TreeMap<>();
+		treeMap.put("foo", "bar");
+		treeMap.put("foo2", "bar2");
+		treeMap.put("foo3", "bar3");
+		Map<String, String> map = createApproximateMap(treeMap, 2);
+		assertThat(map).isEmpty();
+	}
+
+	@Test
+	void createApproximateMapFromEmptySortedMap() {
+		Map<String, String> map = createApproximateMap(new TreeMap<>(), 2);
+		assertThat(map).isEmpty();
+	}
+
+	@Test
 	void createApproximateMapFromEmptyEnumMap() {
 		Map<Color, String> colors = createApproximateMap(new EnumMap<Color, String>(Color.class), 2);
 		assertThat(colors).isEmpty();
