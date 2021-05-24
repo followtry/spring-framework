@@ -66,6 +66,7 @@ public abstract class AbstractFactoryBean<T>
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//设置默认的对象为单例
 	private boolean singleton = true;
 
 	@Nullable
@@ -133,6 +134,7 @@ public abstract class AbstractFactoryBean<T>
 	}
 
 	/**
+	 * 如果是单例对象，则在当前FactoryBean初始化后即创建单例对象
 	 * Eagerly create the singleton instance, if necessary.
 	 */
 	@Override
@@ -156,6 +158,7 @@ public abstract class AbstractFactoryBean<T>
 			return (this.initialized ? this.singletonInstance : getEarlySingletonInstance());
 		}
 		else {
+			//非单例模式，即原型模式下创建新的实例
 			return createInstance();
 		}
 	}

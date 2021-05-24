@@ -77,7 +77,7 @@ import java.lang.annotation.Target;
  * {@link org.springframework.core.annotation.Order @Order} values of the target
  * components, otherwise following their registration order in the container.
  * Alternatively, a single matching target bean may also be a generally typed
- * {@code Collection} or {@code Map} itself, getting injected as such.
+ * {@code Collection} or {@code Map} itself, getting injected as such.  自动装配数组或集合时使用order接口或注解排序，否则会按注册顺序排序
  *
  * <h3>Not supported in {@code BeanPostProcessor} or {@code BeanFactoryPostProcessor}</h3>
  * <p>Note that actual injection is performed through a

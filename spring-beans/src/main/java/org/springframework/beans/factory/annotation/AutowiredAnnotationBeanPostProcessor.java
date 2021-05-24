@@ -445,12 +445,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		// Quick check on the concurrent map first, with minimal locking.
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
-			synchronized (this.injectionMetadataCache) {
+			synchronized (this.injectionMetadataCache) {//double-check-lock
 				metadata = this.injectionMetadataCache.get(cacheKey);
 				if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
+					//构建自动装配的元数据
 					metadata = buildAutowiringMetadata(clazz);
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
@@ -470,20 +471,24 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			//检查目标类的属性上是否需要自动装配
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
 					if (Modifier.isStatic(field.getModifiers())) {
-						if (logger.isInfoEnabled()) {
+						if (logger.isInfoEnabled()) {//自动装配的注解不支持静态属性
 							logger.info("Autowired annotation is not supported on static fields: " + field);
 						}
 						return;
 					}
+					//检查是否为必须的
 					boolean required = determineRequiredStatus(ann);
+					//将候选的自动装配的属性生成新的模型对象存储，供后续使用
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
 
+			//在方法上检查是否需要自动装配的方法
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -492,13 +497,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				MergedAnnotation<?> ann = findAutowiredAnnotation(bridgedMethod);
 				if (ann != null && method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
 					if (Modifier.isStatic(method.getModifiers())) {
-						if (logger.isInfoEnabled()) {
+						if (logger.isInfoEnabled()) {//自动装配的注解不支持静态方法
 							logger.info("Autowired annotation is not supported on static methods: " + method);
 						}
 						return;
 					}
 					if (method.getParameterCount() == 0) {
-						if (logger.isInfoEnabled()) {
+						if (logger.isInfoEnabled()) {//自动装配的注解不建议在无参方法上使用
 							logger.info("Autowired annotation should only be used on methods with parameters: " +
 									method);
 						}
@@ -510,6 +515,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			});
 
 			elements.addAll(0, currElements);
+			//自动装配会递归查询父类直到Object，因此即使在抽象类上指定了autowire也是可以被自动装配的
 			targetClass = targetClass.getSuperclass();
 		}
 		while (targetClass != null && targetClass != Object.class);
