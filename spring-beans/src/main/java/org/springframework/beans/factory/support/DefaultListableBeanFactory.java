@@ -416,6 +416,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		};
 	}
 
+	/**
+	 * 解析出bean实例
+	 *
+	 * @param requiredType
+	 * @param args
+	 * @param nonUniqueAsNull
+	 * @param <T>
+	 * @return
+	 */
 	@Nullable
 	private <T> T resolveBean(ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) {
 		NamedBeanHolder<T> namedBean = resolveNamedBean(requiredType, args, nonUniqueAsNull);
@@ -447,6 +456,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of ListableBeanFactory interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 判断是否粗拿在BeanDefinition信息
+	 * @param beanName the name of the bean to look for
+	 * @return
+	 */
 	@Override
 	public boolean containsBeanDefinition(String beanName) {
 		Assert.notNull(beanName, "Bean name must not be null");
@@ -608,11 +622,32 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (factoryBeanName != null && isFactoryBean(factoryBeanName) && !containsSingleton(factoryBeanName));
 	}
 
+	/**
+	 * 根据类型获取bean实例信息
+	 * @param type the class or interface to match, or {@code null} for all concrete beans
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	public <T> Map<String, T> getBeansOfType(@Nullable Class<T> type) throws BeansException {
 		return getBeansOfType(type, true, true);
 	}
 
+	/**
+	 * 根据类型获取bean实例信息
+	 * @param type the class or interface to match, or {@code null} for all concrete beans
+	 * @param includeNonSingletons whether to include prototype or scoped beans too
+	 * or just singletons (also applies to FactoryBeans)
+	 * @param allowEagerInit whether to initialize <i>lazy-init singletons</i> and
+	 * <i>objects created by FactoryBeans</i> (or by factory methods with a
+	 * "factory-bean" reference) for the type check. Note that FactoryBeans need to be
+	 * eagerly initialized to determine their type: So be aware that passing in "true"
+	 * for this flag will initialize FactoryBeans and "factory-bean" references.
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> Map<String, T> getBeansOfType(
@@ -649,6 +684,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return result;
 	}
 
+	/**
+	 * 根据注解获取所有的BeanName信息
+	 * @param annotationType the type of annotation to look for
+	 * (at class, interface or factory method level of the specified bean)
+	 * @return
+	 */
 	@Override
 	public String[] getBeanNamesForAnnotation(Class<? extends Annotation> annotationType) {
 		List<String> result = new ArrayList<>();
@@ -666,6 +707,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return StringUtils.toStringArray(result);
 	}
 
+	/**
+	 * 通过注解获取bean信息
+	 * @param annotationType the type of annotation to look for
+	 * (at class, interface or factory method level of the specified bean)
+	 * @return
+	 */
 	@Override
 	public Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annotationType) {
 		String[] beanNames = getBeanNamesForAnnotation(annotationType);
@@ -679,6 +726,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return result;
 	}
 
+	/**
+	 * 查找bean上的指定注解
+	 * @param beanName the name of the bean to look for annotations on
+	 * @param annotationType the type of annotation to look for
+	 * (at class, interface or factory method level of the specified bean)
+	 * @param <A>
+	 * @return
+	 * @throws NoSuchBeanDefinitionException
+	 */
 	@Override
 	@Nullable
 	public <A extends Annotation> A findAnnotationOnBean(String beanName, Class<A> annotationType)
@@ -742,6 +798,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * 判断是否是autowire的候选
+	 * @param beanName the name of the bean to check
+	 * @param descriptor the descriptor of the dependency to resolve
+	 * @return
+	 * @throws NoSuchBeanDefinitionException
+	 */
 	@Override
 	public boolean isAutowireCandidate(String beanName, DependencyDescriptor descriptor)
 			throws NoSuchBeanDefinitionException {
@@ -807,6 +870,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return resolver.isAutowireCandidate(holder, descriptor);
 	}
 
+	/**
+	 * 获取BeanDefinition信息
+	 * @param beanName name of the bean to find a definition for
+	 * @return
+	 * @throws NoSuchBeanDefinitionException
+	 */
 	@Override
 	public BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
 		BeanDefinition bd = this.beanDefinitionMap.get(beanName);
@@ -819,6 +888,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return bd;
 	}
 
+	/**
+	 * 获取所有的BeanDefinition信息的迭代
+	 * @return
+	 */
 	@Override
 	public Iterator<String> getBeanNamesIterator() {
 		CompositeIterator<String> iterator = new CompositeIterator<>();
@@ -827,6 +900,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return iterator;
 	}
 
+	/**
+	 * 清理BeanDefinition
+	 * @param beanName the bean name to clear the merged definition for
+	 */
 	@Override
 	protected void clearMergedBeanDefinition(String beanName) {
 		super.clearMergedBeanDefinition(beanName);
@@ -840,6 +917,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		clearByTypeCache();
 	}
 
+	/**
+	 * 冻结配置
+	 */
 	@Override
 	public void freezeConfiguration() {
 		this.configurationFrozen = true;
@@ -861,6 +941,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (this.configurationFrozen || super.isBeanEligibleForMetadataCaching(beanName));
 	}
 
+	/**
+	 * 预实例化单例
+	 * @throws BeansException
+	 */
 	@Override
 	public void preInstantiateSingletons() throws BeansException {
 		if (logger.isTraceEnabled()) {
@@ -923,6 +1007,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 注册BeanDefinition信息
+	 * @param beanName the name of the bean instance to register
+	 * @param beanDefinition definition of the bean instance to register
+	 * @throws BeanDefinitionStoreException
+	 */
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
@@ -1074,6 +1164,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return isAllowBeanDefinitionOverriding();
 	}
 
+	/**
+	 * 注册单例
+	 * @param beanName the name of the bean
+	 * @param singletonObject the existing singleton object
+	 * @throws IllegalStateException
+	 */
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
 		super.registerSingleton(beanName, singletonObject);
@@ -1205,6 +1301,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return null;
 	}
 
+	/**
+	 * 解析依赖的实例
+	 * @param descriptor the descriptor for the dependency (field/method/constructor)
+	 * @param requestingBeanName the name of the bean which declares the given dependency
+	 * @param autowiredBeanNames a Set that all names of autowired beans (used for
+	 * resolving the given dependency) are supposed to be added to
+	 * @param typeConverter the TypeConverter to use for populating arrays and collections
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	@Nullable
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
@@ -1331,6 +1437,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * 解析多个依赖bean
+	 * @param descriptor
+	 * @param beanName
+	 * @param autowiredBeanNames
+	 * @param typeConverter
+	 * @return
+	 */
 	@Nullable
 	private Object resolveMultipleBeans(DependencyDescriptor descriptor, @Nullable String beanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) {
@@ -1429,6 +1543,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * 判断是否为必须的依赖
+	 * @param descriptor
+	 * @return
+	 */
 	private boolean isRequired(DependencyDescriptor descriptor) {
 		return getAutowireCandidateResolver().isRequired(descriptor);
 	}
@@ -1657,6 +1776,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 判断是否为primary。根据BeanDefinition判断
+	 *
 	 * Return whether the bean definition for the given bean name has been
 	 * marked as a primary bean.
 	 * @param beanName the name of the bean
@@ -1760,6 +1881,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 创建使用Optional包装的依赖
 	 * Create an {@link Optional} wrapper for the specified dependency.
 	 */
 	private Optional<?> createOptionalDependency(
