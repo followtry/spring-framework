@@ -74,12 +74,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private static final int SUPPRESSED_EXCEPTIONS_LIMIT = 100;
 
 
+	//单例的一级缓存
 	/** Cache of singleton objects: bean name to bean instance. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
+	//单例的三级缓存
 	/** Cache of singleton factories: bean name to ObjectFactory. */
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
+	//单例的二级缓存
 	/** Cache of early singleton objects: bean name to bean instance. */
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
@@ -108,9 +111,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
 	/** Map between dependent bean names: bean name to Set of dependent bean names. */
+	//用来存储beanname和依赖的关系，key为beanName，value为被依赖的beanName的集合
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
 	/** Map between depending bean names: bean name to Set of bean names for the bean's dependencies. */
+	//用来存储被依赖beanName和依赖BeanName的关系，可以为被依赖的bean,value为依赖的beanName的集合。可以认为是dependentBeanMap的反向映射
 	private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
 
@@ -178,8 +183,22 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		/**
+		 * 所谓的单例的三级缓存。
+		 *
+		 * 1. 一级缓存是已成熟的单例，可以直接使用的。
+		 * 2. 二级缓存是半成熟的单例，还有依赖没有注入等
+		 * 	 二级缓存是为了将成熟的和扮成熟的单例区分开，避免其他Bean拿到的实例内参数是空的。
+		 * 3.三级缓存是单例的ObjectFactory工厂，通过工厂获取实例
+		 * 	  三级缓存是为了解决切面问题，为了将最终夺得代理对象注入到其他bean中，而不是原始对象
+		 *
+		 *
+		 * 使用了dcl锁来进行三级缓存的判断。如果一级缓存和二级缓存都不存在，则需要获取ObjectFactory的缓存，通过getObject方法获取实例并将其缓存在二级缓存中
+		 */
+
 		// Quick check for existing instance without full singleton lock
 		Object singletonObject = this.singletonObjects.get(beanName);
+		//判断已成熟的单例不存在，且在半成熟状态
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
@@ -336,6 +355,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 检查指定的单例是否正在创建中，即先创建单例实例，然后在注入依赖
+	 *
 	 * Return whether the specified singleton bean is currently in creation
 	 * (within the entire factory).
 	 * @param beanName the name of the bean
@@ -405,6 +426,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 分别注册bean和依赖的正向映射关系和反向映射关系。即通过beanName可以查询依赖，通过依赖的beanName可以查询所有依赖的bean
+	 *
 	 * Register a dependent bean for the given bean,
 	 * to be destroyed before the given bean is destroyed.
 	 * @param beanName the name of the bean

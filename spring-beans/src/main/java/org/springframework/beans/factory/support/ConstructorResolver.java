@@ -144,7 +144,7 @@ class ConstructorResolver {
 					// Found a cached constructor...
 					argsToUse = mbd.resolvedConstructorArguments;
 					if (argsToUse == null) {
-						argsToResolve = mbd.preparedConstructorArguments;
+							argsToResolve = mbd.preparedConstructorArguments;
 					}
 				}
 			}

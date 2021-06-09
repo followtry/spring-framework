@@ -93,6 +93,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/** Common lock for the four constructor fields below. */
 	final Object constructorArgumentLock = new Object();
 
+	//缓存已经解决了的构造方法或者工厂方法
 	/** Package-visible field for caching the resolved constructor or factory method. */
 	@Nullable
 	Executable resolvedConstructorOrFactoryMethod;

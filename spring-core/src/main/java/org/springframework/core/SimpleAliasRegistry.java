@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 别名注册器的实现，使用Map作为别名的存储容器
  * Simple implementation of the {@link AliasRegistry} interface.
  * <p>Serves as base class for
  * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
@@ -53,6 +54,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	public void registerAlias(String name, String alias) {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
+		/**
+		 * 注册别名时会对整个map容器加锁，然后进行
+		 * 1. 别名校验，
+		 * 2. 重复别名判断
+		 * 3. 别名循环引用判断
+		 * 4. 都判断通过后才会将别名数写入到容器中
+		 */
 		synchronized (this.aliasMap) {
 			if (alias.equals(name)) {
 				this.aliasMap.remove(alias);
@@ -86,6 +94,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 默认将别名设置为允许覆盖。所以如果两个Bean有相同的别名，则后加载的bean的别名会将之前加载bean的别名给覆盖掉
 	 * Determine whether alias overriding is allowed.
 	 * <p>Default is {@code true}.
 	 */
@@ -94,6 +103,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 判断name和alias中取的value是否相等，会递归调用直到最后。如果都为null的话则认为是不相等的。
 	 * Determine whether the given name has the given alias registered.
 	 * @param name the name to check
 	 * @param alias the alias to look for
@@ -105,6 +115,10 @@ public class SimpleAliasRegistry implements AliasRegistry {
 				&& hasAlias(name, registeredName));
 	}
 
+	/**
+	 * 加锁后再执行删除操作，避免删除错误的情况
+	 * @param alias the alias to remove
+	 */
 	@Override
 	public void removeAlias(String alias) {
 		synchronized (this.aliasMap) {
@@ -130,6 +144,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 反向循环使用name查找所有的alias
 	 * Transitively retrieve all aliases for the given name.
 	 * @param name the target name to find aliases for
 	 * @param result the resulting aliases list
@@ -185,6 +200,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 检查是否beanName和alias会有循环引用，如果有循环引用会直接抛出异常
 	 * Check whether the given name points back to the given alias as an alias
 	 * in the other direction already, catching a circular reference upfront
 	 * and throwing a corresponding IllegalStateException.
@@ -202,6 +218,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 循环获取到真实的beanName
 	 * Determine the raw name, resolving aliases to canonical names.
 	 * @param name the user-specified name
 	 * @return the transformed name

@@ -124,6 +124,7 @@ public class PropertyPlaceholderHelper {
 		return parseStringValue(value, placeholderResolver, null);
 	}
 
+	//解析value注入的变量的最终变量
 	protected String parseStringValue(
 			String value, PlaceholderResolver placeholderResolver, @Nullable Set<String> visitedPlaceholders) {
 
@@ -146,8 +147,10 @@ public class PropertyPlaceholderHelper {
 							"Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
 				}
 				// Recursive invocation, parsing placeholders contained in the placeholder key.
+				//递归调用，解析占位符
 				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders);
 				// Now obtain the value for the fully resolved key...
+				//获取值
 				String propVal = placeholderResolver.resolvePlaceholder(placeholder);
 				if (propVal == null && this.valueSeparator != null) {
 					int separatorIndex = placeholder.indexOf(this.valueSeparator);

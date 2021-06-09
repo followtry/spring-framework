@@ -72,6 +72,9 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
+	 *
+	 * 如果beanName是&开头，则认为是FactoryBean。需要将&移除来获取FactoryBean返回的实例的名称
+	 *
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean
