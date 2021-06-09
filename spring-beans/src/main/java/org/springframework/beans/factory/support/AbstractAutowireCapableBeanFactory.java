@@ -479,6 +479,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	//---------------------------------------------------------------------
 
 	/**
+	 * 创建bean的实例，步骤如下
+	 *
+	 * 1. 检查并获取bean的class信息
+	 * 2. 解决实例化前的依赖，比如aop切面，可以在类实例化前代理其目标类，cglib会生成子类
+	 * 3。 如果没有aop代理，走doCreateBean方法实现实例化。可参考{@link AbstractAutowireCapableBeanFactory#doCreateBean}
+	 *
+	 *
 	 * Central method of this class: creates a bean instance,
 	 * populates the bean instance, applies post-processors, etc.
 	 * @see #doCreateBean
@@ -569,9 +576,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		/**
 		 * 1. 实例化Bean，此时属性等都为空
-		 * 2. 执行合并的BeanDefinition后处理器
-		 * 3. 加入单例工厂
-		 * 4. 初始化Bean
+		 * 2. 执行合并的BeanDefinition后处理器，会将依赖的bean信息获取到，待实例化后注入进属性中
+		 * 3. 解决aop的循环引用
+		 * 4. 注入属性值
+		 * 5. 初始化aware和初始化方法
 		 */
 
 
@@ -589,7 +597,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					//执行合并的BeanDefinition后处理器
+					//执行合并的BeanDefinition后处理器，会将依赖的bean信息解析到，不管是方法上还是属性上的
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -1187,6 +1195,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 调用获取类实例的几种方式
+	 *
+	 * 1. Supplier回调方式
+	 * 2. FactoryBean工厂方法方式
+	 * 3. 构造方法装配的方式
+	 * 4. cglib代理
+	 * 5. 构造方法反射生成的方式
+	 *
 	 * Create a new instance for the specified bean, using an appropriate instantiation strategy:
 	 * factory method, constructor autowiring, or simple instantiation.
 	 * @param beanName the name of the bean
@@ -1203,15 +1219,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		//加载Class信息
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
-		/**
-		 * 调用获取类实例的几种方式
-		 *
-		 * 1. Supplier回调方式
-		 * 2. FactoryBean工厂方法方式
-		 * 3. 构造方法装配的方式
-		 * 4. cglib代理
-		 * 5. 构造方法反射生成的方式
-		 */
 
 		//如果类非public,构造方法非公开课访问时，抛出异常。
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
@@ -1458,6 +1465,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+		//如果在BeanDefinition中指定的注入类型为name或者type则按这两种类型先获取依赖的bean信息并缓存在pvs中
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			//根据名称注入属性值
@@ -1481,12 +1489,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
+			//通过InstantiationAwareBeanPostProcessor的postProcessProperties方法将
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 					/**
-					 * AutowiredAnnotationBeanPostProcessor.postProcessProperties将实例化了的依赖通过反射调用注入进属性中
-					 * PersistenceAnnotationBeanPostProcessor#postProcessProperties将实例化了的依赖通过反射调用注入进属性中
+					 * 属性值或方法值实际注入的位置
+					 * AutowiredAnnotationBeanPostProcessor.postProcessProperties将实例化了的依赖通过反射调用注入进属性中。在上面
+					 * PersistenceAnnotationBeanPostProcessor#postProcessProperties将实例化了的依赖通过反射调用注入进属性中。
 					 */
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {

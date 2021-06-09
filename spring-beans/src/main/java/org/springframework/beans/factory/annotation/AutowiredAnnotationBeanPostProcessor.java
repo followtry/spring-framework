@@ -394,8 +394,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		//再次调用，如果前面已经解析出依赖信息并缓存， 则直接使用，否则解析class信息并缓存
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			//实际获取到依赖的bean实例并将其注入到属性上
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -439,6 +441,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 
+	//获取到了不管是方法上还是属性上的autowire等的依赖，待注入
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
@@ -451,7 +454,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
-					//构建自动装配的元数据
+					//构建自动装配的元数据,需要筛选出来给定的类有哪些是需要autowire注入的
 					metadata = buildAutowiringMetadata(clazz);
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
@@ -643,14 +646,17 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			}
 			else {
+				//解决field的依赖，在外层将该依赖反射设置到对应的属性上
 				value = resolveFieldValue(field, bean, beanName);
 			}
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
+				//todo 设置依赖的value的位置
 				field.set(bean, value);
 			}
 		}
 
+		//解决field的依赖
 		@Nullable
 		private Object resolveFieldValue(Field field, Object bean, @Nullable String beanName) {
 			DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
@@ -680,6 +686,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 							}
 						}
 					}
+					//缓存已经解析完的依赖数据
 					this.cachedFieldValue = cachedFieldValue;
 					this.cached = true;
 				}
@@ -723,11 +730,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			}
 			else {
+				//解析方法上的依赖，并将解析到的实例作为参数设置到方法参数上
 				arguments = resolveMethodArguments(method, bean, beanName);
 			}
 			if (arguments != null) {
 				try {
 					ReflectionUtils.makeAccessible(method);
+					//通过方法的反射调用，将其
 					method.invoke(bean, arguments);
 				}
 				catch (InvocationTargetException ex) {
