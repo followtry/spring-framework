@@ -19,6 +19,15 @@ package org.springframework.core.type;
 import org.springframework.lang.Nullable;
 
 /**
+ * 获取类的元数据的定义
+ * 比如：
+ * 1. 获取类名
+ * 2. 类是否为接口
+ * 3. 类是否为注解
+ * 4. 类是否为final类型
+ * 5. 是否为具体类
+ * 等等
+ *
  * Interface that defines abstract metadata of a specific class,
  * in a form that does not require that class to be loaded yet.
  *

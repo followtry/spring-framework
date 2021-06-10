@@ -27,6 +27,9 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.lang.Nullable;
 
 /**
+ * 通过SimpleAnnotationMetadataReadingVisitor创建的AnnotationMetadata类型的具体实现类。在5.2才刚刚开始加上的
+ *
+ *
  * {@link AnnotationMetadata} created from a
  * {@link SimpleAnnotationMetadataReadingVisitor}.
  *
@@ -35,6 +38,7 @@ import org.springframework.lang.Nullable;
  */
 final class SimpleAnnotationMetadata implements AnnotationMetadata {
 
+	//注解的类名称
 	private final String className;
 
 	private final int access;

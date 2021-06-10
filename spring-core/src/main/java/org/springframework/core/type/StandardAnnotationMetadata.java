@@ -34,6 +34,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 使用标准的反射获取到的注解信息的具体实现
+ *
  * {@link AnnotationMetadata} implementation that uses standard reflection
  * to introspect a given {@link Class}.
  *
@@ -120,6 +122,7 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 		if (this.nestedAnnotationsAsMap) {
 			return AnnotationMetadata.super.getAllAnnotationAttributes(annotationName, classValuesAsString);
 		}
+		//获取所有的指定注解的属性
 		return AnnotatedElementUtils.getAllAnnotationAttributes(
 				getIntrospectedClass(), annotationName, classValuesAsString, false);
 	}
@@ -142,6 +145,12 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 		return false;
 	}
 
+	/**
+	 * 获取指定注解上的方法
+	 * @param annotationName the fully qualified class name of the annotation
+	 * type to look for
+	 * @return
+	 */
 	@Override
 	@SuppressWarnings("deprecation")
 	public Set<MethodMetadata> getAnnotatedMethods(String annotationName) {
@@ -165,12 +174,23 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 		return annotatedMethods != null ? annotatedMethods : Collections.emptySet();
 	}
 
+	/**
+	 * 判断该方法是否为指定注解的方法
+	 * @param method
+	 * @param annotationName
+	 * @return
+	 */
 	private boolean isAnnotatedMethod(Method method, String annotationName) {
 		return !method.isBridge() && method.getAnnotations().length > 0 &&
 				AnnotatedElementUtils.isAnnotated(method, annotationName);
 	}
 
 
+	/**
+	 * 复制一份本身
+	 * @param introspectedClass
+	 * @return
+	 */
 	static AnnotationMetadata from(Class<?> introspectedClass) {
 		return new StandardAnnotationMetadata(introspectedClass, true);
 	}
