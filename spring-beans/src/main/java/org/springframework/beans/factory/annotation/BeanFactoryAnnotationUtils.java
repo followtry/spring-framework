@@ -37,6 +37,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 方便的方法执行与Spring特定注释相关的bean查找，例如Spring的Qualifier注释。
+ *
  * Convenience methods performing bean lookups related to Spring-specific annotations,
  * for example Spring's {@link Qualifier @Qualifier} annotation.
  *
@@ -48,6 +50,8 @@ import org.springframework.util.Assert;
 public abstract class BeanFactoryAnnotationUtils {
 
 	/**
+	 * 从给定的{@code BeanFactory}检索{@code T}类型的所有bean，声明一个*限定符（例如，通过{@code<qualifier>}或{@code@qualifier}）匹配给定的*限定符，或具有一个与给定限定符匹配的bean名称
+	 *
 	 * Retrieve all bean of type {@code T} from the given {@code BeanFactory} declaring a
 	 * qualifier (e.g. via {@code <qualifier>} or {@code @Qualifier}) matching the given
 	 * qualifier, or having a bean name matching the given qualifier.
@@ -62,6 +66,7 @@ public abstract class BeanFactoryAnnotationUtils {
 	public static <T> Map<String, T> qualifiedBeansOfType(
 			ListableBeanFactory beanFactory, Class<T> beanType, String qualifier) throws BeansException {
 
+		//获取到指定类型的多个候选的bean名称，然后匹配指定的bean名称，获取到该beanName的bean实例，并返回Map结构
 		String[] candidateBeans = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, beanType);
 		Map<String, T> result = new LinkedHashMap<>(4);
 		for (String beanName : candidateBeans) {
@@ -139,6 +144,14 @@ public abstract class BeanFactoryAnnotationUtils {
 	}
 
 	/**
+	 * 限定符的判定
+	 *
+	 * 1. 先直接判断给定的beanName
+	 * 2. 判断beanName关联的所有别名
+	 * 3. 获取BeanDefinition上的限定名
+	 * 4. 获取工厂方法的限定名
+	 * 5. 获取类上的限定名
+	 *
 	 * Check whether the named bean declares a qualifier of the given name.
 	 * @param qualifier the qualifier to match
 	 * @param beanName the name of the candidate bean
@@ -152,10 +165,12 @@ public abstract class BeanFactoryAnnotationUtils {
 			Predicate<String> qualifier, String beanName, @Nullable BeanFactory beanFactory) {
 
 		// Try quick bean name or alias match first...
+		//判断bean名称是否匹配上指定的限定符
 		if (qualifier.test(beanName)) {
 			return true;
 		}
 		if (beanFactory != null) {
+			//针对每个别名判断是否有能匹配上的
 			for (String alias : beanFactory.getAliases(beanName)) {
 				if (qualifier.test(alias)) {
 					return true;
@@ -166,6 +181,7 @@ public abstract class BeanFactoryAnnotationUtils {
 				if (beanFactory instanceof ConfigurableBeanFactory) {
 					BeanDefinition bd = ((ConfigurableBeanFactory) beanFactory).getMergedBeanDefinition(beanName);
 					// Explicit qualifier metadata on bean definition? (typically in XML definition)
+					//如果没匹配上beanName和别名，则获取该BeanName的BeanDefinition，然后判断该BeanDefinition中指定的限定符和指定的限定符是否相等
 					if (bd instanceof AbstractBeanDefinition) {
 						AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
 						AutowireCandidateQualifier candidate = abd.getQualifier(Qualifier.class.getName());
@@ -180,6 +196,7 @@ public abstract class BeanFactoryAnnotationUtils {
 					if (bd instanceof RootBeanDefinition) {
 						Method factoryMethod = ((RootBeanDefinition) bd).getResolvedFactoryMethod();
 						if (factoryMethod != null) {
+							//判断方法名上的限定符
 							Qualifier targetAnnotation = AnnotationUtils.getAnnotation(factoryMethod, Qualifier.class);
 							if (targetAnnotation != null) {
 								return qualifier.test(targetAnnotation.value());
@@ -187,6 +204,7 @@ public abstract class BeanFactoryAnnotationUtils {
 						}
 					}
 				}
+				//判断类上的限定符是否与指定的限定符相等
 				// Corresponding qualifier on bean implementation class? (for custom user types)
 				if (beanType != null) {
 					Qualifier targetAnnotation = AnnotationUtils.getAnnotation(beanType, Qualifier.class);
