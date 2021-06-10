@@ -34,6 +34,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ *
+ * 根BeanDefinition代表了合并后的BeanDefinition。
+ * GenericBeanDefinition的优点是它允许动态定义父依赖项，而不是将角色“硬编码”为根bean定义
+ *
  * A root bean definition represents the merged bean definition that backs
  * a specific bean in a Spring BeanFactory at runtime. It might have been created
  * from multiple original bean definitions that inherit from each other,

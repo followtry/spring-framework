@@ -22,6 +22,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
+ *
+ * 子bean定义对父bean定义有固定的依赖关系。
+ *
+ *
  * Bean definition for beans which inherit settings from their parent.
  * Child bean definitions have a fixed dependency on a parent bean definition.
  *
@@ -46,6 +50,9 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class ChildBeanDefinition extends AbstractBeanDefinition {
 
+	/**
+	 * 设置父类
+	 */
 	@Nullable
 	private String parentName;
 

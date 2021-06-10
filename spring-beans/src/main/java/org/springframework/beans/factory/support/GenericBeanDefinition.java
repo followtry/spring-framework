@@ -21,6 +21,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
+ *
+ * GenericBeanDefinition是标准bean定义的一站式服务。使用该接口用来注册用户可见的BeanDefinition。
+ * 工作做的比较少，主要都是在父抽象类中做了
+ *
  * GenericBeanDefinition is a one-stop shop for standard bean definition purposes.
  * Like any bean definition, it allows for specifying a class plus optionally
  * constructor argument values and property values. Additionally, deriving from a
@@ -41,6 +45,9 @@ import org.springframework.util.ObjectUtils;
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
 	@Nullable
+	/**
+	 * 父BeanDefinition的名称
+	 */
 	private String parentName;
 
 

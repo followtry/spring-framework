@@ -23,6 +23,8 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * Bean的信息定义，主要定义了用于BeanFactoryPostProcessor反射获取或者修改属性值的功能接口
+ *
  * A BeanDefinition describes a bean instance, which has property values,
  * constructor argument values, and further information supplied by
  * concrete implementations.

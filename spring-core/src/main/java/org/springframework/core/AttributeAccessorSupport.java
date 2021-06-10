@@ -25,6 +25,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 提供所有方法的基础实现
+ *
  * Support class for {@link AttributeAccessor AttributeAccessors}, providing
  * a base implementation of all methods. To be extended by subclasses.
  *
@@ -37,7 +39,10 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public abstract class AttributeAccessorSupport implements AttributeAccessor, Serializable {
 
-	/** Map with String keys and Object values. */
+	/**
+	 * 属性key和值的存储容器
+	 *
+	 * Map with String keys and Object values. */
 	private final Map<String, Object> attributes = new LinkedHashMap<>();
 
 

@@ -48,6 +48,9 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public class ScannedGenericBeanDefinition extends GenericBeanDefinition implements AnnotatedBeanDefinition {
 
+	/**
+	 * 实现了存储和获取注解元数据的功能。主要的BeanDefinition功能还是在AbstractBeanDefinition中
+	 */
 	private final AnnotationMetadata metadata;
 
 

@@ -39,10 +39,12 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * BeanDefinition的抽象类基类
  * Base class for concrete, full-fledged {@link BeanDefinition} classes,
  * factoring out common properties of {@link GenericBeanDefinition},
  * {@link RootBeanDefinition}, and {@link ChildBeanDefinition}.
  *
+ *  autowire常量匹配AutowireCapableBeanFactory接口中的一个
  * <p>The autowire constants match the ones defined in the
  * {@link org.springframework.beans.factory.config.AutowireCapableBeanFactory}
  * interface.
@@ -60,7 +62,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		implements BeanDefinition, Cloneable {
 
 	/**
-	 * Constant for the default scope name: {@code ""}, equivalent to singleton
+	 * Constant for the def ault scope name: {@code ""}, equivalent to singleton
 	 * status unless overridden from a parent bean definition (if applicable).
 	 */
 	public static final String SCOPE_DEFAULT = "";
@@ -149,57 +151,100 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private Boolean lazyInit;
 
+	//默认的自动装配默认为没有外部的装配
 	private int autowireMode = AUTOWIRE_NO;
-
+	//默认不检查
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
+	/**
+	 * 依赖的bean的信息
+	 */
 	@Nullable
 	private String[] dependsOn;
 
+	//默认为自动装配
 	private boolean autowireCandidate = true;
 
+	//默认不指定为该类型下主要的bean
 	private boolean primary = false;
 
 	private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
+	/**
+	 * 实例的提供信息
+	 */
 	@Nullable
 	private Supplier<?> instanceSupplier;
 
+	//默认允许访问非public的属性方法等
 	private boolean nonPublicAccessAllowed = true;
 
 	private boolean lenientConstructorResolution = true;
 
+	/**
+	 * 依赖的factoryBean名称和方法
+	 */
 	@Nullable
 	private String factoryBeanName;
 
 	@Nullable
 	private String factoryMethodName;
 
+	/**
+	 * 构造方法里的参数
+	 */
 	@Nullable
 	private ConstructorArgumentValues constructorArgumentValues;
 
+	/**
+	 * 属性值信息
+	 */
 	@Nullable
 	private MutablePropertyValues propertyValues;
 
+	/**
+	 * 需要覆盖的方法
+	 */
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
+	/**
+	 * 指定的初始化方法
+	 */
 	@Nullable
 	private String initMethodName;
 
+	/**
+	 * 指定的销毁方法
+	 */
 	@Nullable
 	private String destroyMethodName;
 
+	/**
+	 * 默认强制初始化方法
+	 */
 	private boolean enforceInitMethod = true;
 
+	/**
+	 * 默认强制销毁方法
+	 */
 	private boolean enforceDestroyMethod = true;
 
+	/**
+	 * 默认为非合成的BeanDefinition信息。merge的为合成的
+	 */
 	private boolean synthetic = false;
 
 	private int role = BeanDefinition.ROLE_APPLICATION;
 
+	/**
+	 * 描述信息，基本没用到
+	 */
 	@Nullable
 	private String description;
 
+	/**
+	 * 资源
+	 */
 	@Nullable
 	private Resource resource;
 
@@ -226,6 +271,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @param original the original bean definition to copy from
 	 */
 	protected AbstractBeanDefinition(BeanDefinition original) {
+
+		//深度将一个BeanDefinition信息复制到另一个新的Bean中
 		setParentName(original.getParentName());
 		setBeanClassName(original.getBeanClassName());
 		setScope(original.getScope());
@@ -280,6 +327,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
 	/**
+	 * 使用给定的BeanDefinition覆盖现有的
 	 * Override settings in this bean definition (presumably a copied parent
 	 * from a parent-child inheritance relationship) from the given bean
 	 * definition (presumably the child).
@@ -360,6 +408,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 设置默认值
 	 * Apply the provided default values to this bean.
 	 * @param defaults the default settings to apply
 	 * @since 2.5
@@ -1169,6 +1218,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 克隆方式待子类实现
 	 * Clone this bean definition.
 	 * To be implemented by concrete subclasses.
 	 * @return the cloned bean definition object

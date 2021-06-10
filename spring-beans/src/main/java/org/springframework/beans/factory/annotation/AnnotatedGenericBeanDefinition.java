@@ -24,6 +24,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 扩展了GenericBeanDefinition的注解功能，主要用于测试代码。Spring中主键扫描实现默认是使用ScannedGenericBeanDefinition的
+ *
  * Extension of the {@link org.springframework.beans.factory.support.GenericBeanDefinition}
  * class, adding support for annotation metadata exposed through the
  * {@link AnnotatedBeanDefinition} interface.
@@ -43,6 +45,9 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public class AnnotatedGenericBeanDefinition extends GenericBeanDefinition implements AnnotatedBeanDefinition {
 
+	/**
+	 * 定义了注解元数据的结构，实现了注解的get方法
+	 */
 	private final AnnotationMetadata metadata;
 
 	@Nullable

@@ -386,6 +386,9 @@ class ConfigurationClassBeanDefinitionReader {
 
 
 	/**
+	 * RootBeanDefinition标记子类，用于表示bean定义*是从配置类创建的，而不是从任何其他配置源创建的。在需要确定bean定义是否在外部创建的bean重写情况下使用。
+	 * 主要的功能实现还是在AbstractBeanDefinition中
+	 *
 	 * {@link RootBeanDefinition} marker subclass used to signify that a bean definition
 	 * was created from a configuration class as opposed to any other configuration source.
 	 * Used in bean overriding cases where it's necessary to determine whether the bean
@@ -394,6 +397,9 @@ class ConfigurationClassBeanDefinitionReader {
 	@SuppressWarnings("serial")
 	private static class ConfigurationClassBeanDefinition extends RootBeanDefinition implements AnnotatedBeanDefinition {
 
+		/**
+		 * 支持注解元数据
+		 */
 		private final AnnotationMetadata annotationMetadata;
 
 		private final MethodMetadata factoryMethodMetadata;

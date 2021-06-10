@@ -40,6 +40,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ *
+ * 包含单个内部DefaultListableBeanFactory实例且不采用特定bean定义格式的通用ApplicationContext实现
+ *
  * Generic ApplicationContext implementation that holds a single internal
  * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
  * instance and does not assume a specific bean definition format. Implements
@@ -473,6 +476,8 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
+	 * RootBeanDefinition标记子类，用于基于registerBean的注册，为公共构造函数提供灵活的自动装配。
+	 *
 	 * {@link RootBeanDefinition} marker subclass for {@code #registerBean} based
 	 * registrations with flexible autowiring for public constructors.
 	 */
