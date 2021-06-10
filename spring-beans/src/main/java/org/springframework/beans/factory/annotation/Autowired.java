@@ -23,6 +23,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Autowired的注解
+ *
+ * 将构造函数、字段、setter方法或config方法标记为由*Spring的依赖注入工具自动连接。
+ * 这是JSR-330{@link javax.inject.inject}注释的另一种选择，添加了必需的和可选的语义
+ *
+ * 1. 自定装配构造方法
+ * 		只有给定的构造方法中的一个可以被该注解声明，并且required设置为true。在使用Spring Bean的时候指导去自动装配。
+ * 		在Spring容器中，通过匹配bean*可以满足的依赖项数量最多的构造函数将被选择。如果没有一个候选者可以满足，那么将使用主/默认构造函数（如果存在）。
+ * 		如果一个类只声明了一个构造函数，那么它将一直被使用，即使没有注解。带注释的构造函数不必是公共的
+ * 2. 自动装配属性
+ * 		字段是在构造bean之后，调用任何配置方法之前注入的。这样的配置字段不必是公共的
+ * 3. 自动装配方法
+ * 		配置方法可以有任意名称和任意数量的参数；这些*参数中的每一个都将与Spring容器中的匹配bean自动关联。Bean属性设置器方法实际上只是这种通用的config方法的一个特例。这样的配置方法不必是公共的。
+ * 4. 自动装配参数
+ * 		只有5.0后才支持
+ *
  * Marks a constructor, field, setter method, or config method as to be autowired by
  * Spring's dependency injection facilities. This is an alternative to the JSR-330
  * {@link javax.inject.Inject} annotation, adding required-vs-optional semantics.
