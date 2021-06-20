@@ -29,6 +29,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 该类可以允许设置自定义的autowire注解
+ *
  * A {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
  * implementation that allows for convenient registration of custom autowire
  * qualifier types.
@@ -51,6 +53,9 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
+	/**
+	 * 承接自定义的限定符类型的数据结构
+	 */
 	@Nullable
 	private Set<?> customQualifierTypes;
 
@@ -90,6 +95,7 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		//如果customQualifierTypes为空，那没什么好说的，直接不需要处理，否则需要增加一种限定类型
 		if (this.customQualifierTypes != null) {
 			if (!(beanFactory instanceof DefaultListableBeanFactory)) {
 				throw new IllegalStateException(

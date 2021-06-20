@@ -32,6 +32,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 构造函数参数值的持有者，通常作为bean定义的一部分。
+ * 支持构造函数参数列表中特定索引的值以及按类型匹配的泛型参数的值。
+ *
  * Holder for constructor argument values, typically as part of a bean definition.
  *
  * <p>Supports values for a specific index in the constructor argument list
@@ -43,8 +46,12 @@ import org.springframework.util.ObjectUtils;
  */
 public class ConstructorArgumentValues {
 
+	/**
+	 * 按照index存储的参数
+	 */
 	private final Map<Integer, ValueHolder> indexedArgumentValues = new LinkedHashMap<>();
 
+	//泛型参数值
 	private final List<ValueHolder> genericArgumentValues = new ArrayList<>();
 
 
@@ -432,6 +439,7 @@ public class ConstructorArgumentValues {
 
 
 	/**
+	 * 持有构造方法参数和值的数据结构
 	 * Holder for a constructor argument value, with an optional type
 	 * attribute indicating the target type of the actual constructor argument.
 	 */

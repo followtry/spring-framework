@@ -24,6 +24,11 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * 既继承了ListableBeanFactory接口又继承了HierarchicalBeanFactory接口的其中重要之一的子接口。
+ *
+ * 对于大部分的listableBeanFactory实现的配置接口，另外提供了工具来分析和修改BeanDefinition，并预实例化单例，该接口同样适用于框架内部
+ *
  * Configuration interface to be implemented by most listable bean factories.
  * In addition to {@link ConfigurableBeanFactory}, it provides facilities to
  * analyze and modify bean definitions, and to pre-instantiate singletons.

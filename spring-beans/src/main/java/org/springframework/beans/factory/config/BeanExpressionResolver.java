@@ -20,6 +20,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ * 策略接口，用于通过将值作为表达式进行求值来解析值（如果适用）
+ *
  * Strategy interface for resolving a value through evaluating it
  * as an expression, if applicable.
  *

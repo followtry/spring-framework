@@ -19,6 +19,13 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.BeansException;
 
 /**
+ *
+ * 1. 工厂钩子，允许自定义修改应用程序上下文的bean定义，调整上下文底层bean工厂的bean属性值
+ * 2. 对于以系统管理员为目标的自定义配置文件非常有用，这些文件覆盖在应用程序上下文中配置的bean属性
+ * 3. BeanFactoryPostProcessor值在BeanDefinition上进行操作，不会修改Bean实例。如果需要操作Bean实例，使用BeanPostProcessor方法
+ * 4. BeanFactoryPostProcessor在ApplicationContext中会自动检测实例并在其他Bean被创建前调用。也可以通过编程的方式注册。
+ * 5. BeanFactoryPostProcessor在ApplicationContext中自动排序，按PriorityOrdered和Ordered语义。但对于ConfigurableApplicationContext中编程方式注册将会按照注册的顺序，会忽略PriorityOrdered和Ordered语义
+ *
  * Factory hook that allows for custom modification of an application context's
  * bean definitions, adapting the bean property values of the context's underlying
  * bean factory.
@@ -63,6 +70,9 @@ import org.springframework.beans.BeansException;
 public interface BeanFactoryPostProcessor {
 
 	/**
+	 * 修改内部的BeanFactory，此时所有的BeanDefinition都已经被加载，但还没有被实例化。
+	 * 这允许重写或添加属性，即使是在初始化bean时也是如此
+	 *
 	 * Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for overriding or adding

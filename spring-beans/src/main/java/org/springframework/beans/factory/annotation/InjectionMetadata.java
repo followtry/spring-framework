@@ -33,6 +33,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 注入元数据
+ *
  * Internal class for managing injection metadata.
  * Not intended for direct use in applications.
  *
@@ -66,8 +68,10 @@ public class InjectionMetadata {
 	};
 
 
+	//目标类
 	private final Class<?> targetClass;
 
+	//注入元素的集合
 	private final Collection<InjectedElement> injectedElements;
 
 	@Nullable
@@ -162,6 +166,7 @@ public class InjectionMetadata {
 
 
 	/**
+	 * 单个注入元素
 	 * A single injected element.
 	 */
 	public abstract static class InjectedElement {

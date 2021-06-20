@@ -19,6 +19,8 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.BeansException;
 
 /**
+ * 析构方法的aware接口，会在类对象被销毁前调用
+ *
  * Subinterface of {@link BeanPostProcessor} that adds a before-destruction callback.
  *
  * <p>The typical usage will be to invoke custom destruction callbacks on
@@ -30,6 +32,8 @@ import org.springframework.beans.BeansException;
 public interface DestructionAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
+	 * 执行销毁前的析构处理
+	 *
 	 * Apply this BeanPostProcessor to the given bean instance before its
 	 * destruction, e.g. invoking custom destruction callbacks.
 	 * <p>Like DisposableBean's {@code destroy} and a custom destroy method, this

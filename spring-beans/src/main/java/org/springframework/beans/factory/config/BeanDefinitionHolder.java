@@ -24,6 +24,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 带有名称和别名的BeanDefinition的持有者。可以注册为内部bean的占位符。没有其他特殊的功能
+ *
  * Holder for a BeanDefinition with name and aliases.
  * Can be registered as a placeholder for an inner bean.
  *
@@ -39,6 +41,7 @@ import org.springframework.util.StringUtils;
  */
 public class BeanDefinitionHolder implements BeanMetadataElement {
 
+	//解析好的BeanDefinition信息
 	private final BeanDefinition beanDefinition;
 
 	private final String beanName;

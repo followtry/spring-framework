@@ -179,6 +179,7 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 			return (resolved.equals(this.nullValue) ? null : resolved);
 		};
 
+		//处理配置属性
 		doProcessProperties(beanFactoryToProcess, valueResolver);
 	}
 

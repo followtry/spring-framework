@@ -31,6 +31,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
+ *
+ * ConfigurableBeanFactory接口继承自HierarchicalBeanFactory，也继承了SingletonBeanRegistry接口，这样就使得后续的实现类实现单例的注册和获取成为了可能。
+ *
+ * 该接口并不打算在一般的应用代码中使用，对于典型的需要，请使用BeanFactory或者ListableBeanFactory。因为这个原因也就引出了ApplicationContext接口下的实现类才是面对一般的应用代码的。而该接口只是这个扩展接口只是为了允许框架内部即插即用和对bean工厂配置方法的特殊访问。
+ *
+ *
  * Configuration interface to be implemented by most bean factories. Provides
  * facilities to configure a bean factory, in addition to the bean factory
  * client methods in the {@link org.springframework.beans.factory.BeanFactory}

@@ -30,6 +30,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
+ *
+ * BeanDefinition的访问器。占位符解析器。使用PlaceholderConfigurerSupport来解析所有的字符串值
+ *
  * Visitor class for traversing {@link BeanDefinition} objects, in particular
  * the property values and constructor argument values contained in them,
  * resolving bean metadata values.
@@ -52,6 +55,8 @@ public class BeanDefinitionVisitor {
 
 
 	/**
+	 * 使用的String值解析器为{@link PlaceholderResolvingStringValueResolver}
+	 *
 	 * Create a new BeanDefinitionVisitor, applying the specified
 	 * value resolver to all bean metadata values.
 	 * @param valueResolver the StringValueResolver to apply
@@ -169,6 +174,11 @@ public class BeanDefinitionVisitor {
 		}
 	}
 
+	/**
+	 * 最核心的方法，用来解析到真正的String值
+	 * @param value
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
 	@Nullable
 	protected Object resolveValue(@Nullable Object value) {
@@ -283,6 +293,9 @@ public class BeanDefinitionVisitor {
 	}
 
 	/**
+	 *
+	 * 解析给定字符串的占位符
+	 *
 	 * Resolve the given String value, for example parsing placeholders.
 	 * @param strVal the original String value
 	 * @return the resolved String value

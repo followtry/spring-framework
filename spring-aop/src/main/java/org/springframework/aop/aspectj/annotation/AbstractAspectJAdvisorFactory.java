@@ -70,6 +70,9 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 
 	/**
+	 *
+	 * 通过该方法判断已经解析到的BeanDefinition的类上是否有Aspect注解并且非SpringAOP反射生成的类
+	 *
 	 * We consider something to be an AspectJ aspect suitable for use by the Spring AOP system
 	 * if it has the @Aspect annotation, and was not compiled by ajc. The reason for this latter test
 	 * is that aspects written in the code-style (AspectJ language) also have the annotation present

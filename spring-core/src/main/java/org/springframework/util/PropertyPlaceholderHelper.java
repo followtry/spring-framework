@@ -124,7 +124,17 @@ public class PropertyPlaceholderHelper {
 		return parseStringValue(value, placeholderResolver, null);
 	}
 
-	//解析value注入的变量的最终变量
+	/**
+	 * 解析value注入的变量的最终变量
+	 *
+	 * 解析过程
+	 * 1. 获取占位符前缀的位置，如果没有则直接返回结果
+	 *
+	 * @param value
+	 * @param placeholderResolver
+	 * @param visitedPlaceholders
+	 * @return
+	 */
 	protected String parseStringValue(
 			String value, PlaceholderResolver placeholderResolver, @Nullable Set<String> visitedPlaceholders) {
 
@@ -194,6 +204,7 @@ public class PropertyPlaceholderHelper {
 		int index = startIndex + this.placeholderPrefix.length();
 		int withinNestedPlaceholder = 0;
 		while (index < buf.length()) {
+			//判断子串中是否含有占位符后缀，
 			if (StringUtils.substringMatch(buf, index, this.placeholderSuffix)) {
 				if (withinNestedPlaceholder > 0) {
 					withinNestedPlaceholder--;

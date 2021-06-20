@@ -33,6 +33,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
+ *
+ * 参数解析的委托类
+ *
  * Public delegate for resolving autowirable parameters on externally managed
  * constructors and methods.
  *
@@ -66,6 +69,9 @@ public final class ParameterResolutionDelegate {
 
 
 	/**
+	 *
+	 * 检测是否自动装配，设置在参数上的注解
+	 *
 	 * Determine if the supplied {@link Parameter} can <em>potentially</em> be
 	 * autowired from an {@link AutowireCapableBeanFactory}.
 	 * <p>Returns {@code true} if the supplied parameter is annotated or
@@ -88,6 +94,9 @@ public final class ParameterResolutionDelegate {
 	}
 
 	/**
+	 *
+	 * 解析参数，把参数封装为依赖的对象。然后解析获取到实际的Bean实例信息
+	 *
 	 * Resolve the dependency for the supplied {@link Parameter} from the
 	 * supplied {@link AutowireCapableBeanFactory}.
 	 * <p>Provides comprehensive autowiring support for individual method parameters

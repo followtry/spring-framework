@@ -40,6 +40,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * FactoryBean的简单模板超类
+ *
  * Simple template superclass for {@link FactoryBean} implementations that
  * creates a singleton or a prototype object, depending on a flag.
  *
@@ -141,6 +143,7 @@ public abstract class AbstractFactoryBean<T>
 	public void afterPropertiesSet() throws Exception {
 		if (isSingleton()) {
 			this.initialized = true;
+			//存储单例
 			this.singletonInstance = createInstance();
 			this.earlySingletonInstance = null;
 		}

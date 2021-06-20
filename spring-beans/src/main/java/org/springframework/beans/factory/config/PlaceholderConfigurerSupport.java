@@ -111,6 +111,7 @@ public abstract class PlaceholderConfigurerSupport extends PropertyResourceConfi
 	@Nullable
 	protected String valueSeparator = DEFAULT_VALUE_SEPARATOR;
 
+	//todo 如何设置才能支持自动改trim结果
 	protected boolean trimValues = false;
 
 	@Nullable

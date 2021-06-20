@@ -20,6 +20,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 用于在bean定义中计算表达式的上下文对象。
+ *
  * Context object for evaluating an expression within a bean definition.
  *
  * @author Juergen Hoeller
