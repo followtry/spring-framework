@@ -41,6 +41,8 @@ import org.springframework.util.PropertiesPersister;
 import org.springframework.util.StringUtils;
 
 /**
+ * 以properties方式定义的bean信息。从来没见有用过的。
+ *
  * Bean definition reader for a simple properties format.
  *
  * <p>Provides bean definition registration methods for Map/Properties and

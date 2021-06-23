@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * UUID实例和uuid字符串
  * Editor for {@code java.util.UUID}, translating UUID
  * String representations into UUID objects and back.
  *

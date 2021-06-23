@@ -24,6 +24,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 
 /**
+ * yaml的map解析器
  * Factory for a {@code Map} that reads from a YAML source, preserving the
  * YAML-declared value types and their structure.
  *

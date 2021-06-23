@@ -44,6 +44,8 @@ import org.springframework.util.StringUtils;
 
 /**
  *
+ * Value 和 Qualifier注解的解析器实现
+ *
  * {@link AutowireCandidateResolver} implementation that matches bean definition qualifiers
  * against {@link Qualifier qualifier annotations} on the field or parameter to be autowired.
  * Also supports suggested expression values through a {@link Value value} annotation.
@@ -322,6 +324,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 		if (!super.isRequired(descriptor)) {
 			return false;
 		}
+		//判断一定的依赖是否必须存在
 		Autowired autowired = descriptor.getAnnotation(Autowired.class);
 		return (autowired == null || autowired.required());
 	}
@@ -359,6 +362,8 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	}
 
 	/**
+	 * 注解给定的候选值
+	 *
 	 * Determine a suggested value from any of the given candidate annotations.
 	 */
 	@Nullable

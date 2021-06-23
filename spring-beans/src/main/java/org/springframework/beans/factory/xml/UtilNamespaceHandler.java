@@ -34,6 +34,8 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.util.StringUtils;
 
 /**
+ * 工具的命名空间解析器
+ *
  * {@link NamespaceHandler} for the {@code util} namespace.
  *
  * @author Rob Harrop

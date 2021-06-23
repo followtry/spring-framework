@@ -27,6 +27,9 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * 字符串的文件路径和文件的互转
+ *
  * Editor for {@code java.io.File}, to directly populate a File property
  * from a Spring resource location.
  *

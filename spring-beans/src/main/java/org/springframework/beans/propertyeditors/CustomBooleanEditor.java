@@ -22,6 +22,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ * 字符串和自定义的bool值的互转，true，on，yes和1都表示true。false，off，no和0都表示false
+ *
  * Property editor for Boolean/boolean properties.
  *
  * <p>This is not meant to be used as system PropertyEditor but rather as

@@ -65,6 +65,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 解决构造器和工厂方法的代理
+ *
  * Delegate for resolving constructors and factory methods.
  *
  * <p>Performs constructor resolution through argument matching.
@@ -296,6 +298,7 @@ class ConstructorResolver {
 		return bw;
 	}
 
+	//实例化，直接调用cglib的实例化策略
 	private Object instantiate(
 			String beanName, RootBeanDefinition mbd, Constructor<?> constructorToUse, Object[] argsToUse) {
 

@@ -24,6 +24,7 @@ import org.springframework.core.CollectionFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ * yaml的属性工厂bean
  * Factory for {@link java.util.Properties} that reads from a YAML source,
  * exposing a flat structure of String property values.
  *

@@ -21,6 +21,9 @@ import java.beans.PropertyEditorSupport;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * Locale和字符串的互转
+ *
  * Editor for {@code java.util.Locale}, to directly populate a Locale property.
  *
  * <p>Expects the same syntax as Locale's {@code toString}, i.e. language +

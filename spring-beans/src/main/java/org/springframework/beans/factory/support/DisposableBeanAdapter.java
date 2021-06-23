@@ -42,6 +42,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * DisposableBean接口的适配器
  * Adapter that implements the {@link DisposableBean} and {@link Runnable}
  * interfaces performing various destruction steps on a given bean instance:
  * <ul>
@@ -176,6 +177,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 		destroy();
 	}
 
+	//销毁给定的Bean实例
 	@Override
 	public void destroy() {
 		if (!CollectionUtils.isEmpty(this.beanPostProcessors)) {

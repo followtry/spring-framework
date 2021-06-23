@@ -24,6 +24,8 @@ import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.lang.Nullable;
 
 /**
+ * 命名空间处理器，给xml配置使用的，对于自定义的标签，需要实现该接口来实现xml配置到BeanDefinition的解析和注册
+ *
  * Base interface used by the {@link DefaultBeanDefinitionDocumentReader}
  * for handling custom namespaces in a Spring XML configuration file.
  *

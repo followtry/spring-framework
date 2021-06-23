@@ -31,6 +31,8 @@ import org.springframework.lang.Nullable;
 public class SimpleAutowireCandidateResolver implements AutowireCandidateResolver {
 
 	/**
+	 * 单例
+	 *
 	 * Shared instance of {@code SimpleAutowireCandidateResolver}.
 	 * @since 5.2.7
 	 */

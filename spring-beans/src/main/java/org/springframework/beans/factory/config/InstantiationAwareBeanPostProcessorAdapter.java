@@ -24,6 +24,9 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * SmartInstantiationAwareBeanPostProcessor的适配器，只是空的抽象类，什么都没做，具体事情再子类中实现。
+ *
  * Adapter that implements all methods on {@link SmartInstantiationAwareBeanPostProcessor}
  * as no-ops, which will not change normal processing of each bean instantiated
  * by the container. Subclasses may override merely those methods that they are

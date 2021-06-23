@@ -29,6 +29,8 @@ import org.springframework.util.MethodInvoker;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ *
+ * 参数转换的工具类
  * Subclass of {@link MethodInvoker} that tries to convert the given
  * arguments for the actual target method via a {@link TypeConverter}.
  *

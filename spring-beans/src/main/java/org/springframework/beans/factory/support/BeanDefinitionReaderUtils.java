@@ -26,6 +26,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * BeanDefinitionReader的工具包，主要内部使用，可以创建，生成名称和注册BeanDefinition
+ *
  * Utility methods that are useful for bean definition reader implementations.
  * Mainly intended for internal use.
  *

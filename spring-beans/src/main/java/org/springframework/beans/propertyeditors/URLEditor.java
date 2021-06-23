@@ -25,6 +25,9 @@ import org.springframework.core.io.ResourceEditor;
 import org.springframework.util.Assert;
 
 /**
+ *
+ * 字符换和URL的转换
+ *
  * Editor for {@code java.net.URL}, to directly populate a URL property
  * instead of using a String property as bridge.
  *

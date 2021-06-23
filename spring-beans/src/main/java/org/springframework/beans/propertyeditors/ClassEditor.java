@@ -23,6 +23,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 字符串和Class类的互转
+ *
  * Property editor for {@link Class java.lang.Class}, to enable the direct
  * population of a {@code Class} property without recourse to having to use a
  * String class name property as bridge.

@@ -45,6 +45,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * yaml的解析器
+ *
  * Base class for YAML factories.
  *
  * <p>Requires SnakeYAML 1.18 or higher, as of Spring Framework 5.0.6.

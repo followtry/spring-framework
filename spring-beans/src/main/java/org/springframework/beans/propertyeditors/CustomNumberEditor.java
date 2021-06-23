@@ -24,6 +24,8 @@ import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 数字和字符串的互转
+ *
  * Property editor for any Number subclass such as Short, Integer, Long,
  * BigInteger, Float, Double, BigDecimal. Can use a given NumberFormat for
  * (locale-specific) parsing and rendering, or alternatively the default

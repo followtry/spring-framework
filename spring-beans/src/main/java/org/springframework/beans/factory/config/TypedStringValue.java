@@ -23,6 +23,11 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ *
+ * 类型化字符串值的持有者。可以添加到bean定义中，以便显式地为字符串值*指定目标类型，例如为集合元素指定目标类型。
+ * 这个holder只存储字符串值和目标类型。实际的转换将由bean工厂执行。
+ * 贫血model类
+ *
  * Holder for a typed String value. Can be added to bean definitions
  * in order to explicitly specify a target type for a String value,
  * for example for collection elements.

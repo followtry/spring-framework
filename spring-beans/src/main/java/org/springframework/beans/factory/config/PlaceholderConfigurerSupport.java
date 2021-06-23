@@ -24,6 +24,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
+ *
+ * 解决BeanDefinition属性值的占位符问题的抽象类，可以从属性文件或者其他源拉取值到BeanDefinition中。
+ * 默认的占位符表达式为${},使用Value注解完成替换
+ *
  * Abstract base class for property resource configurers that resolve placeholders
  * in bean definition property values. Implementations <em>pull</em> values from a
  * properties file or other {@linkplain org.springframework.core.env.PropertySource
@@ -91,12 +95,15 @@ import org.springframework.util.StringValueResolver;
 public abstract class PlaceholderConfigurerSupport extends PropertyResourceConfigurer
 		implements BeanNameAware, BeanFactoryAware {
 
+	//占位符前缀
 	/** Default placeholder prefix: {@value}. */
 	public static final String DEFAULT_PLACEHOLDER_PREFIX = "${";
 
+	//占位符后缀
 	/** Default placeholder suffix: {@value}. */
 	public static final String DEFAULT_PLACEHOLDER_SUFFIX = "}";
 
+	//占位符value的分隔符
 	/** Default value separator: {@value}. */
 	public static final String DEFAULT_VALUE_SEPARATOR = ":";
 
@@ -213,9 +220,11 @@ public abstract class PlaceholderConfigurerSupport extends PropertyResourceConfi
 	}
 
 
+	//解析属性值
 	protected void doProcessProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
 			StringValueResolver valueResolver) {
 
+		//属性值的解析工具，需要传入解析器
 		BeanDefinitionVisitor visitor = new BeanDefinitionVisitor(valueResolver);
 
 		String[] beanNames = beanFactoryToProcess.getBeanDefinitionNames();

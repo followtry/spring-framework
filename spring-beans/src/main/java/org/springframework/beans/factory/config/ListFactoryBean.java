@@ -25,6 +25,8 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * 用于解析xml的BeanDefinition中的list数据。xml已经有些过时，不再细分析
+ *
  * Simple factory for shared List instances. Allows for central setup
  * of Lists via the "list" element in XML bean definitions.
  *

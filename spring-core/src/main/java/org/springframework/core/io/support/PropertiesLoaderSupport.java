@@ -32,6 +32,9 @@ import org.springframework.util.DefaultPropertiesPersister;
 import org.springframework.util.PropertiesPersister;
 
 /**
+ *
+ * 从一个或者多个源里加载属性配置
+ *
  * Base class for JavaBean-style components that need to load properties
  * from one or more resources. Supports local properties as well, with
  * configurable overriding.
@@ -148,10 +151,12 @@ public abstract class PropertiesLoaderSupport {
 		Properties result = new Properties();
 
 		if (this.localOverride) {
+			//加载配置，
 			// Load properties from file upfront, to let local properties override.
 			loadProperties(result);
 		}
 
+		//已经加载进来后，将多个Properties合并为一个，后面覆盖前面的
 		if (this.localProperties != null) {
 			for (Properties localProp : this.localProperties) {
 				CollectionUtils.mergePropertiesIntoMap(localProp, result);

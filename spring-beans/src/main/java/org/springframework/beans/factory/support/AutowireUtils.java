@@ -40,6 +40,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 包含各种方法的实用类，这些方法对于实现支持autowire的bean工厂非常有用
+ *
  * Utility class that contains various methods useful for the implementation of
  * autowire-capable bean factories.
  *
@@ -51,6 +53,9 @@ import org.springframework.util.ClassUtils;
  */
 abstract class AutowireUtils {
 
+	/**
+	 * 排序器
+	 */
 	public static final Comparator<Executable> EXECUTABLE_COMPARATOR = (e1, e2) -> {
 		int result = Boolean.compare(Modifier.isPublic(e2.getModifiers()), Modifier.isPublic(e1.getModifiers()));
 		return result != 0 ? result : Integer.compare(e2.getParameterCount(), e1.getParameterCount());
@@ -80,6 +85,8 @@ abstract class AutowireUtils {
 	}
 
 	/**
+	 * 确定给定的bean属性是否从依赖项检查中排除。 此实现不包括由CGLIB定义的属性。
+	 *
 	 * Determine whether the given bean property is excluded from dependency checks.
 	 * <p>This implementation excludes properties defined by CGLIB.
 	 * @param pd the PropertyDescriptor of the bean property

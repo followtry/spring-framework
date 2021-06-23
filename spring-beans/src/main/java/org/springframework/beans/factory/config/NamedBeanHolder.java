@@ -20,6 +20,8 @@ import org.springframework.beans.factory.NamedBean;
 import org.springframework.util.Assert;
 
 /**
+ * 给定bean和bean实例的简单持有器。自动装配时解析到的依赖的结果的返回数据结构
+ *
  * A simple holder for a given bean name plus bean instance.
  *
  * @author Juergen Hoeller

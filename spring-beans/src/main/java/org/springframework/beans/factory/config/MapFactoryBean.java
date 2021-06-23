@@ -25,6 +25,8 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * xml的BeanDefinition中解析map数据的FactoryBean。不再详细分析
+ *
  * Simple factory for shared Map instances. Allows for central setup
  * of Maps via the "map" element in XML bean definitions.
  *

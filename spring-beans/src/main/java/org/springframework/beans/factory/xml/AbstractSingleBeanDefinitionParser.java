@@ -24,6 +24,8 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.lang.Nullable;
 
 /**
+ * xml格式的bean配置解析使用
+ *
  * Base class for those {@link BeanDefinitionParser} implementations that
  * need to parse and define just a <i>single</i> {@code BeanDefinition}.
  *

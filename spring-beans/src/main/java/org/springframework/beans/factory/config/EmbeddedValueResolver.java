@@ -20,6 +20,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * StringValueResolver的适配器来解决占位符和表达式.<br/>
+ *
+ *
  * {@link StringValueResolver} adapter for resolving placeholders and
  * expressions against a {@link ConfigurableBeanFactory}.
  *
@@ -53,6 +56,7 @@ public class EmbeddedValueResolver implements StringValueResolver {
 	public String resolveStringValue(String strVal) {
 		String value = this.exprContext.getBeanFactory().resolveEmbeddedValue(strVal);
 		if (this.exprResolver != null && value != null) {
+			//调用表达式解析器来计算出实际的值
 			Object evaluated = this.exprResolver.evaluate(value, this.exprContext);
 			value = (evaluated != null ? evaluated.toString() : null);
 		}

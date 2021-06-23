@@ -30,6 +30,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 字符换和集合的互转，集合包括数组，collection集合，set
+ *
  * Property editor for Collections, converting any source Collection
  * to a given target Collection type.
  *

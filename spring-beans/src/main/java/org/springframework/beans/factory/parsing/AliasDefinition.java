@@ -21,6 +21,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 表示在解析过程中已注册的别名。
+ *
  * Representation of an alias that has been registered during the parsing process.
  *
  * @author Juergen Hoeller

@@ -25,6 +25,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 类数组和字符串的转换，多个类全限定名以英文逗号分隔。
+ *
  * Property editor for an array of {@link Class Classes}, to enable
  * the direct population of a {@code Class[]} property without having to
  * use a {@code String} class name property as bridge.

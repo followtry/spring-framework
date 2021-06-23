@@ -22,6 +22,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ * String和一个字符的互转
+ *
  * Editor for a {@link Character}, to populate a property
  * of type {@code Character} or {@code char} from a String value.
  *

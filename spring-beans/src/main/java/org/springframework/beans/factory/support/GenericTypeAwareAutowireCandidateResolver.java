@@ -31,6 +31,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 基本AutowireCandidateResolver，如果依赖项被声明为泛型类型，则执行与候选类型的完全泛型类型匹配（例如，Repository  ）。
+ * 这是org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver的基类，在这个级别提供了所有基于非注释的解析步骤的实现
+ *
  * Basic {@link AutowireCandidateResolver} that performs a full generic type
  * match with the candidate's type if the dependency is declared as a generic type
  * (e.g. Repository&lt;Customer&gt;).

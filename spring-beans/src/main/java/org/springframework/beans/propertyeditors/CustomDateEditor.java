@@ -25,6 +25,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * 自定义格式的时间和字符串的转换
+ *
  * Property editor for {@code java.util.Date},
  * supporting a custom {@code java.text.DateFormat}.
  *

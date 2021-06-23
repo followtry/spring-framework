@@ -21,6 +21,8 @@ import java.beans.PropertyEditorSupport;
 import org.springframework.lang.Nullable;
 
 /**
+ * 属性边界器实现String和Byte数组的转换
+ *
  * Editor for byte arrays. Strings will simply be converted to
  * their corresponding byte representations.
  *

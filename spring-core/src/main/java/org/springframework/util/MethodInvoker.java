@@ -23,6 +23,8 @@ import java.lang.reflect.Modifier;
 import org.springframework.lang.Nullable;
 
 /**
+ * 方法反射调用的工具类
+ *
  * Helper class that allows for specifying a method to invoke in a declarative
  * fashion, be it static or non-static.
  *

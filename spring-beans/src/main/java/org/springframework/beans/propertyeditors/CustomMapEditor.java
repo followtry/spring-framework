@@ -27,6 +27,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 将给定的字符串转为自定义map，mao不能转为String。不过字符串转Map会报异常，只能是其他的Map转为自定义的Map
+ *
  * Property editor for Maps, converting any source Map
  * to a given target Map type.
  *

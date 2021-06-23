@@ -22,6 +22,9 @@ import java.nio.charset.Charset;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * 字符集和字符串的转换
+ *
  * Editor for {@code java.nio.charset.Charset}, translating charset
  * String representations into Charset objects and back.
  *

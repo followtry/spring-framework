@@ -17,6 +17,8 @@
 package org.springframework.beans.factory;
 
 /**
+ * 单例预实例化后触发的回调
+ *
  * Callback interface triggered at the end of the singleton pre-instantiation phase
  * during {@link BeanFactory} bootstrap. This interface can be implemented by
  * singleton beans in order to perform some initialization after the regular

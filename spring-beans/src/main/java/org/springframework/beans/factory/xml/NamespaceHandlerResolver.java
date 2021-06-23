@@ -19,6 +19,8 @@ package org.springframework.beans.factory.xml;
 import org.springframework.lang.Nullable;
 
 /**
+ * 通过xml配置的命名空间，找到spi文件中的具体的命名空间处理器。该处理器会解析标签内容并将其转为BeanDefinition进行注册
+ *
  * Used by the {@link org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader} to
  * locate a {@link NamespaceHandler} implementation for a particular namespace URI.
  *

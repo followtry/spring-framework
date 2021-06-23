@@ -32,6 +32,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * bean标签的命名空间解析器
+ *
+ *
  * Simple {@code NamespaceHandler} implementation that maps custom
  * attributes directly through to bean properties. An important point to note is
  * that this {@code NamespaceHandler} does not have a corresponding schema

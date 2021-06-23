@@ -42,6 +42,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 指定依赖的描述类，包装了构造方法参数，方法参数或者属性。允许同意访问他们的元数据
+ *
  * Descriptor for a specific dependency that is about to be injected.
  * Wraps a constructor parameter, a method parameter or a field,
  * allowing unified access to their metadata.

@@ -30,6 +30,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;
 
 /**
+ *
+ * 字符串和路径的互转
+ *
  * Editor for {@code java.nio.file.Path}, to directly populate a Path
  * property instead of using a String property as bridge.
  *

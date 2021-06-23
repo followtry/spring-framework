@@ -28,6 +28,9 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * 字符串和URI的转换
+ *
  * Editor for {@code java.net.URI}, to directly populate a URI property
  * instead of using a String property as bridge.
  *
