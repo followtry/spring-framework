@@ -53,6 +53,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 工具类
+ *
  * Static convenience methods for JavaBeans: for instantiating beans,
  * checking bean property types, copying bean properties, etc.
  *
@@ -415,13 +417,16 @@ public abstract class BeanUtils {
 			return findMethodWithMinimalParameters(clazz, signature);
 		}
 		else {
+			//取出方法名
 			String methodName = signature.substring(0, startParen);
+			//取出参数类型名，逗号分隔
 			String[] parameterTypeNames =
 					StringUtils.commaDelimitedListToStringArray(signature.substring(startParen + 1, endParen));
 			Class<?>[] parameterTypes = new Class<?>[parameterTypeNames.length];
 			for (int i = 0; i < parameterTypeNames.length; i++) {
 				String parameterTypeName = parameterTypeNames[i].trim();
 				try {
+					//根据参数名获取到具体的参数类型
 					parameterTypes[i] = ClassUtils.forName(parameterTypeName, clazz.getClassLoader());
 				}
 				catch (Throwable ex) {
@@ -429,6 +434,7 @@ public abstract class BeanUtils {
 							parameterTypeName + "] for argument " + i + ". Root cause: " + ex);
 				}
 			}
+			//通过方法名和参数类型数组找到唯一的一个方法
 			return findMethod(clazz, methodName, parameterTypes);
 		}
 	}

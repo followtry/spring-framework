@@ -19,6 +19,8 @@ package org.springframework.beans;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * 将parent对象merge达到当前对象中
  * Interface representing an object whose value set can be merged with
  * that of a parent object.
  *

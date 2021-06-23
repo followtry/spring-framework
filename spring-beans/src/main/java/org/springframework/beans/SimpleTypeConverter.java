@@ -17,6 +17,8 @@
 package org.springframework.beans;
 
 /**
+ *
+ * 简单的类型转换器，注册了默认的类型转换
  * Simple implementation of the {@link TypeConverter} interface that does not operate on
  * a specific target object. This is an alternative to using a full-blown BeanWrapperImpl
  * instance for arbitrary type conversion needs, while using the very same conversion

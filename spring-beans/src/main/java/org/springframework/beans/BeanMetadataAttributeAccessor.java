@@ -20,7 +20,7 @@ import org.springframework.core.AttributeAccessorSupport;
 import org.springframework.lang.Nullable;
 
 /**
- * Bean元数据属性的访问器
+ * Bean元数据属性的访问器。key为属性名，value为BeanMetadataAttribute对象
  *
  * Extension of {@link org.springframework.core.AttributeAccessorSupport},
  * holding attributes as {@link BeanMetadataAttribute} objects in order

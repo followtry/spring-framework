@@ -25,6 +25,8 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 
 /**
+ * 具体实现
+ *
  * {@link BeanInfoFactory} implementation that evaluates whether bean classes have
  * "non-standard" JavaBeans setter methods and are thus candidates for introspection
  * by Spring's (package-visible) {@code ExtendedBeanInfo} implementation.

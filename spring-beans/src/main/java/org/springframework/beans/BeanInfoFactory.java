@@ -22,6 +22,8 @@ import java.beans.IntrospectionException;
 import org.springframework.lang.Nullable;
 
 /**
+ * 获取SpringBean的class的BeanInfo实例
+ *
  * Strategy interface for creating {@link BeanInfo} instances for Spring beans.
  * Can be used to plug in custom bean property resolution strategies (e.g. for other
  * languages on the JVM) or more efficient {@link BeanInfo} retrieval algorithms.
