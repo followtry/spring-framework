@@ -43,6 +43,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * ComponentScan注解的解析器。主要是将ComponentScan注解中设置的内容解析出来，设置给扫描器并扫描所有的包，将符合条件的Bean注册进容器中
+ *
  * Parser for the @{@link ComponentScan} annotation.
  *
  * @author Chris Beams
@@ -74,16 +76,19 @@ class ComponentScanAnnotationParser {
 
 
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
+		//生成新的组件扫描工具，并设置相应的工具配置
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
 
 		Class<? extends BeanNameGenerator> generatorClass = componentScan.getClass("nameGenerator");
 		boolean useInheritedGenerator = (BeanNameGenerator.class == generatorClass);
+		//设置扫描的Bean名称生成器
 		scanner.setBeanNameGenerator(useInheritedGenerator ? this.beanNameGenerator :
 				BeanUtils.instantiateClass(generatorClass));
 
 		ScopedProxyMode scopedProxyMode = componentScan.getEnum("scopedProxy");
 		if (scopedProxyMode != ScopedProxyMode.DEFAULT) {
+			//设置代理
 			scanner.setScopedProxyMode(scopedProxyMode);
 		}
 		else {
@@ -91,8 +96,10 @@ class ComponentScanAnnotationParser {
 			scanner.setScopeMetadataResolver(BeanUtils.instantiateClass(resolverClass));
 		}
 
+		//设置资源
 		scanner.setResourcePattern(componentScan.getString("resourcePattern"));
 
+		//注解的过滤器设置
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("includeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
 				scanner.addIncludeFilter(typeFilter);
@@ -104,11 +111,13 @@ class ComponentScanAnnotationParser {
 			}
 		}
 
+		//设置是否懒加载
 		boolean lazyInit = componentScan.getBoolean("lazyInit");
 		if (lazyInit) {
 			scanner.getBeanDefinitionDefaults().setLazyInit(true);
 		}
 
+		//解析包名和类所在包名，取并集
 		Set<String> basePackages = new LinkedHashSet<>();
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
 		for (String pkg : basePackagesArray) {
@@ -129,6 +138,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		//执行扫描，解析为BeanDefinition，注册进容器的功能
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

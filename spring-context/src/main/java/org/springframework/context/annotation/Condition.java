@@ -20,6 +20,8 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
+ * Condition条件的入口，所有的Conditional注解的处理器都需要继承该接口
+ *
  * A single {@code condition} that must be {@linkplain #matches matched} in order
  * for a component to be registered.
  *

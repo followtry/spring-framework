@@ -39,6 +39,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * Conditional注解上条件的判断器
  * Internal class used to evaluate {@link Conditional} annotations.
  *
  * @author Phillip Webb
@@ -47,6 +48,9 @@ import org.springframework.util.MultiValueMap;
  */
 class ConditionEvaluator {
 
+	/**
+	 * Condition条件的上下文，本着面向接口编程的原则，此处属性类型应该是ConditionContext才规范
+	 */
 	private final ConditionContextImpl context;
 
 
@@ -72,12 +76,15 @@ class ConditionEvaluator {
 	}
 
 	/**
+	 * 判断是否需要跳过
+	 *
 	 * Determine if an item should be skipped based on {@code @Conditional} annotations.
 	 * @param metadata the meta data
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 如果原数据为空或者原数据不是Conditional，则不跳过
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
@@ -91,8 +98,11 @@ class ConditionEvaluator {
 		}
 
 		List<Condition> conditions = new ArrayList<>();
+		//获取到条件上的Condition处理实例
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
+				//实例化Condition的处理类
+				//todo 此处可以做缓存，避免多次重复实例化，因为类名称都是一样的。
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());
 				conditions.add(condition);
 			}
@@ -105,6 +115,7 @@ class ConditionEvaluator {
 			if (condition instanceof ConfigurationCondition) {
 				requiredPhase = ((ConfigurationCondition) condition).getConfigurationPhase();
 			}
+			//条件未匹配上，则需要跳过
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
 				return true;
 			}
@@ -115,6 +126,7 @@ class ConditionEvaluator {
 
 	@SuppressWarnings("unchecked")
 	private List<String[]> getConditionClasses(AnnotatedTypeMetadata metadata) {
+		//可能一个类上会有多种Condition，每一种可能会有多个处理类
 		MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(Conditional.class.getName(), true);
 		Object values = (attributes != null ? attributes.get("value") : null);
 		return (List<String[]>) (values != null ? values : Collections.emptyList());
@@ -127,6 +139,8 @@ class ConditionEvaluator {
 
 
 	/**
+	 * ConditionContext的唯一实现
+	 *
 	 * Implementation of a {@link ConditionContext}.
 	 */
 	private static class ConditionContextImpl implements ConditionContext {

@@ -17,6 +17,8 @@
 package org.springframework.context.annotation;
 
 /**
+ *
+ * advice模式，jdk代理或者aspectj
  * Enumeration used to determine whether JDK proxy-based or
  * AspectJ weaving-based advice should be applied.
  *

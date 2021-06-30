@@ -87,6 +87,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 /**
+ * 解析Configuration注解的类定义。这个类有助于将解析Configuration类的结构与基于该模型的内容注册BeanDefinition对象分开
+ *
  * Parses a {@link Configuration} class definition, populating a collection of
  * {@link ConfigurationClass} objects (parsing a single Configuration class may result in
  * any number of ConfigurationClass objects because one Configuration class may import
@@ -167,6 +169,7 @@ class ConfigurationClassParser {
 	}
 
 
+	//调用是在ConfigurationClassPostProcessor.processConfigBeanDefinitions中。Configuration注解的类处理器
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
@@ -190,6 +193,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		//import注解上的selector的处理
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -222,6 +226,7 @@ class ConfigurationClassParser {
 	}
 
 
+	//实际处理Configuration类的地方
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) throws IOException {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
@@ -247,14 +252,23 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			//会处理Component，PropertySource，ComponentScans，ComponentScan，ImportResource等注解实现其内部的解析。ComponentScan注解解析的BeanDefinition已经被注册进容器了
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
-		}
+		}//递归处理超类
 		while (sourceClass != null);
 
 		this.configurationClasses.put(configClass, configClass);
 	}
 
 	/**
+	 * 解析Configuration注解标记的类的最终要的方法，会递归将所有的Configuration下处理的类都解析完。
+	 * 用的是前序遍历优先，即
+	 * 1. 解析Configuration注解的Class，
+	 * 2. 再解析该类的ComponentScan扫描的候选类中的Configuration类，然后继续递归执行当前方法。如果所有的Configuration类都已执行
+	 * 3. 从最深一层的Configuration类上的注解Import，ImportSource，Bean注解。依次向上递归执行该步骤，直到最上一层的Configuration类
+	 *
+	 * 完成如上的一整串的解析后，完成整个BeanDefinition的解析
+	 *
 	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
 	 * annotations, members and methods from the source class. This method can be called
 	 * multiple times as relevant sources are discovered.
@@ -301,6 +315,7 @@ class ConfigurationClassParser {
 						bdCand = holder.getBeanDefinition();
 					}
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
+						//此处的解析会将Configuration的类的Bean注解，Import注解，ImportResource注解等都解析到ConfigurationClass数据结构上。会递归解析
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
 				}
@@ -524,6 +539,8 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 递归手机所有的Import注解上的import注册器
+	 *
 	 * Recursively collect all declared {@code @Import} values. Unlike most
 	 * meta-annotations it is valid to have several {@code @Import}s declared with
 	 * different values; the usual process of returning values from the first
@@ -550,6 +567,7 @@ class ConfigurationClassParser {
 		}
 	}
 
+	//处理import注册器引入的候选组件
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, Predicate<String> exclusionFilter,
 			boolean checkForCircularImports) {
@@ -835,6 +853,7 @@ class ConfigurationClassParser {
 	}
 
 
+	//import选择器的持有器
 	private static class DeferredImportSelectorHolder {
 
 		private final ConfigurationClass configurationClass;

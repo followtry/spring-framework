@@ -26,6 +26,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * Cache的选择器
+ *
  * Selects which implementation of {@link AbstractCachingConfiguration} should
  * be used based on the value of {@link EnableCaching#mode} on the importing
  * {@code @Configuration} class.

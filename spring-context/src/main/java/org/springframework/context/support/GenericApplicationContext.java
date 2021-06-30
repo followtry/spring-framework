@@ -107,6 +107,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
+	 * 创建一个新的ApplicationContext，会默认实例化新的Spring核心容器DefaultListableBeanFactory
 	 * Create a new GenericApplicationContext.
 	 * @see #registerBeanDefinition
 	 * @see #refresh
@@ -269,6 +270,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 			throw new IllegalStateException(
 					"GenericApplicationContext does not support multiple refresh attempts: just call 'refresh' once");
 		}
+		//因为beanFactory在当前类实例化时已经实例化了，所以在当前只设置id即可，不需要实例化新的beanFactory了。
 		this.beanFactory.setSerializationId(getId());
 	}
 

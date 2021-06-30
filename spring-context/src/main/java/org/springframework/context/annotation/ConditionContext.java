@@ -23,6 +23,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.lang.Nullable;
 
 /**
+ * Condition接口使用的上下文结构
+ *
  * Context information for use by {@link Condition} implementations.
  *
  * @author Phillip Webb

@@ -23,6 +23,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Conditional注解可用于
+ * 1. 类型级别 有Component注解的类，包括Configuration注解类
+ * 2. 元注解级别，注解在自定义注解上，有利于自定义规则
+ * 3. 方法级别，任一有Bean注解的方法上
+ *
+ * 在Configuration注解类上标记Conditional注解，则该类注解了Bean的方法，Import注解和ComponentScan注解都会关联该Conditional注解
+ *
+ * 该注解不能被继承，所有超类和覆盖的方法上有给注解的都会被忽略。所有自定义注解，使用当前注解为元注解的都需要声明Inherited注解
+ */
+
+/**
  * Indicates that a component is only eligible for registration when all
  * {@linkplain #value specified conditions} match.
  *

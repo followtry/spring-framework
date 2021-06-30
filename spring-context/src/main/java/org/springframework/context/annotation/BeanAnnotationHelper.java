@@ -24,6 +24,9 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 /**
+ *
+ * 处理Bean注解的工具类
+ *
  * Utilities for processing {@link Bean}-annotated methods.
  *
  * @author Chris Beams
@@ -37,6 +40,7 @@ abstract class BeanAnnotationHelper {
 	private static final Map<Method, Boolean> scopedProxyCache = new ConcurrentReferenceHashMap<>();
 
 
+	//判断方法上是否有Bean注解
 	public static boolean isBeanAnnotated(Method method) {
 		return AnnotatedElementUtils.hasAnnotation(method, Bean.class);
 	}

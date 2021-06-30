@@ -57,6 +57,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * ConfigurationClass的Bean信息读取器
+ *
+ *
  * Reads a given fully-populated set of ConfigurationClass instances, registering bean
  * definitions with the given {@link BeanDefinitionRegistry} based on its contents.
  *
@@ -111,6 +114,8 @@ class ConfigurationClassBeanDefinitionReader {
 
 
 	/**
+	 * 加载所有的Configuration类内的BeanDefinition信息
+	 *
 	 * Read {@code configurationModel}, registering bean definitions
 	 * with the registry based on its contents.
 	 */
@@ -122,12 +127,14 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
+	 * 解析ConfigurationClass类，将其内的Bean，import，register等都解析为不同的BeanDefinition注册进容器中
 	 * Read a particular {@link ConfigurationClass}, registering bean definitions
 	 * for the class itself and all of its {@link Bean} methods.
 	 */
 	private void loadBeanDefinitionsForConfigurationClass(
 			ConfigurationClass configClass, TrackedConditionEvaluator trackedConditionEvaluator) {
 
+		//判断当前的ConfigurationClass是否需要跳过。如果需要跳过，则将其重BeanDefinition注册器中删除，并将Import注解也删除
 		if (trackedConditionEvaluator.shouldSkip(configClass)) {
 			String beanName = configClass.getBeanName();
 			if (StringUtils.hasLength(beanName) && this.registry.containsBeanDefinition(beanName)) {
@@ -138,17 +145,23 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		if (configClass.isImported()) {
+			//注册Configuration类自己
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
+			//注册Bean方法的BeanDefinition，其数据结构为ConfigurationClassBeanDefinition
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		//加载注册ImportResource注解引入的BeanDefinition
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		//注册Import注册器，可以有多个注册器
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
 	/**
+	 * 将Configuration注解的类作为BeanDefinition进行注册
+	 *
 	 * Register the {@link Configuration} class itself as a bean definition.
 	 */
 	private void registerBeanDefinitionForImportedConfigurationClass(ConfigurationClass configClass) {
@@ -171,6 +184,8 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
+	 * 注册Bean方法的BeanDefinition
+	 *
 	 * Read the given {@link BeanMethod}, registering bean definitions
 	 * with the BeanDefinitionRegistry based on its contents.
 	 */
@@ -211,6 +226,7 @@ class ConfigurationClassBeanDefinitionReader {
 			return;
 		}
 
+		//Bean方法的BeanDefinition为ConfigurationClassBeanDefinition
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
 
@@ -238,6 +254,7 @@ class ConfigurationClassBeanDefinitionReader {
 		beanDef.setAttribute(org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor.
 				SKIP_REQUIRED_CHECK_ATTRIBUTE, Boolean.TRUE);
 
+		//处理Bean方法的BeanDefinition
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDef, metadata);
 
 		Autowire autowire = bean.getEnum("autowire");
@@ -283,6 +300,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
+		//注册bean方法的BeanDefinition
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 
@@ -337,6 +355,7 @@ class ConfigurationClassBeanDefinitionReader {
 		return true;
 	}
 
+	//从Import的资源中加载BeanDefinition，以groovy或者xml的方式定义的bean配置
 	private void loadBeanDefinitionsFromImportedResources(
 			Map<String, Class<? extends BeanDefinitionReader>> importedResources) {
 
@@ -374,6 +393,7 @@ class ConfigurationClassBeanDefinitionReader {
 				}
 			}
 
+			//以xml的方式加载BeanDefinition信息
 			// TODO SPR-6310: qualify relative path locations as done in AbstractContextLoader.modifyLocations
 			reader.loadBeanDefinitions(resource);
 		});
@@ -386,7 +406,7 @@ class ConfigurationClassBeanDefinitionReader {
 
 
 	/**
-	 * RootBeanDefinition标记子类，用于表示bean定义*是从配置类创建的，而不是从任何其他配置源创建的。在需要确定bean定义是否在外部创建的bean重写情况下使用。
+	 * RootBeanDefinition标记子类，用于表示bean定义是从配置类创建的，而不是从任何其他配置源创建的。在需要确定bean定义是否在外部创建的bean重写情况下使用。
 	 * 主要的功能实现还是在AbstractBeanDefinition中
 	 *
 	 * {@link RootBeanDefinition} marker subclass used to signify that a bean definition

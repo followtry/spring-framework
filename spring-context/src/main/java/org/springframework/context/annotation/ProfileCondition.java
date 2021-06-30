@@ -21,6 +21,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * 通过profile注解内指定的环境名称和应用启动时环境里的名称比较，有一个完全匹配上则认为环境相符合
  * {@link Condition} that matches based on the value of a {@link Profile @Profile}
  * annotation.
  *

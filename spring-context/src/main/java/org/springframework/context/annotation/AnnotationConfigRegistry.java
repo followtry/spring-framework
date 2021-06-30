@@ -17,6 +17,8 @@
 package org.springframework.context.annotation;
 
 /**
+ * 注解配置注册器接口。可以注册组件类和指定扫描的基础包名
+ *
  * Common interface for annotation config application contexts,
  * defining {@link #register} and {@link #scan} methods.
  *

@@ -21,6 +21,9 @@ import org.springframework.beans.factory.parsing.ProblemReporter;
 import org.springframework.core.type.MethodMetadata;
 
 /**
+ *
+ * 被Configuration注解标记的类的方法
+ *
  * Base class for a {@link Configuration @Configuration} class method.
  *
  * @author Chris Beams

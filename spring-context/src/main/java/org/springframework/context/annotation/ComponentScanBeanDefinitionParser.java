@@ -45,6 +45,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 解析xml格式的组件扫描，与ComponentScan注解的功能相同
+ *
  * Parser for the {@code <context:component-scan/>} element.
  *
  * @author Mark Fisher
@@ -85,6 +87,7 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		String[] basePackages = StringUtils.tokenizeToStringArray(basePackage,
 				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
 
+		//因为每个ComponentScan的配置都不一样，所有每次的扫描器都是新生成的
 		// Actually scan for bean definitions and register them.
 		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element);
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
