@@ -520,7 +520,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			//对于SpringBoot中的AnnotationConfigApplicationContext来说，当前步骤没有做核心工作
+			/**
+			 *  SpringBoot:
+			 *   对于SpringBoot中的AnnotationConfigApplicationContext来说，当前步骤没有做核心工作。SpringBoot在调用refresh()方法前，就已经通过ClassPathBeanDefinitionScanner将绝大部分的候选类都已经解析为BeanDefinition注册进容器了。
+			 *
+			 * springmvc:
+			 *  对于通过web.xml启动的Springmvc来说，WebApplicationContext在实例化时没有加载BeanFactory，因此此处会真实的实例化BeanFactory的默认实现DefaultListableBeanFactory。
+			 *  实例化完后，会调用loadBeanDefinitions方法让BeanFactory容器实例加载在web.xml中配置的配置文件路径configLocations。
+			 *  通过XmlBeanDefinitionReader将xml配置文件内容先解析为document，然后将document按照Spring定义的规则解析为BeanDefinition，将所有的BeanDefinition注册进BeanFactory的容器中。
+			 *  你以为只有xml配置文件内的内容才会被解析为bean吗，不止的，比如xml中的<context:component-scan/>注解就会在被解析后按照既定规则扫描指定目录下的所有符合条件的class，并将其解析为BeanDefinition进行注册。
+			 *  因为是以xml配置为主，此处就通过xml将几乎所有的符合条件的class都已经注册进了BeanDefinition容器中。
+			 *
+			 * Spring：
+			 * 不管是ClassPathXmlApplicationContext还是FileSystemXmlApplicationContext，都是通过传入的配置文件的路径，首先通过解析xml来一步步实现候选类的选择和BeanDefinition的注册。
+			 * 后续步骤基本和Springmvc通过web.xml解析配置为BeanDefinition并注册进容器差不多
+			 */
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -533,13 +547,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				/**
+				 * springBoot:
+				 *
 				 * 此处会调用各个处理器的BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry方法 ，对于SpringBoot中比较重要的Configuration注解的类的解析和扫描就在此步骤
-				 * 此处会通过Configuration注解标记类及其上的ComponentScan注解协同一起完成所有的BeanDefinition的解析和注册工作
+				 * 此处会通过Configuration注解标记类及其上的ComponentScan注解协同一起完成所有的BeanDefinition的解析和注册工作。
+				 *
+				 * springmvc：
+				 * 配置方式的springmvc在obtainFreshBeanFactory步骤已经完成了候选类的注册，
+				 * 在此步骤中会通过ConfigurationClassPostProcessor来实现Configuration注解标记的BeanDefinition的内容的解析（Bean，Import，ImportResource注解等）。
+				 * 此处主要是对BeanDefinition进行定制化操作，比如Configuration注解标记的类上的操作
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
-				//实例化并注册所有的BeanPostProcessor
+				/**
+				 * 实例化并注册所有的BeanPostProcessor，以供后续拦截Bean的创建时有现成的实例可用
+				 */
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
@@ -551,12 +574,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				/**
+				 * 此步骤对于web.xml方式配置的Spring应用来说基本上用户不大，但是对于SpringBoot启动的应用来说用处就很大了。Springboot在此处实现了内嵌的WebServer的创建和启动，将Servlet容器和Spring容器结合在了一起
+				 */
 				onRefresh();
 
 				// Check for listener beans and register them.
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				/**
+				 * 对于非懒加载的BeanDefinition进行实例化操作，通过BeanFactory的getBean方法实现非懒加载的BeanDefinition的对象实例化，自动装配和初始化工作。
+				 */
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
