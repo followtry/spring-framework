@@ -24,6 +24,8 @@ import reactor.core.publisher.Mono;
 import org.springframework.http.HttpMethod;
 
 /**
+ * Http连接器，用来发送请求和接收响应结果
+ *
  * Abstraction over HTTP clients driving the underlying HTTP client to connect
  * to the origin server and provide all necessary infrastructure to send a
  * {@link ClientHttpRequest} and receive a {@link ClientHttpResponse}.

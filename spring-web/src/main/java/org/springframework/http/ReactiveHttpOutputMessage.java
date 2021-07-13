@@ -25,6 +25,8 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 
 /**
+ * 作为{@link Publisher}接受输出的“被动”HTTP输出消息。**<p> 通常由客户端的HTTP请求或服务器端的*HTTP响应实现。
+ *
  * A "reactive" HTTP output message that accepts output as a {@link Publisher}.
  *
  * <p>Typically implemented by an HTTP request on the client-side or an

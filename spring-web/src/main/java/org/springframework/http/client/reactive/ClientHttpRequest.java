@@ -24,6 +24,8 @@ import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * 客户端侧的reactive客户端
+ *
  * Represents a client-side reactive HTTP request.
  *
  * @author Arjen Poutsma

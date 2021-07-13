@@ -35,6 +35,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * 客户端Http请求的基类
  * Base class for {@link ClientHttpRequest} implementations.
  *
  * @author Rossen Stoyanchev

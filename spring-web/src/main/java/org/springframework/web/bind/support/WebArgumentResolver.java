@@ -21,6 +21,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
+ * 参数解析器
+ *
  * SPI for resolving custom arguments for a specific handler method parameter.
  * Typically implemented to detect special parameter types, resolving
  * well-known argument values for them.

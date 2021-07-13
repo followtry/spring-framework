@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 代理了java的proxy的FactoryBean，代理的是socket地址
  * {@link FactoryBean} that creates a {@link Proxy java.net.Proxy}.
  *
  * @author Arjen Poutsma

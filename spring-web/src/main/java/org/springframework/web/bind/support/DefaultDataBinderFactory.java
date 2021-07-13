@@ -21,6 +21,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
+ * 默认的数据绑定器的工厂
+ *
  * Create a {@link WebRequestDataBinder} instance and initialize it with a
  * {@link WebBindingInitializer}.
  *

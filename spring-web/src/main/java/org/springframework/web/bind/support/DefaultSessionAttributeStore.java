@@ -21,6 +21,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.request.WebRequest;
 
 /**
+ * session属性的存户
+ *
  * Default implementation of the {@link SessionAttributeStore} interface,
  * storing the attributes in the WebRequest session (i.e. HttpSession).
  *

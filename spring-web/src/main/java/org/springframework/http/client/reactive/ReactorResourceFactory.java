@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 管理reactor的netty资源
  * Factory to manage Reactor Netty resources, i.e. {@link LoopResources} for
  * event loop threads, and {@link ConnectionProvider} for the connection pool,
  * within the lifecycle of a Spring {@code ApplicationContext}.

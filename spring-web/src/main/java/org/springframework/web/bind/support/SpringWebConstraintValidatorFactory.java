@@ -23,6 +23,8 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
+ * SpringWeb约束验证程序工厂
+ *
  * JSR-303 {@link ConstraintValidatorFactory} implementation that delegates to
  * the current Spring {@link WebApplicationContext} for creating autowired
  * {@link ConstraintValidator} instances.

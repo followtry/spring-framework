@@ -32,6 +32,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * 为jetty的reactive流而实现的http客户端
+ *
  * {@link ClientHttpResponse} implementation for the Jetty ReactiveStreams HTTP client.
  *
  * @author Sebastien Deleuze

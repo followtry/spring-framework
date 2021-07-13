@@ -366,6 +366,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see #DispatcherServlet(WebApplicationContext)
 	 */
 	public DispatcherServlet() {
+		//实例化并将该Servlet加载到Tomcat等Servlet容器中
 		super();
 		setDispatchOptionsRequest(true);
 	}
@@ -492,6 +493,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Override
 	protected void onRefresh(ApplicationContext context) {
+		//调用Servlet的初始化流程，实现web的相关功能
 		initStrategies(context);
 	}
 
@@ -503,6 +505,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		initMultipartResolver(context);
 		initLocaleResolver(context);
 		initThemeResolver(context);
+		//初始化HandlerMapping
 		initHandlerMappings(context);
 		initHandlerAdapters(context);
 		initHandlerExceptionResolvers(context);

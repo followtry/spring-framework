@@ -26,6 +26,8 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Controller;
 
 /**
+ * 一种比较方便的注解，被Controller和ResponseBody注解作为元注解
+ *
  * A convenience annotation that is itself annotated with
  * {@link Controller @Controller} and {@link ResponseBody @ResponseBody}.
  * <p>

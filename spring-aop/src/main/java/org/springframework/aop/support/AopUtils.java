@@ -132,6 +132,7 @@ public abstract class AopUtils {
 		if (targetType == null) {
 			return method;
 		}
+		//过滤掉不能为执行的方法
 		Method methodToUse = MethodIntrospector.selectInvocableMethod(method, targetType);
 		if (Modifier.isPrivate(methodToUse.getModifiers()) && !Modifier.isStatic(methodToUse.getModifiers()) &&
 				SpringProxy.class.isAssignableFrom(targetType)) {

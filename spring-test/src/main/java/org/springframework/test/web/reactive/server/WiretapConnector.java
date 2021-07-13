@@ -222,6 +222,9 @@ class WiretapConnector implements ClientHttpConnector {
 	 */
 	private static class WiretapClientHttpRequest extends ClientHttpRequestDecorator {
 
+		/**
+		 * 窃听记录器
+		 */
 		@Nullable
 		private WiretapRecorder recorder;
 

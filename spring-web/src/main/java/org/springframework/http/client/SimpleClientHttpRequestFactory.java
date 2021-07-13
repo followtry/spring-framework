@@ -48,6 +48,7 @@ public class SimpleClientHttpRequestFactory implements ClientHttpRequestFactory,
 
 	private boolean bufferRequestBody = true;
 
+	//默认的块大小为4096
 	private int chunkSize = DEFAULT_CHUNK_SIZE;
 
 	private int connectTimeout = -1;

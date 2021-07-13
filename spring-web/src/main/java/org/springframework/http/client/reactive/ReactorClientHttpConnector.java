@@ -31,6 +31,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.util.Assert;
 
 /**
+ * Reactor连接器的netty实现
+ *
  * Reactor-Netty implementation of {@link ClientHttpConnector}.
  *
  * @author Brian Clozel

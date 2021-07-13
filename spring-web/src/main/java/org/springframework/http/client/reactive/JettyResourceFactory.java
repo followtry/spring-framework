@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 管理jetty资源的工厂
  * Factory to manage Jetty resources, i.e. {@link Executor}, {@link ByteBufferPool} and
  * {@link Scheduler}, within the lifecycle of a Spring {@code ApplicationContext}.
  *
@@ -46,9 +47,13 @@ import org.springframework.util.Assert;
  */
 public class JettyResourceFactory implements InitializingBean, DisposableBean {
 
+	/**
+	 * 指定的线程池
+	 */
 	@Nullable
 	private Executor executor;
 
+	//字节缓存池
 	@Nullable
 	private ByteBufferPool byteBufferPool;
 
@@ -125,6 +130,7 @@ public class JettyResourceFactory implements InitializingBean, DisposableBean {
 	public void afterPropertiesSet() throws Exception {
 		String name = this.threadPrefix + "@" + Integer.toHexString(hashCode());
 		if (this.executor == null) {
+			//如果没有指定线程池，则使用jetty的线程池
 			QueuedThreadPool threadPool = new QueuedThreadPool();
 			threadPool.setName(name);
 			this.executor = threadPool;

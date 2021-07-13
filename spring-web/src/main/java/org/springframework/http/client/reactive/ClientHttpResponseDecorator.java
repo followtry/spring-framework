@@ -26,6 +26,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * 另一个ClientHttpResponse实例的代理，所有接口方法都代理了
+ *
  * Wraps another {@link ClientHttpResponse} and delegates all methods to it.
  * Sub-classes can override specific methods selectively.
  *

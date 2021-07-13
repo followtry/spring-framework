@@ -31,6 +31,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * ClientHttpRequest的包装类，代理了另一个ClientHttpRequest实例的所有接口
+ *
  * Wraps another {@link ClientHttpRequest} and delegates all methods to it.
  * Sub-classes can override specific methods selectively.
  *

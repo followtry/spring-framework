@@ -22,6 +22,9 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.util.MultiValueMap;
 
 /**
+ *
+ * 客户端侧的响应接口
+ *
  * Represents a client-side reactive HTTP response.
  *
  * @author Arjen Poutsma

@@ -53,6 +53,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * http请求的header的数据结构，key为String，value为String数组
  * A data structure representing HTTP request or response headers, mapping String header names
  * to a list of String values, also offering accessors for common application-level data types.
  *
@@ -1849,6 +1851,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 		return new String(encodedBytes, charset);
 	}
 
+	//默认将时间戳数据转为"EEE, dd MMM yyyy HH:mm:ss zzz"格式
 	// Package-private: used in ResponseCookie
 	static String formatDate(long date) {
 		Instant instant = Instant.ofEpochMilli(date);

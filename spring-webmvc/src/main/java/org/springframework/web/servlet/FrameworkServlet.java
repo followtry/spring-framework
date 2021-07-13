@@ -515,6 +515,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 
 	/**
+	 * 该方法是在父类的init方法中调用的，而init方法是Servlet生命周期的初始化方法，只在第一次访问到该Servlet时才会被调用，以便完成当前Servlet的初始化
+	 *
 	 * Overridden method of {@link HttpServletBean}, invoked after any bean properties
 	 * have been set. Creates this servlet's WebApplicationContext.
 	 */
@@ -558,6 +560,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #setContextConfigLocation
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
+		/**
+		 * 先从Tomcat等容器中获取ServletContext，获取其中设置为root的WebApplicationContext。
+		 * 该root的WebApplicationContext是Tomcat等容器启动事件触发的ContextLoaderListener来完成初始化的
+		 *
+		 */
 		WebApplicationContext rootContext =
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
@@ -588,6 +595,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
+			//会通过该方法创建一个新的WebApplicationContext，并将ContextLoaderListener初始化的Context作为parent。
 			wac = createWebApplicationContext(rootContext);
 		}
 

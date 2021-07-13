@@ -271,6 +271,10 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 
 
 	/**
+	 * 通过bean注解将RequestMappingHandlerMapping加载进Spring容器中，而RequestMappingHandlerMapping实现了接口ApplicationContextAware。
+	 * 因此在ApplicationContextAware接口回调中会检查所有的Url的处理器以便实现初始化
+	 *
+	 *
 	 * Return a {@link RequestMappingHandlerMapping} ordered at 0 for mapping
 	 * requests to annotated controllers.
 	 */

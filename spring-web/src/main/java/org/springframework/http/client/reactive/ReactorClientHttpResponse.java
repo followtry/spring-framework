@@ -39,6 +39,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * Reactor-netty的http客户端
+ *
  * {@link ClientHttpResponse} implementation for the Reactor-Netty HTTP client.
  *
  * @author Brian Clozel

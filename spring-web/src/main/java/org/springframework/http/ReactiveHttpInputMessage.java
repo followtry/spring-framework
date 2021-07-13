@@ -22,6 +22,8 @@ import reactor.core.publisher.Flux;
 import org.springframework.core.io.buffer.DataBuffer;
 
 /**
+ *
+ * reactive的输入数据，典型实现为服务端的http请求和客户端发出的响应
  * An "reactive" HTTP input message that exposes the input as {@link Publisher}.
  *
  * <p>Typically implemented by an HTTP request on the server-side or a response

@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * jetty的reactive流的http客户端包装器
  * {@link ClientHttpConnector} for the Jetty Reactive Streams HttpClient.
  *
  * @author Sebastien Deleuze

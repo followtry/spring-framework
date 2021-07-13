@@ -37,6 +37,15 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
 
 /**
+ * 基于Servlet3.0的新特性实现DispatcherServlet的加载。
+ *
+ * ServletRegistration.Dynamic addServlet(String servletName,Class<? extends Servlet> servletClass)
+ * ServletRegistration.Dynamic addServlet(String servletName, Servlet servlet)
+ * ServletRegistration.Dynamic addServlet(String servletName, String className)
+ * T createServlet(Class clazz)
+ * ServletRegistration getServletRegistration(String servletName)
+ * Map<String,? extends ServletRegistration> getServletRegistrations()
+ *
  * Base class for {@link org.springframework.web.WebApplicationInitializer}
  * implementations that register a {@link DispatcherServlet} in the servlet context.
  *
@@ -61,6 +70,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
+		//动态加载DispatcherServlet
 		registerDispatcherServlet(servletContext);
 	}
 
@@ -79,6 +89,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 		String servletName = getServletName();
 		Assert.hasLength(servletName, "getServletName() must not return null or empty");
 
+		//创建注解方式的ApplicationContext。AnnotationConfigWebApplicationContext
 		WebApplicationContext servletAppContext = createServletApplicationContext();
 		Assert.notNull(servletAppContext, "createServletApplicationContext() must not return null");
 
@@ -86,6 +97,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 		Assert.notNull(dispatcherServlet, "createDispatcherServlet(WebApplicationContext) must not return null");
 		dispatcherServlet.setContextInitializers(getServletApplicationContextInitializers());
 
+		//动态加载Servlet
 		ServletRegistration.Dynamic registration = servletContext.addServlet(servletName, dispatcherServlet);
 		if (registration == null) {
 			throw new IllegalStateException("Failed to register servlet with name '" + servletName + "'. " +
@@ -94,8 +106,10 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 
 		registration.setLoadOnStartup(1);
 		registration.addMapping(getServletMappings());
+		//设置支持异步
 		registration.setAsyncSupported(isAsyncSupported());
 
+		//获取并加载Filter
 		Filter[] filters = getServletFilters();
 		if (!ObjectUtils.isEmpty(filters)) {
 			for (Filter filter : filters) {

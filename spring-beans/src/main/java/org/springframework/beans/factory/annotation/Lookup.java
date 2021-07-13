@@ -23,6 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 用来替代Spring容器的BeanFactory.getBean的调用
+ *
  * An annotation that indicates 'lookup' methods, to be overridden by the container
  * to redirect them back to the {@link org.springframework.beans.factory.BeanFactory}
  * for a {@code getBean} call. This is essentially an annotation-based version of the

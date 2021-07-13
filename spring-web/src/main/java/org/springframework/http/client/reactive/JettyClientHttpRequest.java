@@ -40,6 +40,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 /**
+ * 为jetty的reactive流而实现的http客户端
  * {@link ClientHttpRequest} implementation for the Jetty ReactiveStreams HTTP client.
  *
  * @author Sebastien Deleuze
