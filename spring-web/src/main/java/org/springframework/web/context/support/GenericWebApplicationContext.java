@@ -143,6 +143,9 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	}
 
 	/**
+	 *
+	 * web应用，增加ServletContextAwareProcessor处理器
+	 * 设置了ServletContext和ServletConfig
 	 * Register ServletContextAwareProcessor.
 	 * @see ServletContextAwareProcessor
 	 */

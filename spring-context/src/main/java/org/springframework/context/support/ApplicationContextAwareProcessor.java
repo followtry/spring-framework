@@ -77,6 +77,14 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	}
 
 
+	/**
+	 * 在Bean实例化后，自动装配的依赖bean后，调用初始化方法之前，会通过判断aware来将实现的所有aware接口进行回调。
+	 * 因此对ApplicationContext，BeanFactory，Environment等的引用，需要在初始化方法内进行，否则会调用不到出现NPE异常
+	 * @param bean the new bean instance
+	 * @param beanName the name of the bean
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	@Nullable
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {

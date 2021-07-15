@@ -57,6 +57,8 @@ final class PostProcessorRegistrationDelegate {
 	 * 调用BeanFactoryPostProcessors执行其postProcessBeanDefinitionRegistry方法
 	 * 此处Spring自带的最重要的只有ConfigurationClassPostProcessor
 	 *
+	 * 调用BeanFactoryPostProcessor执行postProcessBeanfactory
+	 *
 	 *
 	 * @param beanFactory
 	 * @param beanFactoryPostProcessors

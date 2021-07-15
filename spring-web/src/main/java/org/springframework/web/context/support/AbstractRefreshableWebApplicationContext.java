@@ -162,6 +162,9 @@ public abstract class AbstractRefreshableWebApplicationContext extends AbstractR
 	}
 
 	/**
+	 * web应用，增加ServletContextAwareProcessor处理器
+	 * 设置了ServletContext和ServletConfig
+	 *
 	 * Register request/session scopes, a {@link ServletContextAwareProcessor}, etc.
 	 */
 	@Override

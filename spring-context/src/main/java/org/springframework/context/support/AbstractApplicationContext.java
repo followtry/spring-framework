@@ -537,6 +537,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 */
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+			/**
+			 * 在此步骤之前，不管是SpringBoot应用还是xml风格的应用，都已经完成了BeanDefinition的加载。
+			 * 此时是在做BeanDefinition实例化前的修改和准备工作，准备BeanPostProcessor，准备解析器，属性编辑器等。
+			 */
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -547,10 +551,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				/**
+				 * 主要对于Configuration注解标记类内容的解析和BeanDefinition信息的定制。
+				 *
 				 * springBoot:
 				 *
 				 * 此处会调用各个处理器的BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry方法 ，对于SpringBoot中比较重要的Configuration注解的类的解析和扫描就在此步骤
 				 * 此处会通过Configuration注解标记类及其上的ComponentScan注解协同一起完成所有的BeanDefinition的解析和注册工作。
+				 * 在BeanDefinitionLoader实例化时已经将Configuration解析类加载了
+				 *
 				 *
 				 * springmvc：
 				 * 配置方式的springmvc在obtainFreshBeanFactory步骤已经完成了候选类的注册，
@@ -575,11 +583,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Initialize other special beans in specific context subclasses.
 				/**
-				 * 此步骤对于web.xml方式配置的Spring应用来说基本上用户不大，但是对于SpringBoot启动的应用来说用处就很大了。Springboot在此处实现了内嵌的WebServer的创建和启动，将Servlet容器和Spring容器结合在了一起
+				 * 此步骤对于web.xml方式配置的Spring应用来说基本上用户不大，
+				 * 但是对于SpringBoot启动的应用来说用处就很大了。
+				 * Springboot在此处实现了内嵌的WebServer的创建和启动，将Servlet容器和Spring容器结合在了一起。
+				 *
+				 * SpringBoot的改变在于：
+				 * 原来Spring应用是Tomcat等web容器的组件，现在是Tomcat等容器是SpringBoot应用的组件
 				 */
 				onRefresh();
 
 				// Check for listener beans and register them.
+				//获取到所有的ApplicationListener，并注册进事件广播器中
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
@@ -589,6 +603,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				//发送事件
 				finishRefresh();
 			}
 
@@ -635,6 +650,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
+		//初始化占位符属性源
 		// Initialize any placeholder property sources in the context environment.
 		initPropertySources();
 
@@ -673,7 +689,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//对于SpringBoot来说是调用的GenericApplicationContext.refreshBeanFactory方法，而该方法在此处其实基本上算什么都没做
+		//而对于xml格式的web应用都会调用AbstractRefreshableWebApplicationContext的refreshBeanFactory方法来创建默认的BeanFactory并实现BeanDefinition的加载解析和注册
 		refreshBeanFactory();
+		//在此处都只是获取BeanFactory容器，对于xml，在refreshBeanFactory是设置默认的BeanFactory，所有在此处会判断BeanFactory是否已存在
+		//对于SpringBoot，因为BeanFactory在更早处生成，refreshBeanFactory没做什么操作，因此直接返回BeanFactory容器
 		return getBeanFactory();
 	}
 
@@ -746,6 +766,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		//主要调用ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry实现对Configuration注解类的
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
@@ -768,6 +789,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 初始化消息源
 	 * Initialize the MessageSource.
 	 * Use parent's if none defined in this context.
 	 */
@@ -917,9 +939,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.setTempClassLoader(null);
 
 		// Allow for caching all bean definition metadata, not expecting further changes.
+		//冻结配置，不允许配置再改变
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
+		//执行所有非懒加载的单例Bean的实例化和初始化
 		beanFactory.preInstantiateSingletons();
 	}
 

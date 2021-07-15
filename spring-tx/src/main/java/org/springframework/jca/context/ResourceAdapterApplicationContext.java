@@ -52,6 +52,11 @@ public class ResourceAdapterApplicationContext extends GenericApplicationContext
 	}
 
 
+	/**
+	 * 对于tx事务，设置了BootstrapContextAwareProcessor处理器
+	 * @param beanFactory the bean factory used by the application context
+	 * @throws BeansException
+	 */
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		beanFactory.addBeanPostProcessor(new BootstrapContextAwareProcessor(this.bootstrapContext));
