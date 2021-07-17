@@ -138,6 +138,8 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	/**
+	 * 将所有注解相关的post processor 注册进注册器中。
+	 *
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 * @param source the configuration source element (already extracted)

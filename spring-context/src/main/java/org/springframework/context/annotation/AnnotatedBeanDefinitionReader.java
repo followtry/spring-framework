@@ -34,6 +34,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 方便的适配器，用于bean类的编程注册。
+ *
  * Convenient adapter for programmatic registration of bean classes.
  *
  * <p>This is an alternative to {@link ClassPathBeanDefinitionScanner}, applying
@@ -48,12 +50,15 @@ import org.springframework.util.Assert;
  */
 public class AnnotatedBeanDefinitionReader {
 
+	//注册器
 	private final BeanDefinitionRegistry registry;
 
+	/** 设置默认的bean名称生成器 */
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
 	private ScopeMetadataResolver scopeMetadataResolver = new AnnotationScopeMetadataResolver();
 
+	/**条件判断器*/
 	private ConditionEvaluator conditionEvaluator;
 
 
@@ -84,7 +89,9 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
+		//实例化条件判断器
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+		//注解方式的处理器注册为BeanDefinition
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 
@@ -120,6 +127,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * <p>The default is an {@link AnnotationScopeMetadataResolver}.
 	 */
 	public void setScopeMetadataResolver(@Nullable ScopeMetadataResolver scopeMetadataResolver) {
+		//注解scope元数据解析器
 		this.scopeMetadataResolver =
 				(scopeMetadataResolver != null ? scopeMetadataResolver : new AnnotationScopeMetadataResolver());
 	}
@@ -144,6 +152,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param beanClass the class of the bean
 	 */
 	public void registerBean(Class<?> beanClass) {
+		//注册BeanDefinition
 		doRegisterBean(beanClass, null, null, null, null);
 	}
 
@@ -156,6 +165,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * @since 5.2
 	 */
 	public void registerBean(Class<?> beanClass, @Nullable String name) {
+		//注册BeanDefinition
 		doRegisterBean(beanClass, name, null, null, null);
 	}
 
@@ -252,6 +262,7 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
+		//构造注解类型的BeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
@@ -260,8 +271,10 @@ public class AnnotatedBeanDefinitionReader {
 		abd.setInstanceSupplier(supplier);
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
+		//生成bean的名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
+		//处理通用的注解 Lazy，Primary，DependsOn，Role
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
@@ -277,6 +290,7 @@ public class AnnotatedBeanDefinitionReader {
 			}
 		}
 		if (customizers != null) {
+			//处理自定义的BeanDefinition
 			for (BeanDefinitionCustomizer customizer : customizers) {
 				customizer.customize(abd);
 			}
@@ -284,6 +298,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		//注册BeanDefinition
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 
