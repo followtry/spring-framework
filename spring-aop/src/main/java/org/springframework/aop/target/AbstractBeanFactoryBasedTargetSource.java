@@ -27,6 +27,8 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 目标源的实现基类。定义了主要的数据结构
+ *
  * Base class for {@link org.springframework.aop.TargetSource} implementations
  * that are based on a Spring {@link org.springframework.beans.factory.BeanFactory},
  * delegating to Spring-managed bean instances.

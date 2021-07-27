@@ -23,6 +23,7 @@ import org.springframework.aop.TargetSource;
 import org.springframework.lang.Nullable;
 
 /**
+ * 允许懒创建 用户管理的对象的实现
  * {@link org.springframework.aop.TargetSource} implementation that will
  * lazily create a user-managed object.
  *

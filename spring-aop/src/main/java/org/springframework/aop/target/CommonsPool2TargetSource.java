@@ -27,6 +27,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 对象池
+ *
  * {@link org.springframework.aop.TargetSource} implementation that holds
  * objects in a configurable Apache Commons2 Pool.
  *
@@ -79,6 +81,8 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource implem
 	private boolean blockWhenExhausted = GenericObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED;
 
 	/**
+	 * 使用的是apache的对象池来池化目标对象
+	 *
 	 * The Apache Commons {@code ObjectPool} used to pool target objects.
 	 */
 	@Nullable
@@ -232,6 +236,7 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource implem
 	@Override
 	public Object getTarget() throws Exception {
 		Assert.state(this.pool != null, "No Commons ObjectPool available");
+		//获取目标，就是在目标池里借出对象
 		return this.pool.borrowObject();
 	}
 
@@ -241,6 +246,7 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource implem
 	@Override
 	public void releaseTarget(Object target) throws Exception {
 		if (this.pool != null) {
+			//将对象还给目标池
 			this.pool.returnObject(target);
 		}
 	}

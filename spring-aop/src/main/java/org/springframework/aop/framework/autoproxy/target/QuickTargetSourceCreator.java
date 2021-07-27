@@ -23,6 +23,12 @@ import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * 方便的 TargetSourceCreator 使用 bean 名称前缀创建三种众所周知的 TargetSource 类型之一：
+ * <li>: CommonsPool2TargetSource
+ * <li>% ThreadLocalTargetSource
+ * <li>! 原型目标源
+ *
  * Convenient TargetSourceCreator using bean name prefixes to create one of three
  * well-known TargetSource types:
  * <li>: CommonsPool2TargetSource

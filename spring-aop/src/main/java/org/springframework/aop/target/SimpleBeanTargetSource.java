@@ -17,6 +17,7 @@
 package org.springframework.aop.target;
 
 /**
+ * 简单的bean对象
  * Simple {@link org.springframework.aop.TargetSource} implementation,
  * freshly obtaining the specified target bean from its containing
  * Spring {@link org.springframework.beans.factory.BeanFactory}.

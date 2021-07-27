@@ -28,6 +28,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 /**
+ * 原型类型的目标源的抽象实现
+ *
  * Base class for dynamic {@link org.springframework.aop.TargetSource} implementations
  * that create new prototype bean instances to support a pooling or
  * new-instance-per-invocation strategy.
@@ -50,6 +52,7 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		super.setBeanFactory(beanFactory);
 
+		//在设置BeanFactory时会判断targetBeanName，只有targetBeann为原型类型才行，否则会报错
 		// Check whether the target bean is defined as prototype.
 		if (!beanFactory.isPrototype(getTargetBeanName())) {
 			throw new BeanDefinitionStoreException(
@@ -66,6 +69,7 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating new instance of bean '" + getTargetBeanName() + "'");
 		}
+		//通过getBean获取对象实例，在getBean内部实现对原型的判断和实例生成
 		return getBeanFactory().getBean(getTargetBeanName());
 	}
 

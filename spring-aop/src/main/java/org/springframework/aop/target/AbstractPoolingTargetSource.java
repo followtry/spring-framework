@@ -25,6 +25,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.Nullable;
 
 /**
+ * 池化的目标源的抽象类，实现通用功能
+ *
  * Abstract base class for pooling {@link org.springframework.aop.TargetSource}
  * implementations which maintain a pool of target instances, acquiring and
  * releasing a target object from the pool for each method invocation.

@@ -27,6 +27,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.NamedThreadLocal;
 
 /**
+ * 对象池。每个线程都有该对象的copy
+ *
  * Alternative to an object pool. This {@link org.springframework.aop.TargetSource}
  * uses a threading model in which every thread has its own copy of the target.
  * There's no contention for targets. Target object creation is kept to a minimum

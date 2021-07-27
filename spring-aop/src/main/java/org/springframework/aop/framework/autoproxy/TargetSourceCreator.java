@@ -20,6 +20,7 @@ import org.springframework.aop.TargetSource;
 import org.springframework.lang.Nullable;
 
 /**
+ * 如同一个目标源的池，是创建指定的目标源的实现
  * Implementations can create special target sources, such as pooling target
  * sources, for particular beans. For example, they may base their choice
  * on attributes, such as a pooling attribute, on the target class.

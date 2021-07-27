@@ -17,6 +17,8 @@
 package org.springframework.aop.target;
 
 /**
+ * 池化的配置
+ *
  * Config interface for a pooling target source.
  *
  * @author Rod Johnson

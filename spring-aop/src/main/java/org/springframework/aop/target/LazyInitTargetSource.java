@@ -67,6 +67,7 @@ public class LazyInitTargetSource extends AbstractBeanFactoryBasedTargetSource {
 	@Override
 	@Nullable
 	public synchronized Object getTarget() throws BeansException {
+		//懒加载的目标源对象，通过getBean里的机制来保证一致
 		if (this.target == null) {
 			this.target = getBeanFactory().getBean(getTargetBeanName());
 			postProcessTargetObject(this.target);

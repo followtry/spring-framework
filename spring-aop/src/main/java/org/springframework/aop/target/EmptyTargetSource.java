@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 空的目标源，什么值都没有
  * Canonical {@code TargetSource} when there is no target
  * (or just the target class known), and behavior is supplied
  * by interfaces and advisors only.
