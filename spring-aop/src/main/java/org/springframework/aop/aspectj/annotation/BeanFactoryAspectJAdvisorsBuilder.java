@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 构建aop切面的类信息
  * Helper for retrieving @AspectJ beans from a BeanFactory and building
  * Spring Advisors based on them, for use with auto-proxying.
  *
@@ -47,7 +48,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	@Nullable
 	private volatile List<String> aspectBeanNames;
 
-	private final Map<String, List<Advisor>> advisorsCache = new ConcurrentHashMap<>();
+	//每个切面上的advisor，每个切面方法一个advisor。
+	private final Map<String/** beanName*/, List<Advisor> /**InstantiationModelAwarePointcutAdvisorImpl或者自定义的advisor实例  */> advisorsCache = new ConcurrentHashMap<>();
 
 	private final Map<String, MetadataAwareAspectInstanceFactory> aspectFactoryCache = new ConcurrentHashMap<>();
 
@@ -83,12 +85,15 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
 
+		//double-check-lock 判断aspectBeanNames
 		if (aspectNames == null) {
 			synchronized (this) {
 				aspectNames = this.aspectBeanNames;
+				//如果aspectNames还是null，则获取到所有的beanName
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
+					//获取到所有的beanName，然后其中符合aspect条件的bean
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
@@ -101,13 +106,16 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (beanType == null) {
 							continue;
 						}
+						//默认为ReflectiveAspectJAdvisorFactory
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								//查找符合代理条件的bean并将被ASPECTJ_ANNOTATION_CLASSES中最少一个注解来标记的方法，生成新的InstantiationModelAwarePointcutAdvisorImpl实现类作为新的advisor
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
+								//如果当前切面类是bean，则直接加入advisor的缓存，否则加入切面工厂的缓存中。
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
@@ -129,15 +137,18 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							}
 						}
 					}
+					//赋值所有的已甄别到是Aspect的类的bean名称
 					this.aspectBeanNames = aspectNames;
 					return advisors;
 				}
 			}
 		}
 
+		//如果最后仍然没有扫描到切面类，则返回空集合
 		if (aspectNames.isEmpty()) {
 			return Collections.emptyList();
 		}
+		//除非第一次会扫描所有的Aspect目标候选类，并将其带有切面注解的方法实例化为advisor。否则根据Aspect的beanName从缓存中获取
 		List<Advisor> advisors = new ArrayList<>();
 		for (String aspectName : aspectNames) {
 			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);

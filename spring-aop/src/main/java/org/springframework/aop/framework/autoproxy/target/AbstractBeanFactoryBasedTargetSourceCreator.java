@@ -89,6 +89,7 @@ public abstract class AbstractBeanFactoryBasedTargetSourceCreator
 	@Override
 	@Nullable
 	public final TargetSource getTargetSource(Class<?> beanClass, String beanName) {
+		//创建一个targetSource的实例，对于普通的BeanName来说，QuickTargetSourceCreator会一直返回null，所以就只能使用LazyInitTargetSource才能创建实例
 		AbstractBeanFactoryBasedTargetSource targetSource =
 				createBeanFactoryBasedTargetSource(beanClass, beanName);
 		if (targetSource == null) {
@@ -112,6 +113,7 @@ public abstract class AbstractBeanFactoryBasedTargetSourceCreator
 		internalBeanFactory.registerBeanDefinition(beanName, bdCopy);
 
 		// Complete configuring the PrototypeTargetSource.
+		//完善PrototypeTargetSource的配置信息
 		targetSource.setTargetBeanName(beanName);
 		targetSource.setBeanFactory(internalBeanFactory);
 

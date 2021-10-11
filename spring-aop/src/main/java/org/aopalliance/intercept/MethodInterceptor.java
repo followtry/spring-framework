@@ -17,6 +17,8 @@
 package org.aopalliance.intercept;
 
 /**
+ * Spring和aop联盟定义的方法拦截器，在Spring中使用ReflectiveMethodInvocation来调用
+ *
  * Intercepts calls on an interface on its way to the target. These
  * are nested "on top" of the target.
  *

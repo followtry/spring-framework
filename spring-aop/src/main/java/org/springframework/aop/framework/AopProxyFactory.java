@@ -17,6 +17,8 @@
 package org.springframework.aop.framework;
 
 /**
+ * aop代理的工厂定义
+ *
  * Interface to be implemented by factories that are able to create
  * AOP proxies based on {@link AdvisedSupport} configuration objects.
  *
@@ -44,6 +46,8 @@ package org.springframework.aop.framework;
 public interface AopProxyFactory {
 
 	/**
+	 * 创建一个新的aop代理
+	 *
 	 * Create an {@link AopProxy} for the given AOP configuration.
 	 * @param config the AOP configuration in the form of an
 	 * AdvisedSupport object

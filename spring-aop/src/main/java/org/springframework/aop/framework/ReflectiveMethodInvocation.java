@@ -31,6 +31,14 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ * Spring实现了AOP联盟的MethodInvocation接口，并实现了扩展接口 ProxyMethodInvocation
+ *
+ * 通过反射的方式调用目标里，子类可以通过覆盖invokeJoinpoint方法来改变该行为。
+ *
+ * 该类只是内部使用，不应该直接被访问。它公开的唯一原因是与现有框架集成的兼容性。对于其他牡蛎，使用ProxyMethodInvocation接口替代。
+ *
+ * 内部主要封装了，代理类实例，目标类实例，方法，参数
+ *
  * Spring's implementation of the AOP Alliance
  * {@link org.aopalliance.intercept.MethodInvocation} interface,
  * implementing the extended
@@ -155,9 +163,15 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	}
 
 
+	/**
+	 * aop切面的joinpoint的执行方法，该方法通过责任链的方式实现了aop的切面功能。
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	@Nullable
 	public Object proceed() throws Throwable {
+		//通过责任链的方式调用多个拦截器，最后执行目标方法
 		// We start with an index of -1 and increment early.
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
 			//如果已经到了最后一个，则反射调用目标方法
@@ -189,6 +203,8 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	}
 
 	/**
+	 * 使用反射的方式调用joinpoint，子类可以覆盖该方法使用自定义的实现
+	 *
 	 * Invoke the joinpoint using reflection.
 	 * Subclasses can override this to use custom invocation.
 	 * @return the return value of the joinpoint
@@ -201,6 +217,8 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 
 
 	/**
+	 * 克隆一份MethodInvocation
+	 *
 	 * This implementation returns a shallow copy of this invocation object,
 	 * including an independent copy of the original arguments array.
 	 * <p>We want a shallow copy in this case: We want to use the same interceptor
@@ -219,6 +237,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	}
 
 	/**
+	 * 克隆一份MethodInvocation
 	 * This implementation returns a shallow copy of this invocation object,
 	 * using the given arguments array for the clone.
 	 * <p>We want a shallow copy in this case: We want to use the same interceptor

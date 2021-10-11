@@ -434,6 +434,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 当要公开代理时，用于没有建议链的静态目标的方法拦截器。
+	 *
 	 * Method interceptor used for static targets with no advice chain, when the
 	 * proxy is to be exposed.
 	 */
@@ -463,6 +465,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 拦截器用于在不创建方法调用或评估建议链的情况下调用动态目标。 （我们知道没有关于这种方法的建议。）
+	 *
 	 * Interceptor used to invoke a dynamic target without creating a method
 	 * invocation or evaluating an advice chain. (We know there was no advice
 	 * for this method.)
@@ -493,6 +497,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 当代理需要公开时，用于未建议动态目标的拦截器。
 	 * Interceptor for unadvised dynamic targets when the proxy needs exposing.
 	 */
 	private static class DynamicUnadvisedExposedInterceptor implements MethodInterceptor, Serializable {
@@ -524,6 +529,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 静态目标的调度程序。 Dispatcher 比拦截器快得多。只要可以确定方法肯定不会返回“this”，就会使用它
+	 *
 	 * Dispatcher for a static target. Dispatcher is much faster than
 	 * interceptor. This will be used whenever it can be determined that a
 	 * method definitely does not return "this"
@@ -546,6 +553,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 在 Advised 类上声明的任何方法的调度程序。
+	 *
 	 * Dispatcher for any methods declared on the Advised class.
 	 */
 	private static class AdvisedDispatcher implements Dispatcher, Serializable {
@@ -650,6 +659,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * 通用 AOP 回调。当目标是动态的或代理没有被冻结时使用。
+	 *
 	 * General purpose AOP callback. Used when the target is dynamic or when the
 	 * proxy is not frozen.
 	 */
@@ -686,11 +697,13 @@ class CglibAopProxy implements AopProxy, Serializable {
 					// Note that the final invoker must be an InvokerInterceptor, so we know
 					// it does nothing but a reflective operation on the target, and no hot
 					// swapping or fancy proxying.
+					//直接调用
 					Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
 					retVal = methodProxy.invoke(target, argsToUse);
 				}
 				else {
 					// We need to create a method invocation...
+					//调用方法的aop拦截器最后调用目标方法
 					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
 				}
 				retVal = processReturnType(proxy, target, method, retVal);
@@ -725,6 +738,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * cglib的方法调用，继承自ReflectiveMethodInvocation并自定义实现了invokeJoinpoint
+	 *
 	 * Implementation of AOP Alliance MethodInvocation used by this AOP proxy.
 	 */
 	private static class CglibMethodInvocation extends ReflectiveMethodInvocation {
@@ -781,6 +796,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
+	 * callbakc过滤器，用于针对不同的方法返回不同的callback
+	 *
 	 * CallbackFilter to assign Callbacks to methods.
 	 */
 	private static class ProxyCallbackFilter implements CallbackFilter {

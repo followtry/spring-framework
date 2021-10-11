@@ -56,6 +56,7 @@ public class AspectJAroundAdvice extends AbstractAspectJAdvice implements Method
 
 	@Override
 	protected boolean supportsProceedingJoinPoint() {
+		//支持方法参数中设置ProceedingJoinPoint作为参数，只有around注解允许
 		return true;
 	}
 

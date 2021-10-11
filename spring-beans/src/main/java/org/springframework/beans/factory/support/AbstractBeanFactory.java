@@ -364,7 +364,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					//创建单例对象，getSingleton会进行缓存拦截，已避免重复创建对象
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
-							//真实创建bean实例的地方
+							//真实创建bean实例的地方，此处代码因为是在getSingleton中，创建出来的所有bean实例都会被存在以及缓存中。
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {

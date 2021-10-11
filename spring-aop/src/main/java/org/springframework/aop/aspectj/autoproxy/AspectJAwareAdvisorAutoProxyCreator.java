@@ -34,6 +34,10 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ClassUtils;
 
 /**
+ *
+ * AbstractAdvisorAutoProxyCreator子类，
+ * 它公开 AspectJ 的调用上下文，并在多个advice来自同一切面时理解 AspectJ 的建议优先级规则。
+ *
  * {@link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator}
  * subclass that exposes AspectJ's invocation context and understands AspectJ's rules
  * for advice precedence when multiple pieces of advice come from the same aspect.
@@ -46,10 +50,12 @@ import org.springframework.util.ClassUtils;
 @SuppressWarnings("serial")
 public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator {
 
+	//比较器
 	private static final Comparator<Advisor> DEFAULT_PRECEDENCE_COMPARATOR = new AspectJPrecedenceComparator();
 
 
 	/**
+	 * 对advisor进行排序
 	 * Sort the supplied {@link Advisor} instances according to AspectJ precedence.
 	 * <p>If two pieces of advice come from the same aspect, they will have the same
 	 * order. Advice from the same aspect is then further ordered according to the
@@ -86,6 +92,8 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 	}
 
 	/**
+	 * 增加一个ExposeInvocationInterceptor在advice调用链之前
+	 *
 	 * Add an {@link ExposeInvocationInterceptor} to the beginning of the advice chain.
 	 * <p>This additional advice is needed when using AspectJ pointcut expressions
 	 * and when using AspectJ-style advice.
@@ -95,6 +103,7 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 		AspectJProxyUtils.makeAdvisorChainAspectJCapableIfNecessary(candidateAdvisors);
 	}
 
+	//判断是否应该跳过
 	@Override
 	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
 		// TODO: Consider optimization by caching the list of the aspect names
@@ -105,6 +114,7 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 				return true;
 			}
 		}
+		//如果是original类型则需要跳过
 		return super.shouldSkip(beanClass, beanName);
 	}
 

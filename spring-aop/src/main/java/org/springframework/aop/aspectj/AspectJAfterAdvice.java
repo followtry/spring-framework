@@ -47,6 +47,7 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
 			return mi.proceed();
 		}
 		finally {
+			//在方法执行调用后才执行本advice
 			invokeAdviceMethod(getJoinPointMatch(), null, null);
 		}
 	}
@@ -58,6 +59,7 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
 
 	@Override
 	public boolean isAfterAdvice() {
+		//指定为after而非before
 		return true;
 	}
 

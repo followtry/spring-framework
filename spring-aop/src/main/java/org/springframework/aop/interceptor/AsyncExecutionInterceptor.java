@@ -91,6 +91,9 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 
 
 	/**
+	 * 使用了Async的注解实现异步执行的拦截方法。将方法放在AsyncTaskExecutor中执行。
+	 * 因为该方法为异步，因此后续所有的aop都需要在异步线程里执行。因此该切面拥有最高的优先级
+	 *
 	 * Intercept the given method invocation, submit the actual calling of the method to
 	 * the correct task executor and return immediately to the caller.
 	 * @param invocation the method to intercept and make asynchronous
@@ -126,6 +129,7 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 			return null;
 		};
 
+		//提交任务
 		return doSubmit(task, executor, invocation.getMethod().getReturnType());
 	}
 

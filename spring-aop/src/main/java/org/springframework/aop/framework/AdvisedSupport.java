@@ -43,6 +43,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * 代理配置管理器。这些本身不是 AOP 代理，但是此类的子类通常是直接从中获取 AOP 代理实例的工厂。
+ *
+ * 该类释放了 Advices 和 Advisors 的内务处理的子类，但实际上并没有实现由子类提供的代理创建方法
+ *
  * Base class for AOP proxy configuration managers.
  * These are not themselves AOP proxies, but subclasses of this class are
  * normally factories from which AOP proxy instances are obtained directly.
@@ -120,6 +124,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/**
+	 * 设置目标类，该目标类会用于创建新的SingletonTargetSource
+	 *
 	 * Set the given object as target.
 	 * Will create a SingletonTargetSource for the object.
 	 * @see #setTargetSource
@@ -479,6 +485,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		MethodCacheKey cacheKey = new MethodCacheKey(method);
 		List<Object> cached = this.methodCache.get(cacheKey);
 		if (cached == null) {
+			//获取拦截器的调用链
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
 			this.methodCache.put(cacheKey, cached);

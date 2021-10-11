@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  */
 public interface AdvisorChainFactory {
 
+	//获取拦截器和动态调用拦截的advice
 	/**
 	 * Determine a list of {@link org.aopalliance.intercept.MethodInterceptor} objects
 	 * for the given advisor chain configuration.

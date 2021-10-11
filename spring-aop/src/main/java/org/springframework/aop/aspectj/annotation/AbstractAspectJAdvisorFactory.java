@@ -44,6 +44,8 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 
 /**
+ * 创建advisor的工厂类，解析注解
+ *
  * Abstract base class for factories that can create Spring AOP Advisors
  * given AspectJ classes from classes honoring the AspectJ 5 annotation syntax.
  *
@@ -66,6 +68,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//参数名称发现器
 	protected final ParameterNameDiscoverer parameterNameDiscoverer = new AspectJAnnotationParameterNameDiscoverer();
 
 
@@ -83,6 +86,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		return (hasAspectAnnotation(clazz) && !compiledByAjc(clazz));
 	}
 
+	//通过判断类上是否有aspect注解判断类是否支持aspect切面
 	private boolean hasAspectAnnotation(Class<?> clazz) {
 		return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);
 	}
@@ -127,6 +131,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	}
 
 	/**
+	 * 查找aspectJ注解标记的方法 注解集合为ASPECTJ_ANNOTATION_CLASSES
 	 * Find and return the first AspectJ annotation on the given method
 	 * (there <i>should</i> only be one anyway...).
 	 */

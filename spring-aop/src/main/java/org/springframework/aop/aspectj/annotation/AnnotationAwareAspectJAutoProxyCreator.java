@@ -28,6 +28,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * aop代理实现类
+ *
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
  * annotation aspects in the current application context, as well as Spring Advisors.
  *
@@ -77,6 +79,7 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 
 	@Override
 	protected void initBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		//初始化BeanFactory并实例化advisors工具ReflectiveAspectJAdvisorFactory和BeanFactoryAspectJAdvisorsBuilderAdapter
 		super.initBeanFactory(beanFactory);
 		if (this.aspectJAdvisorFactory == null) {
 			this.aspectJAdvisorFactory = new ReflectiveAspectJAdvisorFactory(beanFactory);
@@ -86,12 +89,15 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	}
 
 
+	//查询候选的advisor，注解方式的advisor实现。 不管是直接注册进容器中的advisor实现类还是通过Aspect切面方法生成的advisor，此处都一起返回给调用方
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
+		//继承或实现advisor接口的类，比如事务的TransactionAttributeSourceAdvisor，或者自定义的实现了advisor接口的BeanDefinition
 		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
 		if (this.aspectJAdvisorsBuilder != null) {
+			//查找所有符合条件的advisor，是通过注解方式的用户自定义的aop
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
 		return advisors;
@@ -112,6 +118,8 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	}
 
 	/**
+	 * 检查是否符合自动dialing的条件
+	 *
 	 * Check whether the given aspect bean is eligible for auto-proxying.
 	 * <p>If no &lt;aop:include&gt; elements were used then "includePatterns" will be
 	 * {@code null} and all beans are included. If "includePatterns" is non-null,
@@ -133,6 +141,8 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 
 
 	/**
+	 * 委托给AnnotationAwareAspectJAutoProxyCreator用的代理子类
+	 *
 	 * Subclass of BeanFactoryAspectJAdvisorsBuilderAdapter that delegates to
 	 * surrounding AnnotationAwareAspectJAutoProxyCreator facilities.
 	 */

@@ -667,6 +667,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			//创建bean的实例，不管用什么方式，已经初步实例化了bean，属性等参数还未注入
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+		//此处创建了空的bean实例，还未进行数据注入和数据的初始化
 		Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
@@ -688,6 +689,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		// 早期暴露的单例，即循环引用的bean
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
@@ -701,7 +703,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			/**
 			 * 因为此时的bean只是初步的实例化，即半成熟的bean，如果是单例bean，允许循环引用且正在创建中，则将该半成熟的bean加入到缓存中。只加入了二级缓存和三级缓存。一级的完整单例缓存是没有加入的。
 			 *
-			 * 调用BeanPostProcessor的getEarlyBeanReference，而该方法主要是AbstractAutoProxyCreator实现
+			 * 调用BeanPostProcessor的getEarlyBeanReference，而该方法主要是AbstractAutoProxyCreator实现。
+			 *
+			 * 如果符合aop代理的条件，此处包装为代理对象。只是初始化了生成aop包装对象的ObjectFactory，并未实际调用
 			 */
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
@@ -712,6 +716,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			//注入依赖和属性值，比如autowire和value注解的属性
 			populateBean(beanName, mbd, instanceWrapper);
 			//进行完初始化和代理后的bean已经是一个可以对外暴露的bean了。然后后续经过简单的检查，没什么问题就直接对外暴露了。
+			//不仅进行初始化操作，如果需要aop代理，还会对原对象进行封装
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1123,6 +1128,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			try {
 				// Mark this bean as currently in creation, even if just partially.
 				beforeSingletonCreation(beanName);
+				//实例化前创建代理
 				// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 				instance = resolveBeforeInstantiation(beanName, mbd);
 				if (instance == null) {
@@ -1178,6 +1184,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			// Mark this bean as currently in creation, even if just partially.
 			beforePrototypeCreation(beanName);
+			//实例化前创建代理
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 			instance = resolveBeforeInstantiation(beanName, mbd);
 			if (instance == null) {
@@ -1317,6 +1324,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
+		//短路创建bean的过程，避免args为null情况下创建的NPE
 		// Shortcut when re-creating the same bean...
 		boolean resolved = false;
 		boolean autowireNecessary = false;
@@ -1330,9 +1338,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-		//已经解决了的话则不需要执行本次实例化，否则执行构造方法装配或者反射生成实例
+		//短路创建bean的过程，避免args为null情况下创建的NPE
 		if (resolved) {
 			if (autowireNecessary) {
+				//将显示的参数置为null，因为外部就没传显示的参数
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
@@ -1345,6 +1354,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			//如果不将args == null的resolved设置为true造成短路，那么在调用该方法时就会出现NPE
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 

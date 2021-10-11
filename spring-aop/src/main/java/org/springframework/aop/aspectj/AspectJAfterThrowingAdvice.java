@@ -63,6 +63,7 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 		}
 		catch (Throwable ex) {
 			if (shouldInvokeOnThrowing(ex)) {
+				//如果需要调用抛出移仓的throwing，则调用
 				invokeAdviceMethod(getJoinPointMatch(), null, ex);
 			}
 			throw ex;

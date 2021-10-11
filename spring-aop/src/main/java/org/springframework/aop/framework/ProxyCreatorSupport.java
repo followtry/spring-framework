@@ -22,6 +22,8 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 /**
+ * 代理工厂的基类，提供了可配置化的AopProxyFactory的便捷访问
+ *
  * Base class for proxy factories.
  * Provides convenient access to a configurable AopProxyFactory.
  *
@@ -102,6 +104,7 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 		if (!this.active) {
 			activate();
 		}
+		//通过工厂创建新的aop代理，创建新的是因为每个dialing的aop配置参数都是不同的
 		return getAopProxyFactory().createAopProxy(this);
 	}
 
