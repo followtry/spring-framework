@@ -32,6 +32,17 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ *<pre>
+ * servlet3.0 定义的类似web.xml的启动类的SPI在Spring中的实现
+ *
+ * 在任何的Servlet3.0兼容的web容器启动时，如果spring-web模块存在则会加载该类并实例化，然后调用其onStartup方法。使用的java的SPI机制。
+ *
+ * SpringServletContainerInitializer是支持的基础设施，其支持更重要的面向用户的SPI是WebApplicationInitializer。如果没有WebApplicationInitializer实现被检测到，当前容器的初始化就是无效的。
+ *
+ * 当前类并没有和spring-mvc捆绑，可以认为该类是通用的。虽然事实上是使用spring-mvc里的WebApplicationInitializer实现类。但任何servlet，监听器和过滤器都可以用一个WebApplicationInitializer注册，而非一定是spring-mvc的规范组件
+ *
+ *</pre>
+ *
  * Servlet 3.0 {@link ServletContainerInitializer} designed to support code-based
  * configuration of the servlet container using Spring's {@link WebApplicationInitializer}
  * SPI as opposed to (or possibly in combination with) the traditional
@@ -113,6 +124,7 @@ import org.springframework.util.ReflectionUtils;
 public class SpringServletContainerInitializer implements ServletContainerInitializer {
 
 	/**
+	 * 代理任何WebApplicationInitializer实现的servlet
 	 * Delegate the {@code ServletContext} to any {@link WebApplicationInitializer}
 	 * implementations present on the application classpath.
 	 * <p>Because this class declares @{@code HandlesTypes(WebApplicationInitializer.class)},
@@ -148,6 +160,7 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 			for (Class<?> waiClass : webAppInitializerClasses) {
 				// Be defensive: Some servlet containers provide us with invalid classes,
 				// no matter what @HandlesTypes says...
+				//判断当前类是否为WebApplicationInitializer的实现类，并且非抽象类和接口。是的话会实例化该类。
 				if (!waiClass.isInterface() && !Modifier.isAbstract(waiClass.getModifiers()) &&
 						WebApplicationInitializer.class.isAssignableFrom(waiClass)) {
 					try {
@@ -168,6 +181,7 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 
 		servletContext.log(initializers.size() + " Spring WebApplicationInitializers detected on classpath");
 		AnnotationAwareOrderComparator.sort(initializers);
+		//依次启动多个WebApplicationInitializer的实现类
 		for (WebApplicationInitializer initializer : initializers) {
 			initializer.onStartup(servletContext);
 		}

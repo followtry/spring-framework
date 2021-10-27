@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * jdbc访问器
  * Base class for {@link org.springframework.jdbc.core.JdbcTemplate} and
  * other JDBC-accessing DAO helpers, defining common properties such as
  * DataSource and exception translator.
@@ -42,9 +43,11 @@ public abstract class JdbcAccessor implements InitializingBean {
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//设置数据源
 	@Nullable
 	private DataSource dataSource;
 
+	//SQL异常转换器
 	@Nullable
 	private volatile SQLExceptionTranslator exceptionTranslator;
 

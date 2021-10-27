@@ -17,6 +17,7 @@
 package org.apache.commons.logging;
 
 /**
+ * 日志工厂
  * A minimal incarnation of Apache Commons Logging's {@code LogFactory} API,
  * providing just the common {@link Log} lookup methods. This is inspired
  * by the JCL-over-SLF4J bridge and should be source as well as binary

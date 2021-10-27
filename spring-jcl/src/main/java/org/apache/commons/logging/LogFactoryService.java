@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 日志实现
  * A minimal subclass of the standard Apache Commons Logging's {@code LogFactory} class,
  * overriding the abstract {@code getInstance} lookup methods. This is just applied in
  * case of the standard {@code commons-logging} jar accidentally ending up on the classpath,
