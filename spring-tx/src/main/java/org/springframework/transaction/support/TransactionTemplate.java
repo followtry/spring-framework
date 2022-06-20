@@ -125,6 +125,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 	}
 
 
+	/*执行事务*/
 	@Override
 	@Nullable
 	public <T> T execute(TransactionCallback<T> action) throws TransactionException {
@@ -134,9 +135,11 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 			return ((CallbackPreferringPlatformTransactionManager) this.transactionManager).execute(this, action);
 		}
 		else {
+			/*先获取到事务对象，并开启事务，将事务设置为不自动提交*/
 			TransactionStatus status = this.transactionManager.getTransaction(this);
 			T result;
 			try {
+				/*在事务内执行动作*/
 				result = action.doInTransaction(status);
 			}
 			catch (RuntimeException | Error ex) {
@@ -149,6 +152,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 				rollbackOnException(status, ex);
 				throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
 			}
+			/*提交任务，如果任务提交失败，则执行回滚操作或直接抛出异常*/
 			this.transactionManager.commit(status);
 			return result;
 		}

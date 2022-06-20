@@ -174,6 +174,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 */
 	@Nullable
 	public DataSource getDataSource() {
+		/*获取数据库连接*/
 		return this.dataSource;
 	}
 
@@ -236,6 +237,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
+		/*获取数据库连接的对象*/
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
 		ConnectionHolder conHolder =
@@ -266,6 +268,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			}
 
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
+			/*获取数据库链接*/
 			con = txObject.getConnectionHolder().getConnection();
 
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
@@ -280,6 +283,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 				if (logger.isDebugEnabled()) {
 					logger.debug("Switching JDBC Connection [" + con + "] to manual commit");
 				}
+				/*将事务设置为不自动提交，等待提交的命令*/
 				con.setAutoCommit(false);
 			}
 
@@ -299,6 +303,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 		catch (Throwable ex) {
 			if (txObject.isNewConnectionHolder()) {
+				/*执行错误时释放数据库连接*/
 				DataSourceUtils.releaseConnection(con, obtainDataSource());
 				txObject.setConnectionHolder(null, false);
 			}
@@ -326,6 +331,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			logger.debug("Committing JDBC transaction on Connection [" + con + "]");
 		}
 		try {
+			/*通过数据库连接的commit接口进行事务提交*/
 			con.commit();
 		}
 		catch (SQLException ex) {
@@ -384,6 +390,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			if (logger.isDebugEnabled()) {
 				logger.debug("Releasing JDBC Connection [" + con + "] after transaction");
 			}
+			/*释放数据库连接*/
 			DataSourceUtils.releaseConnection(con, this.dataSource);
 		}
 
