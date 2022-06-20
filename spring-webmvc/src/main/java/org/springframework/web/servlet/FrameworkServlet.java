@@ -914,6 +914,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected final void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		//容器执行Post请求
 		processRequest(request, response);
 	}
 
@@ -1011,6 +1012,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+			//处理来自于容器的Servlet的请求
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {

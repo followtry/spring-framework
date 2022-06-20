@@ -29,6 +29,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.SimpleSessionStatus;
 
 /**
+ * MAV的容器
  * Records model and view related decisions made by
  * {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} and
  * {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} during the course of invocation of

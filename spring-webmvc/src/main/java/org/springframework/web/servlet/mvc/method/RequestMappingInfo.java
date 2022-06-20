@@ -268,6 +268,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			return null;
 		}
 
+		//新生成一个RequestMappingInfo，新生成的RequestmappingInfo包含
 		return new RequestMappingInfo(this.name, patterns,
 				methods, params, headers, consumes, produces, custom.getCondition());
 	}

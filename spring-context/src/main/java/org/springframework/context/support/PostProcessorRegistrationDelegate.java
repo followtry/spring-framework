@@ -54,11 +54,19 @@ final class PostProcessorRegistrationDelegate {
 
 
 	/**
-	 * 调用BeanFactoryPostProcessors执行其postProcessBeanDefinitionRegistry方法
-	 * 此处Spring自带的最重要的只有ConfigurationClassPostProcessor
+	 * <pre>
+	 *     先执行BeanFactoryPostProcessors#postProcessBeanDefinitionRegistry方法
+	 * 	   此处Spring自带的最重要的只有ConfigurationClassPostProcessor
 	 *
-	 * 调用BeanFactoryPostProcessor执行postProcessBeanfactory
+	 * 	   再执行BeanFactoryPostProcessor#postProcessBeanfactory方法
 	 *
+	 *
+	 * 	   1. 从BeanFactory容器中获取所有BeanDefinitionRegistryPostProcessor的实例，并先将实现PriorityOrdered接口的加入临时list中并排序，执行完后清空。
+	 * 	   2. 从BeanFactory容器中获取所有BeanDefinitionRegistryPostProcessor的实例，并再将实现Ordered接口的加入临时list中并排序，执行完后清空。
+	 * 	   3. 从BeanFactory容器中获取所有BeanDefinitionRegistryPostProcessor的实例，并过滤已实现了PriorityOrdered接口和Ordered接口实例，加入临时list中并排序，执行完后清空。
+	 * 	   4. 先调用BeanDefinitionRegistryPostProcessor实例的postProcessBeanFactory方法
+	 * 	   5. 再调用BeanFactoryPostProcessor实例的postProcessBeanFactory方法
+	 * </pre>
 	 *
 	 * @param beanFactory
 	 * @param beanFactoryPostProcessors
@@ -71,7 +79,9 @@ final class PostProcessorRegistrationDelegate {
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+			//常规的BeanFactoryPostProcessor后处理器
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			//BeanDefinition的注册器后处理器
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
@@ -145,6 +155,7 @@ final class PostProcessorRegistrationDelegate {
 		}
 
 		else {
+			//如果传入的beanFactory未实现BeanDefinitionRegistry接口，则只调用BeanFactoryPostProcessor实例的postProcessBeanFactory方法
 			// Invoke factory processors registered with the context instance.
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}

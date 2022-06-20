@@ -29,6 +29,7 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.util.UrlPathHelper;
 
 /**
+ * 基于url的跨域配置
  * Provide a per request {@link CorsConfiguration} instance based on a
  * collection of {@link CorsConfiguration} mapped on path patterns.
  *
@@ -134,6 +135,7 @@ public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource 
 	public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 		String lookupPath = this.urlPathHelper.getLookupPathForRequest(request, this.lookupPathAttributeName);
 		for (Map.Entry<String, CorsConfiguration> entry : this.corsConfigurations.entrySet()) {
+			//如果路径匹配上则直接返回，默认取跨域配置的第一个
 			if (this.pathMatcher.match(entry.getKey(), lookupPath)) {
 				return entry.getValue();
 			}

@@ -52,6 +52,10 @@ import org.springframework.util.CollectionUtils;
 public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver {
 
 	/**
+	 * <pre>
+	 *     spring的命名空间处理器的查找路径。
+	 *     适用于Spring的xml配置的方式
+	 * </pre>
 	 * The location to look for the mapping files. Can be present in multiple JAR files.
 	 */
 	public static final String DEFAULT_HANDLER_MAPPINGS_LOCATION = "META-INF/spring.handlers";
@@ -133,8 +137,11 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
+				//实例化命名空间处理器
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
+				//调用初始化，将tag及对应的处理器实例添加到Map容器中
 				namespaceHandler.init();
+				//缓存命名空间处理器
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
 			}

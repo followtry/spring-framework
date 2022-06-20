@@ -25,8 +25,10 @@ import org.springframework.util.StringValueResolver;
 
 /**
  *
- * 解决BeanDefinition属性值的占位符问题的抽象类，可以从属性文件或者其他源拉取值到BeanDefinition中。
- * 默认的占位符表达式为${},使用Value注解完成替换
+ * <pre>
+ *     解决BeanDefinition属性值的占位符问题的抽象类，可以从属性文件或者其他源拉取值到BeanDefinition中。
+ *     默认的占位符表达式为${},使用Value注解完成替换
+ * </pre>
  *
  * Abstract base class for property resource configurers that resolve placeholders
  * in bean definition property values. Implementations <em>pull</em> values from a

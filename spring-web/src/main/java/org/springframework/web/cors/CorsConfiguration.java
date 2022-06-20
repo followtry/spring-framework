@@ -32,6 +32,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 跨域配置的容器。默认不允许跨域请求，并且必须显示配置以允许跨域。使用applyPermitDefaultValues方法可以翻转初始化模型，使其允许所有的get，head和post请求的跨域请求
+ * 检查实际的origin，http方法和header
  * A container for CORS configuration along with methods to check against the
  * actual origin, HTTP methods, and headers of a given request.
  *
@@ -331,6 +333,8 @@ public class CorsConfiguration {
 
 
 	/**
+	 * 设置允许的范围和方法。最大有效期为30分钟
+	 *
 	 * By default a newly created {@code CorsConfiguration} does not permit any
 	 * cross-origin requests and must be configured explicitly to indicate what
 	 * should be allowed.
@@ -365,6 +369,8 @@ public class CorsConfiguration {
 	}
 
 	/**
+	 * 合并多个跨域配置
+	 *
 	 * Combine the non-null properties of the supplied
 	 * {@code CorsConfiguration} with this one.
 	 * <p>When combining single values like {@code allowCredentials} or
@@ -425,6 +431,8 @@ public class CorsConfiguration {
 	}
 
 	/**
+	 * 检查请求是否跨域
+	 *
 	 * Check the origin of the request against the configured allowed origins.
 	 * @param requestOrigin the origin to check
 	 * @return the origin to use for the response, or {@code null} which
@@ -457,6 +465,7 @@ public class CorsConfiguration {
 	}
 
 	/**
+	 * 检查请求方法
 	 * Check the HTTP request method (or the method from the
 	 * {@code Access-Control-Request-Method} header on a pre-flight request)
 	 * against the configured allowed methods.
@@ -476,6 +485,7 @@ public class CorsConfiguration {
 	}
 
 	/**
+	 * 检查请求header
 	 * Check the supplied request headers (or the headers listed in the
 	 * {@code Access-Control-Request-Headers} of a pre-flight request) against
 	 * the configured allowed headers.

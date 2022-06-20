@@ -1618,6 +1618,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			//对于非autowire，value等注解方式注入的bean，但仍然在BeanDefinition的pvs里设置的属性，会通过当前代码块进行设置。即使类定义里没有成员变量，也可以调用java规范的writable方法
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1914,6 +1915,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Set our (possibly massaged) deep copy.
 		try {
+			//通过writable方法设置值
 			bw.setPropertyValues(new MutablePropertyValues(deepCopy));
 		}
 		catch (BeansException ex) {

@@ -39,6 +39,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * 默认的跨域处理器实现类
  * The default implementation of {@link CorsProcessor}, as defined by the
  * <a href="https://www.w3.org/TR/cors/">CORS W3C recommendation</a>.
  *
@@ -72,6 +73,7 @@ public class DefaultCorsProcessor implements CorsProcessor {
 			response.addHeader(HttpHeaders.VARY, HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
 		}
 
+		//不是跨域请求则直接过滤
 		if (!CorsUtils.isCorsRequest(request)) {
 			return true;
 		}
@@ -107,6 +109,7 @@ public class DefaultCorsProcessor implements CorsProcessor {
 	}
 
 	/**
+	 * 处理给定的请求
 	 * Handle the given request.
 	 */
 	protected boolean handleInternal(ServerHttpRequest request, ServerHttpResponse response,

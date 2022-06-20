@@ -200,6 +200,7 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 
 
 	/**
+	 * 查看每一个BeanDefinition然后尝试使用给定的属性集合的值替换其${}占位符
 	 * Visit each bean definition in the given bean factory and attempt to replace ${...} property
 	 * placeholders with values from the given properties.
 	 */
@@ -207,13 +208,15 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)
 			throws BeansException {
 
+		//使用String类型的占位符解析器
 		StringValueResolver valueResolver = new PlaceholderResolvingStringValueResolver(props);
+		//使用父类的方法做替换
 		doProcessProperties(beanFactoryToProcess, valueResolver);
 	}
 
 
 	/**
-	 * 占位符替换
+	 * 占位符解析器替换
 	 */
 	private class PlaceholderResolvingStringValueResolver implements StringValueResolver {
 
@@ -239,6 +242,7 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	}
 
 
+	//被PlaceholderResolvingStringValueResolver作为解析器使用，然在具体在PropertyPlaceholderHelper内调用，而该方法内部实际调用的是PropertyPlaceholderConfigurer.resolvePlaceholder方法完成的解析
 	private final class PropertyPlaceholderConfigurerResolver implements PlaceholderResolver {
 
 		private final Properties props;

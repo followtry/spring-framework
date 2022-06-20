@@ -244,6 +244,8 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	}
 
 	/**
+	 * requestmapping在spring内部结构为RequestMappingInfo
+	 *
 	 * Uses method and type-level @{@link RequestMapping} annotations to create
 	 * the RequestMappingInfo.
 	 * @return the created RequestMappingInfo, or {@code null} if the method
@@ -259,6 +261,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		if (info != null) {
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
+				//合并RequestMapping信息，将type和方法上的部分信息合并
 				info = typeInfo.combine(info);
 			}
 			String prefix = getPathPrefix(handlerType);
@@ -339,6 +342,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
 
+		//通过建造者模式填充RequestMappingInfo数据结构。
+		/**
+		 * 1. 获取url路径
+		 * 2. 绑定方法，参数，header，consumer，produces
+		 */
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())

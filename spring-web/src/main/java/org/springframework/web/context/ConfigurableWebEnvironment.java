@@ -23,6 +23,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.lang.Nullable;
 
 /**
+ * 初始化配置的源
+ *
  * Specialization of {@link ConfigurableEnvironment} allowing initialization of
  * servlet-related {@link org.springframework.core.env.PropertySource} objects at the
  * earliest moment that the {@link ServletContext} and (optionally) {@link ServletConfig}

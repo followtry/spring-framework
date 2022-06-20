@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
+ * 跨域处理器策略接口
+ *
  * A strategy that takes a request and a {@link CorsConfiguration} and updates
  * the response.
  *

@@ -61,17 +61,24 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
  */
 public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationContext {
 
+	//默认的配置文件路径
 	/** Default config location for the root context. */
 	public static final String DEFAULT_CONFIG_LOCATION = "/WEB-INF/applicationContext.xml";
 
+	//默认的配置文件路径前缀
 	/** Default prefix for building a config location for a namespace. */
 	public static final String DEFAULT_CONFIG_LOCATION_PREFIX = "/WEB-INF/";
 
+	//默认配置文件后缀
 	/** Default suffix for building a config location for a namespace. */
 	public static final String DEFAULT_CONFIG_LOCATION_SUFFIX = ".xml";
 
 
 	/**
+	 * <pre>
+	 *     加载BeanDefinition信息，是从Xml配置中读取进来的
+	 * </pre>
+	 *
 	 * Loads the bean definitions via an XmlBeanDefinitionReader.
 	 * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
 	 * @see #initBeanDefinitionReader
@@ -82,6 +89,7 @@ public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationC
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
+		//配置
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
 		beanDefinitionReader.setEnvironment(getEnvironment());
@@ -124,6 +132,7 @@ public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationC
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			for (String configLocation : configLocations) {
+				//加载xml文件规范的spring bean 配置信息。 循环每一个配置路径
 				reader.loadBeanDefinitions(configLocation);
 			}
 		}

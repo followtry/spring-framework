@@ -295,6 +295,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 */
 	@Override
 	public final ConfigurableListableBeanFactory getBeanFactory() {
+		//因为在当前类实例化时已经设置了beanFactory，此处只需要取出即可
 		return this.beanFactory;
 	}
 

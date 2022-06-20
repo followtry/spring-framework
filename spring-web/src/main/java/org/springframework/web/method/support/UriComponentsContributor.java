@@ -24,6 +24,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
+ * uri组件的策略
  * Strategy for contributing to the building of a {@link UriComponents} by
  * looking at a method parameter and an argument value and deciding what
  * part of the target URL should be updated.

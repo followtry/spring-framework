@@ -335,6 +335,7 @@ public class HandlerMethod {
 			String beanName = (String) this.bean;
 			handler = this.beanFactory.getBean(beanName);
 		}
+		//生成新的HandlerMethod实例，因为有可能传入的是beanName而非真实的bean，需要生成实例后再返回
 		return new HandlerMethod(this, handler);
 	}
 

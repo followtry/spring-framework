@@ -28,6 +28,11 @@ import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * <pre>
+ *     允许从属性资源配置单个bean属性值，提供了PropertyOverrideConfigurer和PropertyPlaceholderConfigurer两个具体实现。
+ *     平时用的较多的是PropertyPlaceholderConfigurer，替换${}包含的字符
+ * </pre>
+ *
  * Allows for configuration of individual bean property values from a property resource,
  * i.e. a properties file. Useful for custom config files targeted at system
  * administrators that override bean properties configured in the application context.
@@ -52,6 +57,7 @@ import org.springframework.util.ObjectUtils;
 public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 		implements BeanFactoryPostProcessor, PriorityOrdered {
 
+	//最低优先级
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
 
@@ -70,6 +76,9 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 
 
 	/**
+	 * BeanDefinition已经被加载，但还没有被实例化时。
+	 * 加载property配置
+	 *
 	 * {@linkplain #mergeProperties Merge}, {@linkplain #convertProperties convert} and
 	 * {@linkplain #processProperties process} properties against the given bean factory.
 	 * @throws BeanInitializationException if any properties cannot be loaded
@@ -82,6 +91,7 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 			// Convert the merged properties, if necessary.
 			convertProperties(mergedProps);
 
+			//让子类处理这些配置属性
 			// Let the subclass process the properties.
 			processProperties(beanFactory, mergedProps);
 		}
@@ -104,6 +114,7 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 			String propertyName = (String) propertyNames.nextElement();
 			String propertyValue = props.getProperty(propertyName);
 			String convertedValue = convertProperty(propertyName, propertyValue);
+			//覆盖指定的配置属性，如果convertedValue和propertyValue不相等，则覆盖，否则不覆盖。默认无实现覆盖的方法，不覆盖
 			if (!ObjectUtils.nullSafeEquals(propertyValue, convertedValue)) {
 				props.setProperty(propertyName, convertedValue);
 			}

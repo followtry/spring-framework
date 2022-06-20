@@ -29,6 +29,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ErrorHandler;
 
 /**
+ * <pre>
+ *     事件广播器的实现类.
+ *     广播所有事件到所有已注册的监听器。监听器自己忽略不感兴趣的事件。
+ *
+ *     默认情况下，广播执行是同步的方式。这允许恶意侦听器阻塞整个应用程序的危险，但会增加最小的开销。指定替代任务执行器，使侦听器在不同线程中执行，例如从线程池执行。
+ * </pre>
+ *
  * Simple implementation of the {@link ApplicationEventMulticaster} interface.
  *
  * <p>Multicasts all events to all registered listeners, leaving it up to
@@ -133,9 +140,11 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 		Executor executor = getTaskExecutor();
 		for (ApplicationListener<?> listener : getApplicationListeners(event, type)) {
 			if (executor != null) {
+				//调用监听器，异步方式
 				executor.execute(() -> invokeListener(listener, event));
 			}
 			else {
+				//调用监听器，同步方式
 				invokeListener(listener, event);
 			}
 		}
@@ -146,6 +155,8 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 	}
 
 	/**
+	 * //调用监听器，同步方式
+	 *
 	 * Invoke the given listener with the given event.
 	 * @param listener the ApplicationListener to invoke
 	 * @param event the current event to propagate

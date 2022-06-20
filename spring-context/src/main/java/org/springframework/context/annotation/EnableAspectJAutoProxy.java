@@ -22,6 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
  * Enables support for handling components marked with AspectJ's {@code @Aspect} annotation,
  * similar to functionality found in Spring's {@code <aop:aspectj-autoproxy>} XML element.
@@ -115,6 +116,8 @@ import java.lang.annotation.Target;
  * @author Juergen Hoeller
  * @since 3.1
  * @see org.aspectj.lang.annotation.Aspect
+ *
+ * 开启切面代理的开关
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

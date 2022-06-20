@@ -47,11 +47,13 @@ public abstract class PropertiesLoaderSupport {
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//本地属性配置数组
 	@Nullable
 	protected Properties[] localProperties;
 
 	protected boolean localOverride = false;
 
+	//资源定位
 	@Nullable
 	private Resource[] locations;
 
@@ -60,6 +62,7 @@ public abstract class PropertiesLoaderSupport {
 	@Nullable
 	private String fileEncoding;
 
+	//属性持久化
 	private PropertiesPersister propertiesPersister = new DefaultPropertiesPersister();
 
 
@@ -151,7 +154,7 @@ public abstract class PropertiesLoaderSupport {
 		Properties result = new Properties();
 
 		if (this.localOverride) {
-			//加载配置，
+			//如果允许被覆盖，则先加载文件配置，然后使用本地配置覆盖
 			// Load properties from file upfront, to let local properties override.
 			loadProperties(result);
 		}
@@ -164,6 +167,7 @@ public abstract class PropertiesLoaderSupport {
 		}
 
 		if (!this.localOverride) {
+			//如果不允许本地覆盖，则后加载文件配置，覆盖其他的配置
 			// Load properties from file afterwards, to let those properties override.
 			loadProperties(result);
 		}
@@ -184,6 +188,7 @@ public abstract class PropertiesLoaderSupport {
 					logger.trace("Loading properties file from " + location);
 				}
 				try {
+					//因为Properties本身就是map,解析后的值也是通过put的方式写入。因此后put操作会将前put操作的值覆盖掉。
 					PropertiesLoaderUtils.fillProperties(
 							props, new EncodedResource(location, this.fileEncoding), this.propertiesPersister);
 				}

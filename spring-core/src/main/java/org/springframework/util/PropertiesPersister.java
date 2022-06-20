@@ -24,6 +24,8 @@ import java.io.Writer;
 import java.util.Properties;
 
 /**
+ * 属性持久化的策略接口，允许可插拔的解析策略。
+ *
  * Strategy interface for persisting {@code java.util.Properties},
  * allowing for pluggable parsing strategies.
  *

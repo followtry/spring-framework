@@ -436,8 +436,10 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
+		//解析bean标签的元素，不包括名称和别名
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
+			//处理名称和别名的逻辑
 			if (!StringUtils.hasText(beanName)) {
 				try {
 					if (containingBean != null) {
@@ -467,6 +469,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			//生成BeanDefinition的持有器，持有Bean的定义，名称和别名集合
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -495,6 +498,10 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * <pre>
+	 *     解析BeanDefinition自身，没有名称和别名
+	 *     解析过程中如果有问题则会返回null
+	 * </pre>
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
 	 */
@@ -523,6 +530,7 @@ public class BeanDefinitionParserDelegate {
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			//解析构造方法参数
 			parseConstructorArgElements(ele, bd);
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
@@ -646,6 +654,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析meta元素
 	 * Parse the meta elements underneath the given element, if any.
 	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
@@ -872,6 +881,7 @@ public class BeanDefinitionParserDelegate {
 		}
 		this.parseState.push(new QualifierEntry(typeName));
 		try {
+			//qualifier的存储结构
 			AutowireCandidateQualifier qualifier = new AutowireCandidateQualifier(typeName);
 			qualifier.setSource(extractSource(ele));
 			String value = ele.getAttribute(VALUE_ATTRIBUTE);
@@ -974,6 +984,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析property的子元素，可能是ref，集合或Map，Set等
 	 * Parse a value, ref or collection sub-element of a property or
 	 * constructor-arg element.
 	 * @param ele subelement of property element; we don't know which yet
@@ -1374,6 +1385,11 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * <pre>
+	 *     解析自定义的元素
+	 *     比如：aop,web,util等
+	 * </pre>
+	 *
 	 * Parse a custom element (outside of the default namespace).
 	 * @param ele the element to parse
 	 * @param containingBd the containing bean definition (if any)
@@ -1385,11 +1401,13 @@ public class BeanDefinitionParserDelegate {
 		if (namespaceUri == null) {
 			return null;
 		}
+		//通过声明的命名空间，找到对应的命名空间处理器
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		//解析自定义的元素，并将其注册进BeanDefinition注册器中
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
@@ -1404,6 +1422,11 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * <pre>
+	 *     装饰BeanDefinition。
+	 *     对于AOP的bean是需要装饰的。增加代理的配置信息
+	 * </pre>
+	 *
 	 * Decorate the given bean definition through a namespace handler, if applicable.
 	 * @param ele the current element
 	 * @param originalDef the current bean definition
@@ -1434,6 +1457,8 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 使用给定的命名空间处理器装饰已经匹配号的BeanDefinition
+	 *
 	 * Decorate the given bean definition through a namespace handler,
 	 * if applicable.
 	 * @param node the current child node

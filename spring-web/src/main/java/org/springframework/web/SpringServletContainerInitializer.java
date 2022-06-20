@@ -174,6 +174,7 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 			}
 		}
 
+		//如果HandlesTypes指定的接口实现类为空的话，则当前方法其实什么都没做
 		if (initializers.isEmpty()) {
 			servletContext.log("No Spring WebApplicationInitializer types detected on classpath");
 			return;

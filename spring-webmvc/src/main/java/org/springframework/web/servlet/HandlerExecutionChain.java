@@ -30,6 +30,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 处理器执行的责任链，包括处理器实例和任何处理器的拦截器实例。
+ *
+ * 拦截器实例包括跨域的拦截器实例，国际化i18的拦截器实例等
+ *
  * Handler execution chain, consisting of handler object and any handler interceptors.
  * Returned by HandlerMapping's {@link HandlerMapping#getHandler} method.
  *
@@ -138,6 +142,7 @@ public class HandlerExecutionChain {
 
 
 	/**
+	 * 在实际请求之前执行所有的拦截器
 	 * Apply preHandle methods of registered interceptors.
 	 * @return {@code true} if the execution chain should proceed with the
 	 * next interceptor or the handler itself. Else, DispatcherServlet assumes
@@ -159,6 +164,7 @@ public class HandlerExecutionChain {
 	}
 
 	/**
+	 * 在实际请求之后执行所有的拦截器
 	 * Apply postHandle methods of registered interceptors.
 	 */
 	void applyPostHandle(HttpServletRequest request, HttpServletResponse response, @Nullable ModelAndView mv)
@@ -174,6 +180,7 @@ public class HandlerExecutionChain {
 	}
 
 	/**
+	 * 触发完成操作
 	 * Trigger afterCompletion callbacks on the mapped HandlerInterceptors.
 	 * Will just invoke afterCompletion for all interceptors whose preHandle invocation
 	 * has successfully completed and returned true.

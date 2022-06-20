@@ -51,6 +51,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ *
+ * Spring AOP的入口，用于连接AOP与IOC等功能。利用BeanPostProcessor注册进IOC来实现
+ *
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
  * that wraps each eligible bean with an AOP proxy, delegating to specified interceptors
  * before invoking the bean itself.
@@ -116,6 +119,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
 	/**
+	 * 是否要冻结代理
 	 * Indicates whether or not the proxy should be frozen. Overridden from super
 	 * to prevent the configuration from becoming frozen too early.
 	 */
@@ -124,6 +128,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	/** Default is no common interceptors. */
 	private String[] interceptorNames = new String[0];
 
+	//是否支持通用拦截器优先，默认为true
 	private boolean applyCommonInterceptorsFirst = true;
 
 	@Nullable
@@ -298,7 +303,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
-	 * 创建bean实例的代理
+	 * 创建bean实例的代理。如果已经被子类标记为代理，则使用拦截器创建一个代理对象
 	 *
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.
@@ -338,7 +343,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
-	 *  解决aop的循环依赖。
+	 *  如有必要则包装给定的类。
 	 * Wrap the given bean if necessary, i.e. if it is eligible for being proxied.
 	 * @param bean the raw bean instance
 	 * @param beanName the name of the bean

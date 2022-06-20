@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 /**
  *
- * 用于解析自动连线候选项的限定符。包含一个或多个此类限定符的bean定义支持对要自动连接的字段或参数上的注释进行细粒度匹配。解析后Qualifier的数据结构
+ * 用于解析自动装配候选项的限定符。包含一个或多个此类限定符的bean定义支持对要自动装配的字段或参数上的注释进行细粒度匹配。解析后Qualifier的数据结构
  *
  * Qualifier for resolving autowire candidates. A bean definition that
  * includes one or more such qualifiers enables fine-grained matching

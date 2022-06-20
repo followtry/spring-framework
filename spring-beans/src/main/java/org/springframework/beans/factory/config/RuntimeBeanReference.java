@@ -20,7 +20,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * 不可变占位符类，当属性值对象是工厂中另一个bean的引用时，用于在运行时解析它。
+ * 当属性值对象是工厂中另一个bean的引用时，用于该对象的不可变占位符类将在运行时解析。
+ *
+ * 即如果一个bean中需要注入另一个bean，则BeanDefinition中设置的property的value中使用RuntimeBeanReference来包装另一个bean的名称或class信息
  *
  * Immutable placeholder class used for a property value object when it's
  * a reference to another bean in the factory, to be resolved at runtime.
