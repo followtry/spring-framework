@@ -85,7 +85,7 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * <pre>
- *     ApplicationContext接口的抽象实现，不强制要求用于配置的存储类型
+ *     ApplicationContext接口的最核心实现，所有最终的ApplicationContext都使用该实现并对其进行部分更改
  * </pre>
  *
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}

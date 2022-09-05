@@ -87,6 +87,14 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
+	 * <pre>
+	 *     从FactoryBean中取真实类的实例
+	 *     如果是单例则查询缓存，缓存没有则通过FactoryBean的getObject方法获取并放入缓存。
+	 *     如果非单例，则每次都从FactoryBean中获取
+	 * </pre>
+	 *
+	 *
+	 *
 	 * Obtain an object to expose from the given FactoryBean.
 	 * @param factory the FactoryBean instance
 	 * @param beanName the name of the bean
@@ -151,6 +159,8 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
+	 *
+	 *
 	 * Obtain an object to expose from the given FactoryBean.
 	 * @param factory the FactoryBean instance
 	 * @param beanName the name of the bean
