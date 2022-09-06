@@ -26,6 +26,11 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
 /**
+ * <pre>
+ *     用来提供自动装配能力，一般不对外使用。未被ApplicationContext门面继承，因为它很少在应用程序中用到，不过可以通过ApplicationContext的getAutowireCapableBeanFactory方法来获取。
+ *     也可以通过BeanFactoryAware接口来获取到Spring内部的beanfactory，因其实现了AutowireCapableBeanFactory接口，也可以直接转为AutowireCapableBeanFactory来使用。
+ * </pre>
+ *
  * Extension of the {@link org.springframework.beans.factory.BeanFactory}
  * interface to be implemented by bean factories that are capable of
  * autowiring, provided that they want to expose this functionality for

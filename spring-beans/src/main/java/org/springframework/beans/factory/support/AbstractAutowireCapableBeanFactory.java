@@ -1282,6 +1282,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * <pre>
 	 * 调用获取类实例的几种方式
 	 *
 	 * 1. Supplier回调方式
@@ -1289,7 +1290,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * 3. 构造方法装配的方式
 	 * 4. cglib代理
 	 * 5. 构造方法反射生成的方式
-	 *
+	 *</pre>
 	 * Create a new instance for the specified bean, using an appropriate instantiation strategy:
 	 * factory method, constructor autowiring, or simple instantiation.
 	 * @param beanName the name of the bean

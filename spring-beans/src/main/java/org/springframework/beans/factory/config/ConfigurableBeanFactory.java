@@ -216,6 +216,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	TypeConverter getTypeConverter();
 
 	/**
+	 * <pre>
+	 *     增加内嵌值的解析器，比如占位符解析器等
+	 * </pre>
 	 * Add a String resolver for embedded values such as annotation attributes.
 	 * @param valueResolver the String resolver to apply to embedded values
 	 * @since 3.0
@@ -230,6 +233,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	boolean hasEmbeddedValueResolver();
 
 	/**
+	 * <pre>
+	 *     用于替换当前值，一般比如将占位符替换为实际值等
+	 * </pre>
 	 * Resolve the given embedded value, e.g. an annotation attribute.
 	 * @param value the value to resolve
 	 * @return the resolved value (may be the original value as-is)
@@ -239,6 +245,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	String resolveEmbeddedValue(String value);
 
 	/**
+	 * <pre>
+	 *     添加新的BeanPostProcessor的处理器实现类，用于支持在初始化（已经完成实例化和属性填充）前和初始化后做一些统一的额外工作
+	 * </pre>
 	 * Add a new BeanPostProcessor that will get applied to beans created
 	 * by this factory. To be invoked during factory configuration.
 	 * <p>Note: Post-processors submitted here will be applied in the order of
@@ -290,6 +299,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	AccessControlContext getAccessControlContext();
 
 	/**
+	 * <pre>
+	 *     将指定的Beanfactory复制给当前factory
+	 * </pre>
+	 *
 	 * Copy all relevant configuration from the given other factory.
 	 * <p>Should include all standard configuration settings as well as
 	 * BeanPostProcessors, Scopes, and factory-specific internal settings.

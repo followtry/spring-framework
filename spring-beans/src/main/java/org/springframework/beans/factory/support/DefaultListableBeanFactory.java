@@ -719,7 +719,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 根据注解获取所有的BeanName信息
+	 * <pre>
+	 *     遍历所有的BeanDefinition和手动添加的单例，匹配其信息是否包含指定的注解，包含的则将beanName返回
+	 * </pre>
 	 * @param annotationType the type of annotation to look for
 	 * (at class, interface or factory method level of the specified bean)
 	 * @return
@@ -742,7 +744,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 通过注解获取bean信息
+	 * <pre>
+	 *     通过注解获取bean实例信息
+	 * </pre>
 	 * @param annotationType the type of annotation to look for
 	 * (at class, interface or factory method level of the specified bean)
 	 * @return
@@ -1273,6 +1277,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Dependency resolution functionality
 	//---------------------------------------------------------------------
 
+	/**
+	 * <pre>
+	 *     用来获取已命名的Bean,对于单一bean，有primary标记的或者单一最高优先级的Bean可用。否则会抛出异常
+	 * </pre>
+	 * @param requiredType type the bean must match; can be an interface or superclass
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	public <T> NamedBeanHolder<T> resolveNamedBean(Class<T> requiredType) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
@@ -1478,7 +1491,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 解析多个依赖bean
+	 * <pre>
+	 *     解析多个依赖bean，先判断类型
+	 *     1. 如果是Stream，将Bean的map读出后转为Stream，并排序
+	 *     2. 如果是array，读取Bean的amp并将其转为数组
+	 *     3. 如果是Collection，则读取出后将其转为collect或list类型
+	 *     4. 如果是Map，读取后直接返回
+	 *     5. 否则返回null，标识不存在多个Bean
+	 * </pre>
 	 * @param descriptor
 	 * @param beanName
 	 * @param autowiredBeanNames
@@ -1623,7 +1643,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 匹配指定类型的bean实例
+	 * <pre>
+	 *     匹配指定类型的bean实例
+	 * </pre>
 	 * Find bean instances that match the required type.
 	 * Called during autowiring for the specified bean.
 	 * @param beanName the name of the bean that is about to be wired
@@ -1685,6 +1707,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * <pre>
+	 *     将候选实例添加到指定的map中
+	 * </pre>
 	 * Add an entry to the candidate map: a bean instance if available or just the resolved
 	 * type, preventing early bean initialization ahead of primary candidate selection.
 	 */
@@ -1745,6 +1770,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 *
+	 * <pre>
+	 *     检测primary标识
+	 * </pre>
 	 * Determine the primary candidate in the given set of beans.
 	 * @param candidates a Map of candidate names and candidate instances
 	 * (or candidate classes if not created yet) that match the required type
@@ -1822,7 +1851,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 判断是否为primary。根据BeanDefinition判断
+	 * <pre>
+	 *     判断是否为primary。根据BeanDefinition判断
+	 * </pre>
 	 *
 	 * Return whether the bean definition for the given bean name has been
 	 * marked as a primary bean.
@@ -1841,6 +1872,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * <pre>
+	 *     获取实例的优先级
+	 * </pre>
 	 * Return the priority assigned for the given bean instance by
 	 * the {@code javax.annotation.Priority} annotation.
 	 * <p>The default implementation delegates to the specified
@@ -1927,7 +1961,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 创建使用Optional包装的依赖
+	 * <pre>
+	 *     创建使用Optional包装的依赖
+	 * </pre>
 	 * Create an {@link Optional} wrapper for the specified dependency.
 	 */
 	private Optional<?> createOptionalDependency(
@@ -1970,6 +2006,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Serialization support
 	//---------------------------------------------------------------------
 
+	//禁用反序列化操作
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		throw new NotSerializableException("DefaultListableBeanFactory itself is not deserializable - " +
 				"just a SerializedBeanFactoryReference is");
