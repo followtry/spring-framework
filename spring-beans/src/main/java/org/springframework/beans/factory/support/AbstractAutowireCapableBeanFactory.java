@@ -631,7 +631,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * 实际创建指定bean的地方，此时已经进行了预创建处理
+	 * <pre>
+	 *     实际创建指定bean的地方，此时已经进行了预创建处理
+	 *     1. 反射，Supplier，factoryMethod，Cglib代理等方式生成实例
+	 *     2. 检查获取引用的bena信息
+	 *     3. 注入依赖的属性的引用。
+	 *     4. 执行初始化方法将bean实例初始化
+	 *     5. 注册到disposable里，方便停机时销毁
+	 * </pre>
 	 * Actually create the specified bean. Pre-creation processing has already happened
 	 * at this point, e.g. checking {@code postProcessBeforeInstantiation} callbacks.
 	 * <p>Differentiates between default bean instantiation, use of a
@@ -678,7 +685,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					//执行合并的BeanDefinition后处理器，会将依赖的bean信息解析到，不管是方法上还是属性上的
+					//执行合并的BeanDefinition后处理器，会将引用的bean信息解析到，不管是方法上还是属性上的
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -1524,6 +1531,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * 1. 先执行实例化后的后处理流程
 	 * 2. 实例化属性值，根据不同的装配类型执行不同的装配流程。
 	 * 3. 将属性值反射设置在依赖的属性上
+	 * 4. 最后获取到BeanDefinition中定义但是还未执行注入的pvs，根据setter方法执行注入
 	 *
 	 * Populate the bean instance in the given BeanWrapper with the property values
 	 * from the bean definition.

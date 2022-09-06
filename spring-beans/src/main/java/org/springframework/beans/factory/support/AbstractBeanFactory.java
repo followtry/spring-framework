@@ -252,7 +252,22 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * 获取bean实例的方法，其他getBean都是该方法的重载
+	 * <pre>
+	 *     获取bean实例的方法，其他getBean都是该方法的重载
+	 *     1. 先将beanName转为真实的beanName
+	 *     2. 从缓存中获取实例，如果实例存在，判断是否需要从FactoryBean中获取真实实例并返回
+	 *     3. 检查当前Bean是否在创建中，如果在创建中则抛出异常。
+	 *     4. 检查beanName是否在parent的BeanFactory中，如果在则从parent中取
+	 *     5. 判断是否只为检查类型，是的话则不标记为已创建，否则将其标记在已创建中
+	 *     6. 取出BeanDefinition，检查依赖，如果有依赖则先实例化依赖的Bean，并检查是否存在循环依赖
+	 *     7. 判断是单例、原型还是其他Scope范围的类型，并进行不同的处理
+	 *     7.1 如果是单例，则用单例缓存的方法包装创建Bean的方法，以便可以从缓存中取及生成bean后放入缓存中
+	 *     7.2 如果是原型，则直接获取生成的bean
+	 *     7.3 如果是其他scope，则将其包装在指定scope的方法体内获取bean，并执行不同scope的逻辑
+	 *     8. 所有步骤的bean获取完后，都需要经过过方法判断是否需要从FactoryBean中获取真实实例，需要则通过getObject方法获取真实实例，否则直接返回
+	 *     9. 如果指定了requiredType，并且和生成的Bean类型不一样，则将其转换为requiredType类型，转换失败报异常，否则直接返回转换后的结果给调用方
+	 *
+	 * </pre>
 	 * Return an instance, which may be shared or independent, of the specified bean.
 	 * @param name the name of the bean to retrieve
 	 * @param requiredType the required type of the bean to retrieve
@@ -303,6 +318,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
+			//如果父工厂存在，并且当前工厂内部存在BeanDefinition，则从父工厂中获取Bean。
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
@@ -335,11 +351,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				//mbd不能是抽象的
 				checkMergedBeanDefinition(mbd, beanName, args);
 
+				//检查是否已依赖，有依赖的情况下线将依赖Bean实例初始化完成，再初始化当前的Bean。仅保持依赖顺序，不将该依赖做赋值
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
 				//此处开始处理依赖的Bean信息，保证在初始化前Bean的依赖都已就绪
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						//检查是否有循环依赖关系，可能通过多层次进行循环依赖。beanName依赖dep，即dep被beanName依赖
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");

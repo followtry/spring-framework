@@ -19,7 +19,10 @@ package org.springframework.beans;
 import java.beans.PropertyDescriptor;
 
 /**
- *
+ * <pre>
+ *     bean 的包装器，继承了ConfigurablePropertyAccessor，PropertyAccessor，PropertyEditorRegistry, TypeConverter
+ *     可以注册属性编辑器，属性反射注入和类型转换等
+ * </pre>
  * The central interface of Spring's low-level JavaBeans infrastructure.
  *
  * <p>Typically not used directly but rather implicitly via a

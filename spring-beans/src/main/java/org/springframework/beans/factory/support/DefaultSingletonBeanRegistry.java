@@ -462,6 +462,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * <pre>
+	 *     beanName 依赖dependentBeanName，
+	 *     即dependentBeanName被beanName依赖
+	 * </pre>
+	 *
 	 * Determine whether the specified dependent bean has been registered as
 	 * dependent on the given bean or on any of its transitive dependencies.
 	 * @param beanName the name of the bean to check
@@ -483,6 +488,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		if (dependentBeans == null) {
 			return false;
 		}
+		//如果dependentBeans中包含有dependentBeanName，则表示beanName被dependentBeanName依赖，如果依赖则返回true，外层会报循环依赖的错误
 		if (dependentBeans.contains(dependentBeanName)) {
 			return true;
 		}
