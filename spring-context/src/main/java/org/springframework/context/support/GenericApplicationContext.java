@@ -41,6 +41,9 @@ import org.springframework.util.Assert;
 
 /**
  *
+ * <pre>
+ *     通用的ApplicationContext实现，自定义的实现可以考虑基于此来实现，比如SpringBoot实现的上下文即基于此。
+ * </pre>
  * 包含单个内部DefaultListableBeanFactory实例且不采用特定bean定义格式的通用ApplicationContext实现
  *
  * Generic ApplicationContext implementation that holds a single internal
@@ -96,8 +99,10 @@ import org.springframework.util.Assert;
  */
 public class GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry {
 
+	//内置的BeanFactory
 	private final DefaultListableBeanFactory beanFactory;
 
+	//资源加载器
 	@Nullable
 	private ResourceLoader resourceLoader;
 
@@ -220,6 +225,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	@Override
 	public Resource getResource(String location) {
 		if (this.resourceLoader != null) {
+			//根据给定的资源加载器获取资源
 			return this.resourceLoader.getResource(location);
 		}
 		return super.getResource(location);
@@ -314,6 +320,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	@Override
 	public AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException {
 		assertBeanFactoryActive();
+		//获取内置的BeanFactory
 		return this.beanFactory;
 	}
 
@@ -326,6 +333,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
 
+		//对BeanFactory的包装调用
 		this.beanFactory.registerBeanDefinition(beanName, beanDefinition);
 	}
 

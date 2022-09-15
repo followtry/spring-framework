@@ -24,6 +24,16 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ * <pre>
+ *     为应用提供配置能力的核心接口。
+ *     在应用程序运行时，这是只读的，但如果实现支持，则可以重新加载。
+ *     1. BeanFactory方法来访问应用的组件
+ *     2. 支持以通用的方式加载资源的能力
+ *     3. 支持发布时间给注册了的监听器
+ *     4. 支持解析消息，支持国际化
+ *     5. 从父上下文继承。后代上下文中的定义始终优先。例如，这意味着整个web应用程序可以使用单个父上下文，而每个servlet都有自己的子上下文，独立于任何其他servlet的子上下文。
+ * </pre>
+ *
  * Central interface to provide configuration for an application.
  * This is read-only while the application is running, but may be
  * reloaded if the implementation supports this.

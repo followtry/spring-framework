@@ -316,6 +316,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * <pre>
+	 *     设置自定义的自动装配候选解析器
+	 * </pre>
 	 * Set a custom autowire candidate resolver for this BeanFactory to use
 	 * when deciding whether a bean definition should be considered as a
 	 * candidate for autowiring.
@@ -365,6 +368,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of remaining BeanFactory methods
 	//---------------------------------------------------------------------
 
+	/**
+	 * 通过Class获取实例Bean的方法
+	 * @param requiredType type the bean must match; can be an interface or superclass
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
 		return getBean(requiredType, (Object[]) null);
@@ -381,6 +391,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (T) resolved;
 	}
 
+	//获取 ObjectProvider
 	@Override
 	public <T> ObjectProvider<T> getBeanProvider(Class<T> requiredType) {
 		Assert.notNull(requiredType, "Required type must not be null");
@@ -444,7 +455,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 解析出bean实例
+	 * <pre>
+	 *     解析出bean实例
+	 * </pre>
 	 *
 	 * @param requiredType
 	 * @param args
@@ -484,7 +497,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	//---------------------------------------------------------------------
 
 	/**
-	 * 判断是否粗拿在BeanDefinition信息
+	 * 判断是否存在BeanDefinition信息
 	 * @param beanName the name of the bean to look for
 	 * @return
 	 */
@@ -531,6 +544,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return getBeanNamesForType(type, true, true);
 	}
 
+	//获取指定类型的所有beanname集合
 	@Override
 	public String[] getBeanNamesForType(@Nullable Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
@@ -1102,6 +1116,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		else {
 			if (hasBeanCreationStarted()) {
+				//
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
@@ -1300,6 +1315,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		throw new NoSuchBeanDefinitionException(requiredType);
 	}
 
+	//解决有名称的bean
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private <T> NamedBeanHolder<T> resolveNamedBean(
@@ -1406,6 +1422,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 
 			Class<?> type = descriptor.getDependencyType();
+			//获取值
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			//value注解的参数名
 			if (value != null) {
@@ -1434,8 +1451,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				return multipleBeans;
 			}
 
+			//查找自动装配的候选bean
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
 			if (matchingBeans.isEmpty()) {
+				//如果查找匹配的Bean为空，并且元数据指定必须有的话，会抛出异常
 				if (isRequired(descriptor)) {
 					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);
 				}
@@ -1612,6 +1631,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return getAutowireCandidateResolver().isRequired(descriptor);
 	}
 
+	//判断类型是否是支持多个Bean，比如数组，集合，Map等
 	private boolean indicatesMultipleBeans(Class<?> type) {
 		return (type.isArray() || (type.isInterface() &&
 				(Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type))));
@@ -1644,7 +1664,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * <pre>
-	 *     匹配指定类型的bean实例
+	 *     通过类型获取到候选的Bean的名称，
 	 * </pre>
 	 * Find bean instances that match the required type.
 	 * Called during autowiring for the specified bean.
@@ -1677,6 +1697,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 		for (String candidate : candidateNames) {
+			//判断是否匹配及自动装配的候选，并将匹配的加载result中
 			if (!isSelfReference(beanName, candidate) && isAutowireCandidate(candidate, descriptor)) {
 				addCandidateEntry(result, candidate, descriptor, requiredType);
 			}
@@ -1736,7 +1757,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 *
 	 * 检查自动装配的候选者的名称
 	 * 1. 如果有primary，则使用
-	 * 2. 如果有最高优先级的候选者，则是哟经
+	 * 2. 如果有最高优先级的候选者，则使用
 	 * 3. 否则会根据匹配的依赖名称获取候选者的BeanName
 	 *
 	 * Determine the autowire candidate in the given set of beans.
@@ -1905,6 +1926,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * <pre>
+	 *     确定给定的beanNamecandidateName对是否指示自引用，即候选对象是否指向原始bean或原始bean上的工厂方法
+	 * </pre>
 	 * Determine whether the given beanName/candidateName pair indicates a self reference,
 	 * i.e. whether the candidate points back to the original bean or to a factory method
 	 * on the original bean.

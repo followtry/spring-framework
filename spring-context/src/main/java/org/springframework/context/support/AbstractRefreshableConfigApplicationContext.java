@@ -24,6 +24,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * <pre>
+ *     主要用于为ApplicationContext设置配置路径
+ * </pre>
+ *
  * {@link AbstractRefreshableApplicationContext} subclass that adds common handling
  * of specified config locations. Serves as base class for XML-based application
  * context implementations such as {@link ClassPathXmlApplicationContext} and
@@ -118,6 +122,9 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
+	 * <pre>
+	 *     解析Path的占位符
+	 * </pre>
 	 * Resolve the given path, replacing placeholders with corresponding
 	 * environment property values if necessary. Applied to config locations.
 	 * @param path the original file path
@@ -154,6 +161,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	@Override
 	public void afterPropertiesSet() {
 		if (!isActive()) {
+			//TODO by jingzhongzhi 触发执行refresh的位置
 			refresh();
 		}
 	}

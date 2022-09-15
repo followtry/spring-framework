@@ -31,7 +31,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
- * 别名注册器的实现，使用Map作为别名的存储容器
+ * <pre>
+ *     别名注册器的实现，使用Map作为别名的存储容器
+ * </pre>
  * Simple implementation of the {@link AliasRegistry} interface.
  * <p>Serves as base class for
  * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}

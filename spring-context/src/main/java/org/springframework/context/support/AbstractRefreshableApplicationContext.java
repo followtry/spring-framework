@@ -70,6 +70,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Nullable
 	private Boolean allowCircularReferences;
 
+	//持有BeanFactory
 	/** Bean factory for this context. */
 	@Nullable
 	private volatile DefaultListableBeanFactory beanFactory;
@@ -82,6 +83,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * <pre>
+	 *     支持分层的ApplicationContext
+	 * </pre>
+	 *
 	 * Create a new AbstractRefreshableApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
@@ -113,6 +118,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
+	 * <pre>
+	 *     实现刷新BeanFactory的接口
+	 * </pre>
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
@@ -127,7 +135,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
-			//加载BeanDefinition
+			//加载BeanDefinition. 可以加载xml配置也可以加载注解配置
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -181,7 +189,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
-	 * 使用DefaultListableBeanFactory作为ApplicationContext内部的BeanFactory作为其核心
+	 * <pre>
+	 *     使用DefaultListableBeanFactory作为ApplicationContext内部的BeanFactory作为其核心
+	 * </pre>
 	 *
 	 * Create an internal bean factory for this context.
 	 * Called for each {@link #refresh()} attempt.

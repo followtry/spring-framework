@@ -158,6 +158,7 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
+		//获取文件系统的配置资源
 		return new FileSystemResource(path);
 	}
 

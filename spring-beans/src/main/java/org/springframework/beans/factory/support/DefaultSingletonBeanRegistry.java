@@ -117,11 +117,16 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
 	/** Map between dependent bean names: bean name to Set of dependent bean names. */
-	//用来存储beanname和依赖的关系，key为beanName，value为被依赖的beanName的集合
+	/*
+	用来存储beanname和依赖的关系 key为被依赖的beanName，value为依赖该bean的Beanname。
+	比如 A的实例化依赖B，则key为B，value为A
+	 */
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
-	/** Map between depending bean names: bean name to Set of bean names for the bean's dependencies. */
-	//用来存储被依赖beanName和依赖BeanName的关系，可以为被依赖的bean,value为依赖的beanName的集合。可以认为是dependentBeanMap的反向映射
+	/**
+	 * Bean的依赖
+	 * Map between depending bean names: bean name to Set of bean names for the bean's dependencies. */
+	//与dependentBeanMap的key，value相关。 比如 A的实例化依赖B，则key为A，value为B
 	private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
 
@@ -149,7 +154,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
-			//将单例添加到容器中
+			/*
+			将单例添加到容器中。锁着在单例缓存中添加，同时会从单例工厂缓存和早期单例对象缓存中移除。并将其在registeredSingletons中标记已注册
+			 */
 			this.singletonObjects.put(beanName, singletonObject);
 			this.singletonFactories.remove(beanName);
 			this.earlySingletonObjects.remove(beanName);
@@ -158,6 +165,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * <pre>
+	 *     只有在指定的BeanName单例不存在的情况下才注册单例工厂的bean缓存
+	 * </pre>
+	 *
 	 * Add the given singleton factory for building the specified singleton
 	 * if necessary.
 	 * <p>To be called for eager registration of singletons, e.g. to be able to
@@ -311,6 +322,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * <pre>
+	 *     从所有的缓存中移除beanName
+	 * </pre>
+	 *
 	 * Remove the bean with the given name from the singleton cache of this factory,
 	 * to be able to clean up eager registration of a singleton if creation failed.
 	 * @param beanName the name of the bean
@@ -479,6 +494,14 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
+	/**
+	 * <pre>
+	 * </pre>
+	 * @param beanName
+	 * @param dependentBeanName
+	 * @param alreadySeen
+	 * @return
+	 */
 	private boolean isDependent(String beanName, String dependentBeanName, @Nullable Set<String> alreadySeen) {
 		if (alreadySeen != null && alreadySeen.contains(beanName)) {
 			return false;
@@ -492,6 +515,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		if (dependentBeans.contains(dependentBeanName)) {
 			return true;
 		}
+		//1. transitiveDependency = E
+		//1. transitiveDependency = B
 		for (String transitiveDependency : dependentBeans) {
 			if (alreadySeen == null) {
 				alreadySeen = new HashSet<>();
@@ -567,6 +592,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * <pre>
+	 *     将缓存Map都清空
+	 * </pre>
 	 * Clear all cached singleton instances in this registry.
 	 * @since 4.3.15
 	 */

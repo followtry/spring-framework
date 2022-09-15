@@ -27,6 +27,11 @@ import org.springframework.core.io.ProtocolResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * <pre>
+ *     将由大多数应用应用上下文实现，除了提供ApplicationContext的能力外，还提供了配置一个ApplicationContext的工具
+ * </pre>
+ *
  * SPI interface to be implemented by most if not all application contexts.
  * Provides facilities to configure an application context in addition
  * to the application context client methods in the

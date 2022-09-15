@@ -24,6 +24,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ *
+ * <pre>
+ *     独立XML应用上下文
+ * </pre>
+ *
  * Standalone XML application context, taking the context definition files
  * from the class path, interpreting plain paths as class path resource names
  * that include the package path (e.g. "mypackage/myresource.txt"). Useful for
@@ -140,6 +145,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 
 		super(parent);
 		setConfigLocations(configLocations);
+		//执行Spring的刷新流程，启动整个初始化流程
 		if (refresh) {
 			refresh();
 		}
@@ -197,6 +203,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 		Assert.notNull(clazz, "Class argument must not be null");
 		this.configResources = new Resource[paths.length];
 		for (int i = 0; i < paths.length; i++) {
+			//获取Classpath路径的配资资源
 			this.configResources[i] = new ClassPathResource(paths[i], clazz);
 		}
 		refresh();

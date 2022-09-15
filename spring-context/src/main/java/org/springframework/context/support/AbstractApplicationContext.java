@@ -85,7 +85,8 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * <pre>
- *     ApplicationContext接口的最核心实现，所有最终的ApplicationContext都使用该实现并对其进行部分更改
+ *     ApplicationContext接口的最核心实现，所有最终的ApplicationContext都使用该实现并对其进行部分更改。
+ *     对于ApplicationContext体系来说最重要的类，实现了ApplicationContext体系的大部分功能
  * </pre>
  *
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
@@ -351,6 +352,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
+		//Spring默认使用的是标准环境 StandardEnvironment
 		if (this.environment == null) {
 			this.environment = createEnvironment();
 		}
@@ -388,6 +390,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * <pre>
+	 *     广播事件给所有的监听器
+	 * </pre>
+	 *
 	 * Publish the given event to all listeners.
 	 * <p>Note: Listeners get initialized after the MessageSource, to be able
 	 * to access it within listener implementations. Thus, MessageSource
@@ -505,6 +511,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	//---------------------------------------------------------------------
 
 	/**
+	 *
+	 * 如果parent不为空，则将其合并并设置到当前的Environment中
+	 *
 	 * Set the parent of this application context.
 	 * <p>The parent {@linkplain ApplicationContext#getEnvironment() environment} is
 	 * {@linkplain ConfigurableEnvironment#merge(ConfigurableEnvironment) merged} with
@@ -524,7 +533,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * 添加BeanFactory的后处理器
+	 * <pre>
+	 *     添加BeanFactory的后处理器
+	 * </pre>
 	 * @param postProcessor the factory processor to register
 	 */
 	@Override
@@ -639,6 +650,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Initialize event multicaster for this context.
 				//实例化并注册事件广播器单例,对于SpringBoot无用，SpringBoot自己实现了广播器org.springframework.boot.context.event.EventPublishingRunListener
+				//对于SpringBoot来说，此时初始化事件广播器是有点晚了
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
@@ -710,7 +722,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
-		//初始化占位符属性源
+		//初始化占位符属性源，在应用启动最开始的位置就已经在初始化加载的配置属性，而在此之前就已经通过监听器的方式执行了配置文件内容的加载
 		// Initialize any placeholder property sources in the context environment.
 		initPropertySources();
 
@@ -1024,6 +1036,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * {@link org.springframework.context.event.ContextRefreshedEvent}.
 	 */
 	protected void finishRefresh() {
+		//清理上下文资源缓存
 		// Clear context-level resource caches (such as ASM metadata from scanning).
 		clearResourceCaches();
 
