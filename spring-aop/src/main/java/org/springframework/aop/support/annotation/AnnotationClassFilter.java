@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 通过class上的注解判断是否生效
  * Simple ClassFilter that looks for a specific Java 5 annotation
  * being present on a class.
  *
@@ -63,6 +64,7 @@ public class AnnotationClassFilter implements ClassFilter {
 
 	@Override
 	public boolean matches(Class<?> clazz) {
+		//如果要检查继承，则将其父类和接口都查找注解是否存在，否则只查看当前类是否存在注解
 		return (this.checkInherited ? AnnotatedElementUtils.hasAnnotation(clazz, this.annotationType) :
 				clazz.isAnnotationPresent(this.annotationType));
 	}

@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 注解类型的切入点匹配器，用于指定class级别和method级别的匹配
  * Simple Pointcut that looks for a specific Java 5 annotation
  * being present on a {@link #forClassAnnotation class} or
  * {@link #forMethodAnnotation method}.
@@ -59,7 +60,9 @@ public class AnnotationMatchingPointcut implements Pointcut {
 	 * @see AnnotationClassFilter#AnnotationClassFilter(Class, boolean)
 	 */
 	public AnnotationMatchingPointcut(Class<? extends Annotation> classAnnotationType, boolean checkInherited) {
+		//会查找当前类的父类和接口上是否存在指定注解
 		this.classFilter = new AnnotationClassFilter(classAnnotationType, checkInherited);
+		//指定方法级别永远为true，即不匹配方法只匹配class
 		this.methodMatcher = MethodMatcher.TRUE;
 	}
 

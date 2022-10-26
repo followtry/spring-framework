@@ -61,12 +61,15 @@ import org.springframework.validation.annotation.Validated;
 public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvisingPostProcessor
 		implements InitializingBean {
 
+	//指定的校验注解了，需要将该注解设置在类上才有效
 	private Class<? extends Annotation> validatedAnnotationType = Validated.class;
 
+	//外部实例化的校验器
 	@Nullable
 	private Validator validator;
 
 
+	//设置注解，除了默认注解也可以设置其他注解，但只能有一个
 	/**
 	 * Set the 'validated' annotation type.
 	 * The default validated annotation type is the {@link Validated} annotation.
@@ -85,6 +88,7 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 	 * <p>Default is the default ValidatorFactory's default Validator.
 	 */
 	public void setValidator(Validator validator) {
+		//设置校验器，如果是LocalValidatorFactoryBean类型则获取其真实校验器，如果是SpringValidatorAdapter类型则将其解包
 		// Unwrap to the native Validator with forExecutables support
 		if (validator instanceof LocalValidatorFactoryBean) {
 			this.validator = ((LocalValidatorFactoryBean) validator).getValidator();
@@ -97,6 +101,7 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 		}
 	}
 
+	//通过Factory的方式获取校验器
 	/**
 	 * Set the JSR-303 ValidatorFactory to delegate to for validating methods,
 	 * using its default Validator.
@@ -110,6 +115,8 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 
 	@Override
 	public void afterPropertiesSet() {
+		//设置AOP所必须的advisor，为其构造PointCut(注解方式)，并为其设置advice，用于执行AOP切面逻辑
+		//会查找当前类的父类和接口上是否存在指定注解
 		Pointcut pointcut = new AnnotationMatchingPointcut(this.validatedAnnotationType, true);
 		this.advisor = new DefaultPointcutAdvisor(pointcut, createMethodValidationAdvice(this.validator));
 	}

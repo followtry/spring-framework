@@ -39,6 +39,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class ProxyTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration {
 
+	//将事务的Advisor加入到Spring的IOC中，并为其设置了advice（transactionInterceptor）和pointcut(transactionAttributeSource),这样在开启AOP后就会遍历所有的Bean，并对符合条件的进行代理和责任链的调用
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor(

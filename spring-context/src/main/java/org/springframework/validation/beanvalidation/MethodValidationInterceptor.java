@@ -37,6 +37,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * AOP的方法拦截器，用于在实际执行前执行约束校验
+ *
  * An AOP Alliance {@link MethodInterceptor} implementation that delegates to a
  * JSR-303 provider for performing method-level validation on annotated methods.
  *
@@ -93,14 +95,18 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 			return invocation.proceed();
 		}
 
+		//检测校验所属分组
 		Class<?>[] groups = determineValidationGroups(invocation);
 
 		// Standard Bean Validation 1.1 API
 		ExecutableValidator execVal = this.validator.forExecutables();
+		//待校验的方法
 		Method methodToValidate = invocation.getMethod();
 		Set<ConstraintViolation<Object>> result;
 
 		try {
+			//校验器先校验参数，类，方法，参数和指定分组。
+			//在往里就是hibernate-validation的内容了，spring就不再管理只需要获取其返回值即可
 			result = execVal.validateParameters(
 					invocation.getThis(), methodToValidate, invocation.getArguments(), groups);
 		}
@@ -112,6 +118,7 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 			result = execVal.validateParameters(
 					invocation.getThis(), methodToValidate, invocation.getArguments(), groups);
 		}
+		//如果校验参数不为空，则抛出ConstraintViolationException异常，否则执行方法并校验返回值
 		if (!result.isEmpty()) {
 			throw new ConstraintViolationException(result);
 		}
@@ -148,6 +155,10 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 	}
 
 	/**
+	 * <pre>
+	 *     检查方法上的注解或类上的注解，如果都不存在则返回class空数组，否则返回指定的分组，方法级别的Validated注解比class级别的优先级高
+	 * </pre>
+	 *
 	 * Determine the validation groups to validate against for the given method invocation.
 	 * <p>Default are the validation groups as specified in the {@link Validated} annotation
 	 * on the containing target class of the method.

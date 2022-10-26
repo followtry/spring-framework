@@ -82,6 +82,7 @@ abstract class AnnotationsScanner {
 	private static <C, R> R process(C context, AnnotatedElement source,
 			SearchStrategy searchStrategy, AnnotationsProcessor<C, R> processor) {
 
+		//搜索类
 		if (source instanceof Class) {
 			return processClass(context, (Class<?>) source, searchStrategy, processor);
 		}
@@ -95,16 +96,22 @@ abstract class AnnotationsScanner {
 	private static <C, R> R processClass(C context, Class<?> source,
 			SearchStrategy searchStrategy, AnnotationsProcessor<C, R> processor) {
 
+		//按照不同的策略执行不同的搜索
 		switch (searchStrategy) {
 			case DIRECT:
+				//只查当前元素
 				return processElement(context, source, processor);
 			case INHERITED_ANNOTATIONS:
+				//当前类的嵌套注解，即包括注解和元注解
 				return processClassInheritedAnnotations(context, source, searchStrategy, processor);
 			case SUPERCLASS:
+				//仅查找超类，不包含接口
 				return processClassHierarchy(context, source, processor, false, false);
 			case TYPE_HIERARCHY:
+				//查找超类包括接口，一般用到这个级别就可以了，也就是
 				return processClassHierarchy(context, source, processor, true, false);
 			case TYPE_HIERARCHY_AND_ENCLOSING_CLASSES:
+				//查找超类包括接口和封闭类
 				return processClassHierarchy(context, source, processor, true, true);
 		}
 		throw new IllegalStateException("Unsupported search strategy " + searchStrategy);
@@ -190,6 +197,7 @@ abstract class AnnotationsScanner {
 				return result;
 			}
 			aggregateIndex[0]++;
+			//如果包含接口，则遍历其所有的接口执行查询注解
 			if (includeInterfaces) {
 				for (Class<?> interfaceType : source.getInterfaces()) {
 					R interfacesResult = processClassHierarchy(context, aggregateIndex,
@@ -199,6 +207,7 @@ abstract class AnnotationsScanner {
 					}
 				}
 			}
+			//查询其所有的超类查找指定
 			Class<?> superclass = source.getSuperclass();
 			if (superclass != Object.class && superclass != null) {
 				R superclassResult = processClassHierarchy(context, aggregateIndex,

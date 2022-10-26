@@ -25,6 +25,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.Nullable;
 
 /**
+ * 将advisor给指定的bean
+ *
  * Base class for {@link BeanPostProcessor} implementations that apply a
  * Spring AOP {@link Advisor} to specific beans.
  *
@@ -76,6 +78,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 					advised.addAdvisor(0, this.advisor);
 				}
 				else {
+					//将其设置进advisor链
 					advised.addAdvisor(this.advisor);
 				}
 				return bean;

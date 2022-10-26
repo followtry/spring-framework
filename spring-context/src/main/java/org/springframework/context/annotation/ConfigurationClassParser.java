@@ -539,7 +539,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 递归手机所有的Import注解上的import注册器
+	 * 递归收集所有的Import注解上的import注册器
 	 *
 	 * Recursively collect all declared {@code @Import} values. Unlike most
 	 * meta-annotations it is valid to have several {@code @Import}s declared with
@@ -583,6 +583,7 @@ class ConfigurationClassParser {
 			this.importStack.push(configClass);
 			try {
 				for (SourceClass candidate : importCandidates) {
+					//如果有多级的Import，则会通过该if方法块一直递归处理
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();

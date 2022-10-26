@@ -95,6 +95,7 @@ final class TypeMappedAnnotations implements MergedAnnotations {
 		if (this.annotationFilter.matches(annotationType)) {
 			return false;
 		}
+		//scan方法已经按策略查找到了所有的可能的注解，IsPresent的泛型返回值为Bool类型
 		return Boolean.TRUE.equals(scan(annotationType,
 				IsPresent.get(this.repeatableContainers, this.annotationFilter, false)));
 	}
@@ -239,6 +240,7 @@ final class TypeMappedAnnotations implements MergedAnnotations {
 			return processor.finish(result);
 		}
 		if (this.element != null && this.searchStrategy != null) {
+			//开始搜索注解
 			return AnnotationsScanner.scan(criteria, this.element, this.searchStrategy, processor);
 		}
 		return null;
@@ -273,6 +275,7 @@ final class TypeMappedAnnotations implements MergedAnnotations {
 
 
 	/**
+	 * 注解处理器
 	 * {@link AnnotationsProcessor} used to detect if an annotation is directly
 	 * present or meta-present.
 	 */

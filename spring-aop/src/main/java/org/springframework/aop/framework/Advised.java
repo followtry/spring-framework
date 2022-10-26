@@ -115,6 +115,9 @@ public interface Advised extends TargetClassAware {
 	Advisor[] getAdvisors();
 
 	/**
+	 * <pre>
+	 *     将advisor添加到链的末尾
+	 * </pre>
 	 * Add an advisor at the end of the advisor chain.
 	 * <p>The Advisor may be an {@link org.springframework.aop.IntroductionAdvisor},
 	 * in which new interfaces will be available when a proxy is next obtained

@@ -27,6 +27,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
 /**
+ * <pre>
+ *     需要开启事务时需要添加当前的注解，使其能通过Import将 ProxyTransactionManagementConfiguration 引入，再ProxyTransactionManagementConfiguration内设置事务的advisor使其生效
+ * </pre>
+ *
  * Enables Spring's annotation-driven transaction management capability, similar to
  * the support found in Spring's {@code <tx:*>} XML namespace. To be used on
  * {@link org.springframework.context.annotation.Configuration @Configuration}

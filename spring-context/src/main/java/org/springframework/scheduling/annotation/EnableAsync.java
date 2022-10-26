@@ -28,7 +28,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
-/**
+/**<pre>
+ * 		启动异步处理
+ * </pre>
  * Enables Spring's asynchronous method execution capability, similar to functionality
  * found in Spring's {@code <task:*>} XML namespace.
  *

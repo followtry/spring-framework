@@ -32,6 +32,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.function.SingletonSupplier;
 
 /**
+ * <pre>
+ *     执行异步的注解处理器
+ * </pre>
+ *
  * Bean post-processor that automatically applies asynchronous invocation
  * behavior to any bean that carries the {@link Async} annotation at class or
  * method-level by adding a corresponding {@link AsyncAnnotationAdvisor} to the
@@ -77,9 +81,11 @@ public class AsyncAnnotationBeanPostProcessor extends AbstractBeanFactoryAwareAd
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//提供的异步的线程池的supplier
 	@Nullable
 	private Supplier<Executor> executor;
 
+	//异步时的异常处理器
 	@Nullable
 	private Supplier<AsyncUncaughtExceptionHandler> exceptionHandler;
 

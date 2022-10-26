@@ -33,6 +33,9 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.ClassUtils;
 
 /**
+ * <pre>
+ *     注解方式的事务切面
+ * </pre>
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
  * BeanDefinitionParser} implementation that allows users to easily configure
  * all the infrastructure beans required to enable annotation-driven transaction

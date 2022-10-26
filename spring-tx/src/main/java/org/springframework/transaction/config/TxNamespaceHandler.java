@@ -21,6 +21,9 @@ import org.w3c.dom.Element;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
+ * <pre>
+ *     xml配置方式的事务切面处理器，Spring较旧的方式
+ * </pre>
  * {@code NamespaceHandler} allowing for the configuration of
  * declarative transaction management using either XML or using annotations.
  *

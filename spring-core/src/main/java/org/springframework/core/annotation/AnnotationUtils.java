@@ -526,6 +526,7 @@ public abstract class AnnotationUtils {
 			return method.getDeclaredAnnotation(annotationType);
 		}
 
+		//根据其搜索策略，会查找当前类及其所有父类和所有接口上是否有指定的注解
 		// Exhaustive retrieval of merged annotations...
 		return MergedAnnotations.from(method, SearchStrategy.TYPE_HIERARCHY, RepeatableContainers.none())
 				.get(annotationType).withNonMergedAttributes()

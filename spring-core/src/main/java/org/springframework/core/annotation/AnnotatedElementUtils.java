@@ -508,6 +508,7 @@ public abstract class AnnotatedElementUtils {
 	}
 
 	/**
+	 * 搜索一个类及其所有非和所有接口中是否存在指定的注解
 	 * Determine if an annotation of the specified {@code annotationType}
 	 * is <em>available</em> on the supplied {@link AnnotatedElement} or
 	 * within the annotation hierarchy <em>above</em> the specified element.
@@ -527,6 +528,7 @@ public abstract class AnnotatedElementUtils {
 				AnnotationsScanner.hasPlainJavaAnnotationsOnly(element)) {
 			return element.isAnnotationPresent(annotationType);
 		}
+		//findAnnotations用来生成实例，而isPresent方法内会先去搜索可能存在的注解
 		// Exhaustive retrieval of merged annotations...
 		return findAnnotations(element).isPresent(annotationType);
 	}
