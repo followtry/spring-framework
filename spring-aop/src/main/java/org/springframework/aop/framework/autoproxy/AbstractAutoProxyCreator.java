@@ -289,16 +289,19 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	@Override
 	public boolean postProcessAfterInstantiation(Object bean, String beanName) {
+		//实例化后不执行处理
 		return true;
 	}
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		//不处理属性值
 		return pvs;
 	}
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+		//初始化前不执行
 		return bean;
 	}
 
@@ -311,9 +314,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
+		//在初始化后执行代理，参数里的bean为原始Bean，已经完成了所有自带功能的实例化及初始化
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
+				//返回的bean已经是被代理后的Bean
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}

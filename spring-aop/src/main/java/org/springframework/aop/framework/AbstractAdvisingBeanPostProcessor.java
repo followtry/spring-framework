@@ -63,6 +63,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 		return bean;
 	}
 
+	//当前类的优先级是最低的，因此其必定会在AOP代理之后执行，被AOP代理后的bean类型为Advised，因此这样执行是没有问题的
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
@@ -72,6 +73,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 
 		if (bean instanceof Advised) {
 			Advised advised = (Advised) bean;
+			//可以判断当前类是否是否匹配给定的advisor，匹配的话则将其加入到advisor链中
 			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
 				// Add our local Advisor to the existing proxy's Advisor chain...
 				if (this.beforeExistingAdvisors) {

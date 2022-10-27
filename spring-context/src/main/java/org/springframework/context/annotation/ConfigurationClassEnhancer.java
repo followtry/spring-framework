@@ -270,6 +270,10 @@ class ConfigurationClassEnhancer {
 
 
 	/**
+	 * <pre>
+	 *     通过Bean注解方法生成bean的方法拦截器，为了该方式，所以需要Configuration注解的类生成代理类进行增强
+	 * </pre>
+	 *
 	 * Intercepts the invocation of any {@link Bean}-annotated methods in order to ensure proper
 	 * handling of bean semantics such as scoping and AOP proxying.
 	 * @see Bean

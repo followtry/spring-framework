@@ -103,6 +103,12 @@ public abstract class AopProxyUtils {
 	}
 
 	/**
+	 * <pre>
+	 *     检测完整的代理接口，并判断将Advised接口添加到代理接口中。
+	 *     将Advised添加到代理接口后，后续可以通过将Bean强转为Advised类型为其添加advisor
+	 * </pre>
+	 *
+	 *
 	 * Determine the complete set of interfaces to proxy for the given AOP configuration.
 	 * <p>This will always add the {@link Advised} interface unless the AdvisedSupport's
 	 * {@link AdvisedSupport#setOpaque "opaque"} flag is on. Always adds the

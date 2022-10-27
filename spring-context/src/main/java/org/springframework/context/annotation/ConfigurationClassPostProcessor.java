@@ -397,6 +397,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * <pre>
+	 *     对于Configuration注解的类，都使用CGLIB增强
+	 *
+	 * </pre>
+	 *
 	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
 	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
 	 * Candidate status is determined by BeanDefinition attribute metadata.
@@ -445,6 +450,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 							"is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor " +
 							"return type: Consider declaring such methods as 'static'.");
 				}
+				//只有是FULL配置类即被 @Configuration 注解的Bean才是候选Bean
 				configBeanDefs.put(beanName, (AbstractBeanDefinition) beanDef);
 			}
 		}
