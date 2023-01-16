@@ -19,17 +19,18 @@ package org.springframework.web.filter;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import org.springframework.web.testfixture.servlet.MockFilterChain;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
@@ -102,10 +103,11 @@ public class ForwardedHeaderFilterTests {
 		assertThat(this.filter.shouldNotFilter(new MockHttpServletRequest())).isTrue();
 	}
 
-	@Test
-	public void forwardedRequest() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {"https", "wss"})
+	public void forwardedRequest(String protocol) throws Exception {
 		this.request.setRequestURI("/mvc-showcase");
-		this.request.addHeader(X_FORWARDED_PROTO, "https");
+		this.request.addHeader(X_FORWARDED_PROTO, protocol);
 		this.request.addHeader(X_FORWARDED_HOST, "84.198.58.199");
 		this.request.addHeader(X_FORWARDED_PORT, "443");
 		this.request.addHeader("foo", "bar");
@@ -115,8 +117,8 @@ public class ForwardedHeaderFilterTests {
 		HttpServletRequest actual = (HttpServletRequest) this.filterChain.getRequest();
 
 		assertThat(actual).isNotNull();
-		assertThat(actual.getRequestURL().toString()).isEqualTo("https://84.198.58.199/mvc-showcase");
-		assertThat(actual.getScheme()).isEqualTo("https");
+		assertThat(actual.getRequestURL().toString()).isEqualTo(protocol + "://84.198.58.199/mvc-showcase");
+		assertThat(actual.getScheme()).isEqualTo(protocol);
 		assertThat(actual.getServerName()).isEqualTo("84.198.58.199");
 		assertThat(actual.getServerPort()).isEqualTo(443);
 		assertThat(actual.isSecure()).isTrue();

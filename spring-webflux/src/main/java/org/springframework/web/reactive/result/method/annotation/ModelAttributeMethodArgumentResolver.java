@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import org.springframework.web.server.ServerWebExchange;
  * constructor and then added to the model. Once created the attribute is
  * populated via data binding to the request (form data, query params).
  * Validation also may be applied if the argument is annotated with
- * {@code @javax.validation.Valid} or Spring's own
+ * {@code @jakarta.validation.Valid} or Spring's own
  * {@code @org.springframework.validation.annotation.Validated}.
  *
  * <p>When this handler is created with {@code useDefaultResolution=true}
@@ -247,7 +247,7 @@ public class ModelAttributeMethodArgumentResolver extends HandlerMethodArgumentR
 						}
 					}
 				}
-				value = (value instanceof List ? ((List<?>) value).toArray() : value);
+				value = (value instanceof List<?> list ? list.toArray() : value);
 				MethodParameter methodParam = new MethodParameter(ctor, i);
 				if (value == null && methodParam.isOptional()) {
 					args[i] = (methodParam.getParameterType() == Optional.class ? Optional.empty() : null);

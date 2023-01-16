@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.web.method.annotation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -27,9 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,8 +37,12 @@ import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -46,6 +50,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.SmartValidator;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.ValidationAnnotationUtils;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -65,7 +70,7 @@ import org.springframework.web.multipart.support.StandardServletPartUtils;
  * <p>Model attributes are obtained from the model or created with a default
  * constructor (and then added to the model). Once created the attribute is
  * populated via data binding to Servlet request parameters. Validation may be
- * applied if the argument is annotated with {@code @javax.validation.Valid}.
+ * applied if the argument is annotated with {@code @jakarta.validation.Valid}.
  * or Spring's own {@code @org.springframework.validation.annotation.Validated}.
  *
  * <p>When this handler is created with {@code annotationNotRequired=true}
@@ -75,6 +80,7 @@ import org.springframework.web.multipart.support.StandardServletPartUtils;
  * @author Rossen Stoyanchev
  * @author Juergen Hoeller
  * @author Sebastien Deleuze
+ * @author Vladislav Kisel
  * @since 3.1
  */
 public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
@@ -140,7 +146,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 			try {
 				attribute = createAttribute(name, parameter, binderFactory, webRequest);
 			}
-			catch (BindException ex) {
+			catch (MethodArgumentNotValidException ex) {
 				if (isBindExceptionRequired(parameter)) {
 					// No BindingResult parameter -> fail with BindException
 					throw ex;
@@ -255,6 +261,14 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 			String paramName = paramNames[i];
 			Class<?> paramType = paramTypes[i];
 			Object value = webRequest.getParameterValues(paramName);
+
+			// Since WebRequest#getParameter exposes a single-value parameter as an array
+			// with a single element, we unwrap the single value in such cases, analogous
+			// to WebExchangeDataBinder.addBindValue(Map<String, Object>, String, List<?>).
+			if (ObjectUtils.isArray(value) && Array.getLength(value) == 1) {
+				value = Array.get(value, 0);
+			}
+
 			if (value == null) {
 				if (fieldDefaultPrefix != null) {
 					value = webRequest.getParameter(fieldDefaultPrefix + paramName);
@@ -268,6 +282,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 					}
 				}
 			}
+
 			try {
 				MethodParameter methodParam = new FieldAwareConstructorParameter(ctor, i, paramName);
 				if (value == null && methodParam.isOptional()) {
@@ -300,7 +315,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 			if (!parameter.isOptional()) {
 				try {
 					Object target = BeanUtils.instantiateClass(ctor, args);
-					throw new BindException(result) {
+					throw new MethodArgumentNotValidException(parameter, result) {
 						@Override
 						public Object getTarget() {
 							return target;
@@ -311,7 +326,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 					// swallow and proceed without target instance
 				}
 			}
-			throw new BindException(result);
+			throw new MethodArgumentNotValidException(parameter, result);
 		}
 
 		return BeanUtils.instantiateClass(ctor, args);
@@ -337,9 +352,10 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 				return (files.size() == 1 ? files.get(0) : files);
 			}
 		}
-		else if (StringUtils.startsWithIgnoreCase(request.getHeader("Content-Type"), "multipart/")) {
+		else if (StringUtils.startsWithIgnoreCase(
+				request.getHeader(HttpHeaders.CONTENT_TYPE), MediaType.MULTIPART_FORM_DATA_VALUE)) {
 			HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-			if (servletRequest != null) {
+			if (servletRequest != null && HttpMethod.POST.matches(servletRequest.getMethod())) {
 				List<Part> parts = StandardServletPartUtils.getParts(servletRequest, paramName);
 				if (!parts.isEmpty()) {
 					return (parts.size() == 1 ? parts.get(0) : parts);
@@ -351,7 +367,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 
 	/**
 	 * Validate the model attribute if applicable.
-	 * <p>The default implementation checks for {@code @javax.validation.Valid},
+	 * <p>The default implementation checks for {@code @jakarta.validation.Valid},
 	 * Spring's {@link org.springframework.validation.annotation.Validated},
 	 * and custom annotations whose name starts with "Valid".
 	 * @param binder the DataBinder to be used
@@ -371,7 +387,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 
 	/**
 	 * Validate the specified candidate value if applicable.
-	 * <p>The default implementation checks for {@code @javax.validation.Valid},
+	 * <p>The default implementation checks for {@code @jakarta.validation.Valid},
 	 * Spring's {@link org.springframework.validation.annotation.Validated},
 	 * and custom annotations whose name starts with "Valid".
 	 * @param binder the DataBinder to be used
@@ -390,9 +406,9 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 			Object[] validationHints = ValidationAnnotationUtils.determineValidationHints(ann);
 			if (validationHints != null) {
 				for (Validator validator : binder.getValidators()) {
-					if (validator instanceof SmartValidator) {
+					if (validator instanceof SmartValidator smartValidator) {
 						try {
-							((SmartValidator) validator).validateValue(targetType, fieldName, value,
+							smartValidator.validateValue(targetType, fieldName, value,
 									binder.getBindingResult(), validationHints);
 						}
 						catch (IllegalArgumentException ex) {

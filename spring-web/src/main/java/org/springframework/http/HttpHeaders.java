@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -420,6 +420,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	};
 
 
+	@SuppressWarnings("serial")
 	final MultiValueMap<String, String> headers;
 
 
@@ -485,7 +486,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 						range.getWeight() == Locale.LanguageRange.MAX_WEIGHT ?
 								range.getRange() :
 								range.getRange() + ";q=" + decimal.format(range.getWeight()))
-				.collect(Collectors.toList());
+				.toList();
 		set(ACCEPT_LANGUAGE, toCommaDelimitedString(values));
 	}
 
@@ -510,7 +511,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	public void setAcceptLanguageAsLocales(List<Locale> locales) {
 		setAcceptLanguage(locales.stream()
 				.map(locale -> new Locale.LanguageRange(locale.toLanguageTag()))
-				.collect(Collectors.toList()));
+				.toList());
 	}
 
 	/**
@@ -528,7 +529,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 		return ranges.stream()
 				.map(range -> Locale.forLanguageTag(range.getRange()))
 				.filter(locale -> StringUtils.hasText(locale.getDisplayName()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -589,18 +590,19 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 * Return the value of the {@code Access-Control-Allow-Methods} response header.
 	 */
 	public List<HttpMethod> getAccessControlAllowMethods() {
-		List<HttpMethod> result = new ArrayList<>();
 		String value = getFirst(ACCESS_CONTROL_ALLOW_METHODS);
 		if (value != null) {
 			String[] tokens = StringUtils.tokenizeToStringArray(value, ",");
+			List<HttpMethod> result = new ArrayList<>();
 			for (String token : tokens) {
-				HttpMethod resolved = HttpMethod.resolve(token);
-				if (resolved != null) {
-					result.add(resolved);
-				}
+				HttpMethod method = HttpMethod.valueOf(token);
+				result.add(method);
 			}
+			return result;
 		}
-		return result;
+		else {
+			return Collections.emptyList();
+		}
 	}
 
 	/**
@@ -682,7 +684,13 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 */
 	@Nullable
 	public HttpMethod getAccessControlRequestMethod() {
-		return HttpMethod.resolve(getFirst(ACCESS_CONTROL_REQUEST_METHOD));
+		String requestMethod = getFirst(ACCESS_CONTROL_REQUEST_METHOD);
+		if (requestMethod != null) {
+			return HttpMethod.valueOf(requestMethod);
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
@@ -743,17 +751,15 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 		String value = getFirst(ALLOW);
 		if (StringUtils.hasLength(value)) {
 			String[] tokens = StringUtils.tokenizeToStringArray(value, ",");
-			List<HttpMethod> result = new ArrayList<>(tokens.length);
+			Set<HttpMethod> result = new LinkedHashSet<>(tokens.length);
 			for (String token : tokens) {
-				HttpMethod resolved = HttpMethod.resolve(token);
-				if (resolved != null) {
-					result.add(resolved);
-				}
+				HttpMethod method = HttpMethod.valueOf(token);
+				result.add(method);
 			}
-			return EnumSet.copyOf(result);
+			return result;
 		}
 		else {
-			return EnumSet.noneOf(HttpMethod.class);
+			return Collections.emptySet();
 		}
 	}
 
@@ -984,7 +990,8 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	/**
 	 * Return the {@linkplain MediaType media type} of the body, as specified
 	 * by the {@code Content-Type} header.
-	 * <p>Returns {@code null} when the content-type is unknown.
+	 * <p>Returns {@code null} when the {@code Content-Type} header is not set.
+	 * @throws InvalidMediaTypeException if the media type value cannot be parsed
 	 */
 	@Nullable
 	public MediaType getContentType() {
@@ -1600,7 +1607,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	}
 
 	/**
-	 * Retrieve a combined result from the field values of multi-valued headers.
+	 * Retrieve a combined result from the field values of multivalued headers.
 	 * @param headerName the header name
 	 * @return the combined result
 	 * @since 4.3
@@ -1766,19 +1773,19 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 
 
 	@Override
-	public boolean equals(@Nullable Object other) {
-		if (this == other) {
+	public boolean equals(@Nullable Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(other instanceof HttpHeaders)) {
+		if (!(obj instanceof HttpHeaders other)) {
 			return false;
 		}
-		return unwrap(this).equals(unwrap((HttpHeaders) other));
+		return unwrap(this).equals(unwrap(other));
 	}
 
 	private static MultiValueMap<String, String> unwrap(HttpHeaders headers) {
-		while (headers.headers instanceof HttpHeaders) {
-			headers = (HttpHeaders) headers.headers;
+		while (headers.headers instanceof HttpHeaders httpHeaders) {
+			headers = httpHeaders;
 		}
 		return headers.headers;
 	}
@@ -1803,8 +1810,8 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 * @since 5.3
 	 */
 	public static HttpHeaders readOnlyHttpHeaders(MultiValueMap<String, String> headers) {
-		return (headers instanceof HttpHeaders ?
-				readOnlyHttpHeaders((HttpHeaders) headers) : new ReadOnlyHttpHeaders(headers));
+		return (headers instanceof HttpHeaders httpHeaders ? readOnlyHttpHeaders(httpHeaders) :
+				new ReadOnlyHttpHeaders(headers));
 	}
 
 	/**

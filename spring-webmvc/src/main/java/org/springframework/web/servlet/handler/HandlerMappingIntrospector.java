@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -83,34 +82,7 @@ public class HandlerMappingIntrospector
 	@Nullable
 	private List<HandlerMapping> handlerMappings;
 
-	@Nullable
-	private Map<HandlerMapping, PathPatternMatchableHandlerMapping> pathPatternHandlerMappings = new ConcurrentHashMap<>();
-
-
-	/**
-	 * Constructor for use with {@link ApplicationContextAware}.
-	 */
-	public HandlerMappingIntrospector() {
-	}
-
-	/**
-	 * Constructor that detects the configured {@code HandlerMapping}s in the
-	 * given {@code ApplicationContext} or falls back on
-	 * "DispatcherServlet.properties" like the {@code DispatcherServlet}.
-	 * @deprecated as of 4.3.12, in favor of {@link #setApplicationContext}
-	 */
-	@Deprecated
-	public HandlerMappingIntrospector(ApplicationContext context) {
-		this.handlerMappings = initHandlerMappings(context);
-	}
-
-
-	/**
-	 * Return the configured or detected HandlerMapping's.
-	 */
-	public List<HandlerMapping> getHandlerMappings() {
-		return (this.handlerMappings != null ? this.handlerMappings : Collections.emptyList());
-	}
+	private Map<HandlerMapping, PathPatternMatchableHandlerMapping> pathPatternHandlerMappings = Collections.emptyMap();
 
 
 	@Override
@@ -125,6 +97,13 @@ public class HandlerMappingIntrospector
 			this.handlerMappings = initHandlerMappings(this.applicationContext);
 			this.pathPatternHandlerMappings = initPathPatternMatchableHandlerMappings(this.handlerMappings);
 		}
+	}
+
+	/**
+	 * Return the configured or detected {@code HandlerMapping}s.
+	 */
+	public List<HandlerMapping> getHandlerMappings() {
+		return (this.handlerMappings != null ? this.handlerMappings : Collections.emptyList());
 	}
 
 
@@ -179,8 +158,7 @@ public class HandlerMappingIntrospector
 			HttpServletRequest request, boolean ignoreException,
 			BiFunction<HandlerMapping, HandlerExecutionChain, T> matchHandler) throws Exception {
 
-		Assert.notNull(this.handlerMappings, "Handler mappings not initialized");
-		Assert.notNull(this.pathPatternHandlerMappings, "Handler mappings with PathPatterns not initialized");
+		Assert.state(this.handlerMappings != null, "Handler mappings not initialized");
 
 		boolean parseRequestPath = !this.pathPatternHandlerMappings.isEmpty();
 		RequestPath previousPath = null;
@@ -247,6 +225,7 @@ public class HandlerMappingIntrospector
 		catch (IOException ex) {
 			throw new IllegalStateException("Could not load '" + path + "': " + ex.getMessage());
 		}
+
 		String value = props.getProperty(HandlerMapping.class.getName());
 		String[] names = StringUtils.commaDelimitedListToStringArray(value);
 		List<HandlerMapping> result = new ArrayList<>(names.length);

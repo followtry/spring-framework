@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,8 +90,7 @@ class SseServerResponseTests {
 	}
 
 	@Test
-	public void builder() throws Exception {
-		String body = "foo bar";
+	void builder() throws Exception {
 		ServerResponse response = ServerResponse.sse(sse -> {
 			try {
 				sse.id("id")
@@ -110,12 +109,15 @@ class SseServerResponseTests {
 		ModelAndView mav = response.writeTo(this.mockRequest, this.mockResponse, context);
 		assertThat(mav).isNull();
 
-		String expected = "id:id\n" +
-				"event:name\n" +
-				":comment line 1\n" +
-				":comment line 2\n" +
-				"retry:1000\n" +
-				"data:data\n\n";
+		String expected = """
+				id:id
+				event:name
+				:comment line 1
+				:comment line 2
+				retry:1000
+				data:data
+
+				""";
 		assertThat(this.mockResponse.getContentAsString()).isEqualTo(expected);
 	}
 
@@ -132,14 +134,15 @@ class SseServerResponseTests {
 			this.age = age;
 		}
 
+		@SuppressWarnings("unused")
 		public String getName() {
 			return this.name;
 		}
 
+		@SuppressWarnings("unused")
 		public int getAge() {
 			return this.age;
 		}
 	}
-
 
 }

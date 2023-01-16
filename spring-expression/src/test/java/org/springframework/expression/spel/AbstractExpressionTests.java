@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,7 +177,7 @@ public abstract class AbstractExpressionTests {
 			assertThat(ex.getMessageCode()).isEqualTo(expectedMessage);
 			if (!ObjectUtils.isEmpty(otherProperties)) {
 				// first one is expected position of the error within the string
-				int pos = ((Integer) otherProperties[0]).intValue();
+				int pos = (Integer) otherProperties[0];
 				assertThat(ex.getPosition()).as("position").isEqualTo(pos);
 				if (otherProperties.length > 1) {
 					// Check inserts match
@@ -207,7 +207,7 @@ public abstract class AbstractExpressionTests {
 			assertThat(ex.getMessageCode()).isEqualTo(expectedMessage);
 			if (otherProperties != null && otherProperties.length != 0) {
 				// first one is expected position of the error within the string
-				int pos = ((Integer) otherProperties[0]).intValue();
+				int pos = (Integer) otherProperties[0];
 				assertThat(pos).as("reported position").isEqualTo(pos);
 				if (otherProperties.length > 1) {
 					// Check inserts match
@@ -245,22 +245,22 @@ public abstract class AbstractExpressionTests {
 					sb.append("int[").append(l.length).append("]{");
 					for (int j = 0; j < l.length; j++) {
 						if (j > 0) {
-							sb.append(",");
+							sb.append(',');
 						}
 						sb.append(stringValueOf(l[j]));
 					}
-					sb.append("}");
+					sb.append('}');
 				}
 				else if (primitiveType == Long.TYPE) {
 					long[] l = (long[]) value;
 					sb.append("long[").append(l.length).append("]{");
 					for (int j = 0; j < l.length; j++) {
 						if (j > 0) {
-							sb.append(",");
+							sb.append(',');
 						}
 						sb.append(stringValueOf(l[j]));
 					}
-					sb.append("}");
+					sb.append('}');
 				}
 				else {
 					throw new RuntimeException("Please implement support for type " + primitiveType.getName() +
@@ -272,32 +272,32 @@ public abstract class AbstractExpressionTests {
 				if (!isNested) {
 					sb.append(value.getClass().getComponentType().getName());
 				}
-				sb.append("[").append(l.size()).append("]{");
+				sb.append('[').append(l.size()).append("]{");
 				int i = 0;
 				for (Object object : l) {
 					if (i > 0) {
-						sb.append(",");
+						sb.append(',');
 					}
 					i++;
 					sb.append(stringValueOf(object, true));
 				}
-				sb.append("}");
+				sb.append('}');
 			}
 			else {
 				List<Object> l = Arrays.asList((Object[]) value);
 				if (!isNested) {
 					sb.append(value.getClass().getComponentType().getName());
 				}
-				sb.append("[").append(l.size()).append("]{");
+				sb.append('[').append(l.size()).append("]{");
 				int i = 0;
 				for (Object object : l) {
 					if (i > 0) {
-						sb.append(",");
+						sb.append(',');
 					}
 					i++;
 					sb.append(stringValueOf(object));
 				}
-				sb.append("}");
+				sb.append('}');
 			}
 			return sb.toString();
 		}

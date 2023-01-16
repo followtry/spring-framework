@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,11 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * Internal class for managing injection metadata.
- * Not intended for direct use in applications.
+ *
+ * <p>Not intended for direct use in applications.
  *
  * <p>Used by {@link AutowiredAnnotationBeanPostProcessor},
- * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor} and
+ * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor}, and
  * {@link org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor}.
  *
  * @author Juergen Hoeller
@@ -89,6 +90,14 @@ public class InjectionMetadata {
 
 
 	/**
+	 * Return the {@link InjectedElement elements} to inject.
+	 * @return the elements to inject
+	 */
+	public Collection<InjectedElement> getInjectedElements() {
+		return Collections.unmodifiableCollection(this.injectedElements);
+	}
+
+	/**
 	 * Determine whether this metadata instance needs to be refreshed.
 	 * @param clazz the current target class
 	 * @return {@code true} indicating a refresh, {@code false} otherwise
@@ -99,15 +108,20 @@ public class InjectionMetadata {
 	}
 
 	public void checkConfigMembers(RootBeanDefinition beanDefinition) {
-		Set<InjectedElement> checkedElements = new LinkedHashSet<>(this.injectedElements.size());
-		for (InjectedElement element : this.injectedElements) {
-			Member member = element.getMember();
-			if (!beanDefinition.isExternallyManagedConfigMember(member)) {
-				beanDefinition.registerExternallyManagedConfigMember(member);
-				checkedElements.add(element);
-			}
+		if (this.injectedElements.isEmpty()) {
+			this.checkedElements = Collections.emptySet();
 		}
-		this.checkedElements = checkedElements;
+		else {
+			Set<InjectedElement> checkedElements = new LinkedHashSet<>((this.injectedElements.size() * 4 / 3) + 1);
+			for (InjectedElement element : this.injectedElements) {
+				Member member = element.getMember();
+				if (!beanDefinition.isExternallyManagedConfigMember(member)) {
+					beanDefinition.registerExternallyManagedConfigMember(member);
+					checkedElements.add(element);
+				}
+			}
+			this.checkedElements = checkedElements;
+		}
 	}
 
 	public void inject(Object target, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
@@ -304,10 +318,9 @@ public class InjectionMetadata {
 			if (this == other) {
 				return true;
 			}
-			if (!(other instanceof InjectedElement)) {
+			if (!(other instanceof InjectedElement otherElement)) {
 				return false;
 			}
-			InjectedElement otherElement = (InjectedElement) other;
 			return this.member.equals(otherElement.member);
 		}
 
