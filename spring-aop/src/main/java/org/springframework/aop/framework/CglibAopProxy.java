@@ -155,6 +155,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 	@Override
 	public Object getProxy(@Nullable ClassLoader classLoader) {
+		//构建代理类
 		return buildProxy(classLoader, false);
 	}
 
@@ -210,6 +211,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			enhancer.setCallbackTypes(types);
 
 			// Generate the proxy class and create a proxy instance.
+			//生成CGLIB代理类并创建代理实例
 			return (classOnly ? createProxyClass(enhancer) : createProxyClassAndInstance(enhancer, callbacks));
 		}
 		catch (CodeGenerationException | IllegalArgumentException ex) {

@@ -283,6 +283,9 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 
 	/**
+	 * <pre>
+	 *     调用方注入BeanFactory，此处不需要创建
+	 * </pre>
 	 * Do nothing: We hold a single internal BeanFactory and rely on callers
 	 * to register beans through our public methods (or the BeanFactory's).
 	 * @see #registerBeanDefinition
@@ -312,6 +315,9 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
+	 * <pre>
+	 *     返回当前上下文持有的BeanFactory实例
+	 * </pre>
 	 * Return the single internal BeanFactory held by this context
 	 * (as ConfigurableListableBeanFactory).
 	 */
@@ -386,6 +392,10 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 
 	/**
+	 * <pre>
+	 *     加载或刷新配置的持久表示，直到底层bean工厂准备好创建bean实例为止。refresh（）的这个变体由提前（AOT）处理使用，该处理通常在构建时优化应用程序上下文。
+	 *     在此模式下，仅调用BeanDefinitionRegistryPostProcessor和MergedBeanDefinitionPostProcessor
+	 * </pre>
 	 * Load or refresh the persistent representation of the configuration up to
 	 * a point where the underlying bean factory is ready to create bean
 	 * instances.
@@ -403,17 +413,27 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 		if (logger.isDebugEnabled()) {
 			logger.debug("Preparing bean factory for AOT processing");
 		}
+		//准备要刷新的上下文
 		prepareRefresh();
+		//获取信心啊的BeanFactory
 		obtainFreshBeanFactory();
+		//准备BeanFactory
 		prepareBeanFactory(this.beanFactory);
 		postProcessBeanFactory(this.beanFactory);
+		//仅仅调用 BeanDefinitionRegistryPostProcessor 和 MergedBeanDefinitionPostProcessor
 		invokeBeanFactoryPostProcessors(this.beanFactory);
+		//冻结了配置
 		this.beanFactory.freezeConfiguration();
+		//调用合并后BeanDefinition信息的后处理接口的实现
 		PostProcessorRegistrationDelegate.invokeMergedBeanDefinitionPostProcessors(this.beanFactory);
+		//主要用于注册代理类
 		preDetermineBeanTypes(runtimeHints);
 	}
 
 	/**
+	 * <pre>
+	 *     预先检测确定Bean的类型，用来生成JDK代理类或者Cglib代理类，并将代理类信息注册到ReflectionHint中
+	 * </pre>
 	 * Pre-determine bean types in order to trigger early proxy class creation.
 	 * @see org.springframework.beans.factory.BeanFactory#getType
 	 * @see SmartInstantiationAwareBeanPostProcessor#determineBeanType
@@ -428,6 +448,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 			if (beanType != null) {
 				ClassHintUtils.registerProxyIfNecessary(beanType, runtimeHints);
 				for (SmartInstantiationAwareBeanPostProcessor bpp : bpps) {
+					//获取类信息，如果有AOP代理，则获取代理类的信息，并将代理信息注册到hint中
 					Class<?> newBeanType = bpp.determineBeanType(beanType, beanName);
 					if (newBeanType != beanType) {
 						ClassHintUtils.registerProxyIfNecessary(newBeanType, runtimeHints);

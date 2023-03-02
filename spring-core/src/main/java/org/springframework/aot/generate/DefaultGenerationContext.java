@@ -54,6 +54,7 @@ public class DefaultGenerationContext implements GenerationContext {
 	 * @param generatedFiles the generated files
 	 */
 	public DefaultGenerationContext(ClassNameGenerator classNameGenerator, GeneratedFiles generatedFiles) {
+		//准备类名生成器和文件生成器以及默认的RuntimeHints
 		this(classNameGenerator, generatedFiles, new RuntimeHints());
 	}
 

@@ -23,6 +23,10 @@ import org.springframework.aop.SpringProxy;
 import org.springframework.util.ClassUtils;
 
 /**
+ * <pre>
+ *     代理类工厂，用于选择用JDK还是Chlib代理类
+ * </pre>
+ *
  * Default {@link AopProxyFactory} implementation, creating either a CGLIB proxy
  * or a JDK dynamic proxy.
  *

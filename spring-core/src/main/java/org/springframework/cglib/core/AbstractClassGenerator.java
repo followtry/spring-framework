@@ -292,6 +292,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 		return null;
 	}
 
+	//创建对象
 	protected Object create(Object key) {
 		try {
 			ClassLoader loader = getClassLoader();

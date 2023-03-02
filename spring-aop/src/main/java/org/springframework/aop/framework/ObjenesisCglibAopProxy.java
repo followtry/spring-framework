@@ -74,6 +74,7 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 
 		if (proxyInstance == null) {
 			// Regular instantiation via default constructor...
+			//通过默认构造器创建类
 			try {
 				Constructor<?> ctor = (this.constructorArgs != null ?
 						proxyClass.getDeclaredConstructor(this.constructorArgTypes) :

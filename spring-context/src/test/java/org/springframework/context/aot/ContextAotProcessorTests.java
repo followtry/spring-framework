@@ -139,6 +139,11 @@ class ContextAotProcessorTests {
 
 		@Override
 		protected GenericApplicationContext prepareApplicationContext(Class<?> application) {
+			/**
+			 * 为应用启动类准备了AnnotationConfigApplicationContext来实现AOT，并将入口类注册进去作为分析入口使用。
+			 * 为什么要用该类呢，因为后续会用它父类的`refreshForAotProcessing`方法进行AOT分析
+			 * AOT分析和用户应用的启动执行是两个过程，AOT阶段只负责探测到所有能探测的类并生成对应类，保证在静态编译前资源都准备好。
+			 */
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 			context.register(application);
 			return context;

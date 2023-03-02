@@ -433,11 +433,14 @@ final class PostProcessorRegistrationDelegate {
 		}
 
 		private void invokeMergedBeanDefinitionPostProcessors() {
+			//加载并对后处理器排序
 			List<MergedBeanDefinitionPostProcessor> postProcessors = PostProcessorRegistrationDelegate.loadBeanPostProcessors(
 					this.beanFactory, MergedBeanDefinitionPostProcessor.class);
 			for (String beanName : this.beanFactory.getBeanDefinitionNames()) {
 				RootBeanDefinition bd = (RootBeanDefinition) this.beanFactory.getMergedBeanDefinition(beanName);
+				//获取到Bean的类型
 				Class<?> beanType = resolveBeanType(bd);
+				//执行该操作后，当前Bean以及其依赖的Bean的BeanDefinition信息已经解析完毕
 				postProcessRootBeanDefinition(postProcessors, beanName, beanType, bd);
 				bd.markAsPostProcessed();
 			}
@@ -448,18 +451,22 @@ final class PostProcessorRegistrationDelegate {
 				String beanName, Class<?> beanType, RootBeanDefinition bd) {
 
 			BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this.beanFactory, beanName, bd);
+			//执行具体的处理器，比如查找并生成依赖注入的元数据信息等
 			postProcessors.forEach(postProcessor -> postProcessor.postProcessMergedBeanDefinition(bd, beanType, beanName));
 			for (PropertyValue propertyValue : bd.getPropertyValues().getPropertyValueList()) {
 				Object value = propertyValue.getValue();
 				if (value instanceof AbstractBeanDefinition innerBd) {
+					//解决内嵌Bean的类型和依赖信息
 					Class<?> innerBeanType = resolveBeanType(innerBd);
 					resolveInnerBeanDefinition(valueResolver, innerBd, (innerBeanName, innerBeanDefinition)
 							-> postProcessRootBeanDefinition(postProcessors, innerBeanName, innerBeanType, innerBeanDefinition));
 				}
 			}
+			//获取构造方法的参数
 			for (ValueHolder valueHolder : bd.getConstructorArgumentValues().getIndexedArgumentValues().values()) {
 				Object value = valueHolder.getValue();
 				if (value instanceof AbstractBeanDefinition innerBd) {
+					//解决参数的Bean类型并解析其依赖信息
 					Class<?> innerBeanType = resolveBeanType(innerBd);
 					resolveInnerBeanDefinition(valueResolver, innerBd, (innerBeanName, innerBeanDefinition)
 							-> postProcessRootBeanDefinition(postProcessors, innerBeanName, innerBeanType, innerBeanDefinition));

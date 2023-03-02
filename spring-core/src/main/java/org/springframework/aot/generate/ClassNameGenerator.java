@@ -27,6 +27,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * <pre>
+ *     用于生成唯一的类名
+ * </pre>
  * Generate unique class names based on a target {@link ClassName} and a
  * feature name.
  *

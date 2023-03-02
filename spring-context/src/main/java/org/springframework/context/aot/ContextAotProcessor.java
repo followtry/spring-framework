@@ -34,6 +34,10 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * <pre>
+ *     基于文件系统的提前（AOT）处理基础实现。具体实现通常用于启动构建工具中应用程序的优化。
+ * </pre>
+ *
  * Filesystem-based ahead-of-time (AOT) processing base implementation.
  *
  * <p>Concrete implementations are typically used to kick off optimization of an
@@ -64,6 +68,9 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 
 
 	/**
+	 * <pre>
+	 *     获取用户自己的Spring应用的入口，一般是应用的启动类
+	 * </pre>
 	 * Get the application entry point (typically a class with a {@code main()} method).
 	 */
 	protected Class<?> getApplicationClass() {
@@ -79,12 +86,18 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 	 */
 	@Override
 	protected ClassName doProcess() {
+		//删除已经存在的输出目录
 		deleteExistingOutput();
+		//获取到Spring的上下文
 		GenericApplicationContext applicationContext = prepareApplicationContext(getApplicationClass());
+		//将Spring的上下文作为参数传入并执行AOT处理
 		return performAotProcessing(applicationContext);
 	}
 
 	/**
+	 * <pre>
+	 *     为要针对ApplicationContextAotGenerator使用的指定应用程序入口点准备GenericApplicationContext。
+	 * </pre>
 	 * Prepare the {@link GenericApplicationContext} for the specified
 	 * application entry point to be used against an {@link ApplicationContextAotGenerator}.
 	 * @return a non-refreshed {@link GenericApplicationContext}
@@ -92,6 +105,9 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 	protected abstract GenericApplicationContext prepareApplicationContext(Class<?> applicationClass);
 
 	/**
+	 * <pre>
+	 *     执行AOT的处理。代码、资源和生成的类都存储在配置的输出目录中。此外，还为应用程序及其入口点注册运行时提示。
+	 * </pre>
 	 * Perform ahead-of-time processing of the specified context.
 	 * <p>Code, resources, and generated classes are stored in the configured
 	 * output directories. In addition, run-time hints are registered for the
@@ -99,14 +115,20 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 	 * @param applicationContext the context to process
 	 */
 	protected ClassName performAotProcessing(GenericApplicationContext applicationContext) {
+		//文件系统生成文件对象实例，还未操作文件
 		FileSystemGeneratedFiles generatedFiles = createFileSystemGeneratedFiles();
-		DefaultGenerationContext generationContext = new DefaultGenerationContext(
-				createClassNameGenerator(), generatedFiles);
+		//用于AOT处理的上下文，持有序列生成器，生成类管理器，类生成器，文件生成器和运行时提示
+		DefaultGenerationContext generationContext = new DefaultGenerationContext(createClassNameGenerator(), generatedFiles);
+		//处理ApplicationContext及其BeanFactory以生成表示bean工厂状态的代码，以及可以在运行时在受限环境中使用的必要提示。
 		ApplicationContextAotGenerator generator = new ApplicationContextAotGenerator();
 		ClassName generatedInitializerClassName = generator.processAheadOfTime(applicationContext, generationContext);
+		//注册入口的提示信息
 		registerEntryPointHint(generationContext, generatedInitializerClassName);
+		//将所有生成的类信息都写入到文件中
 		generationContext.writeGeneratedContent();
+		//将所有的hint提示都写入文件中
 		writeHints(generationContext.getRuntimeHints());
+		//写入镜像文件配置
 		writeNativeImageProperties(getDefaultNativeImageArguments(getApplicationClass().getName()));
 		return generatedInitializerClassName;
 	}

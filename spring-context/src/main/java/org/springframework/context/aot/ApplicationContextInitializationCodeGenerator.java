@@ -46,6 +46,10 @@ import org.springframework.javapoet.TypeSpec;
 import org.springframework.lang.Nullable;
 
 /**
+ * <pre>
+ *     代码生成器
+ * </pre>
+ *
  * Internal code generator to create the {@link ApplicationContextInitializer}.
  *
  * @author Phillip Webb

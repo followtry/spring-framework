@@ -28,6 +28,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.FileSystemUtils;
 
 /**
+ * <pre>
+ *     基于文件系统的提前（AOT）处理的抽象基类。具体的实现应该覆盖doProcess（），它启动目标（通常是应用程序）的优化。
+ * </pre>
  * Abstract base class for filesystem-based ahead-of-time (AOT) processing.
  *
  * <p>Concrete implementations should override {@link #doProcess()} that kicks
@@ -73,15 +76,18 @@ public abstract class AbstractAotProcessor<T> {
 	}
 
 	/**
+	 * <pre>运行AOT处理</pre>
 	 * Run AOT processing.
 	 * @return the result of the processing.
 	 */
 	public final T process() {
 		try {
+			//标记AOT处理已经开始
 			System.setProperty(AOT_PROCESSING, "true");
 			return doProcess();
 		}
 		finally {
+			//清理AOT处理标记
 			System.clearProperty(AOT_PROCESSING);
 		}
 	}
@@ -112,6 +118,7 @@ public abstract class AbstractAotProcessor<T> {
 	}
 
 	private Path getRoot(Kind kind) {
+		//根据传入的参数决定给AOT执行程序返回source目录、resource目录还是class目录
 		return switch (kind) {
 			case SOURCE -> getSettings().getSourceOutput();
 			case RESOURCE -> getSettings().getResourceOutput();

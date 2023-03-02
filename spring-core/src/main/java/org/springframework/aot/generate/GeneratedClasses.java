@@ -29,6 +29,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * <pre>
+ *     用于管理生成类的集合，该类是有状态的
+ * </pre>
+ *
  * A managed collection of generated classes.
  *
  * <p>This class is stateful, so the same instance should be used for all class

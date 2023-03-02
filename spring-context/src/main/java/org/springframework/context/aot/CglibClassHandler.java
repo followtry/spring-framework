@@ -30,6 +30,10 @@ import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
+ * <pre>
+ *     处理CGLIB生成的类，将其加入到GenerationContext并注册必要的提示（hint）来使其可以被实例化
+ * </pre>
+ *
  * Handle CGLIB classes by adding them to a {@link GenerationContext},
  * and register the necessary hints so that they can be instantiated.
  *
@@ -56,6 +60,12 @@ class CglibClassHandler {
 
 
 	/**
+	 * <pre>
+	 *     处理生成的类和cglib类名
+	 *     1. 将其加入到RuntimeHint的反射配置中
+	 *     2. 将cglib的类名转换为路径名
+	 *     3. 将类内容缓存在内存中或者直接保存在文件系统的指定路径上
+	 * </pre>
 	 * Handle the specified generated CGLIB class.
 	 * @param cglibClassName the name of the generated class
 	 * @param content the bytecode of the generated class
@@ -67,6 +77,9 @@ class CglibClassHandler {
 	}
 
 	/**
+	 * <pre>
+	 *     只需要将指定的已加载的cglib类信息注入进RuntimeHint的反射配置中
+	 * </pre>
 	 * Handle the specified loaded CGLIB class.
 	 * @param cglibClass a cglib class that has been loaded
 	 */
