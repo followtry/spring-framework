@@ -93,12 +93,16 @@ class BeanDefinitionMethodGenerator {
 			BeanRegistrationsCode beanRegistrationsCode) {
 
 		registerRuntimeHintsIfNecessary(generationContext.getRuntimeHints());
+		//获取每一个Contribution生成的代码片段
 		BeanRegistrationCodeFragments codeFragments = getCodeFragments(generationContext,
 				beanRegistrationsCode);
 		ClassName target = codeFragments.getTarget(this.registeredBean, this.constructorOrFactoryMethod);
 		if (isWritablePackageName(target)) {
+			//仅生成类信息
 			GeneratedClass generatedClass = lookupGeneratedClass(generationContext, target);
+			//生成方法信息
 			GeneratedMethods generatedMethods = generatedClass.getMethods().withPrefix(getName());
+			//生成BeanDefinition的静态方法信息
 			GeneratedMethod generatedMethod = generateBeanDefinitionMethod(generationContext,
 					generatedClass.getName(), generatedMethods, codeFragments, Modifier.PUBLIC);
 			return generatedMethod.toMethodReference();
@@ -110,6 +114,7 @@ class BeanDefinitionMethodGenerator {
 	}
 
 	/**
+	 * todo by followtry 此处有可能需要过滤掉
 	 * Specify if the {@link ClassName} belongs to a writable package.
 	 * @param target the target to check
 	 * @return {@code true} if generated code in that package is allowed
@@ -120,6 +125,10 @@ class BeanDefinitionMethodGenerator {
 	}
 
 	/**
+	 * <pre>
+	 *     生成类
+	 * </pre>
+	 *
 	 * Return the {@link GeneratedClass} to use for the specified {@code target}.
 	 * <p>If the target class is an inner class, a corresponding inner class in
 	 * the original structure is created.
@@ -140,6 +149,7 @@ class BeanDefinitionMethodGenerator {
 			return generatedClass;
 		}
 
+		//内部类名
 		List<String> namesToProcess = names.subList(1, names.size());
 		ClassName currentTargetClassName = topLevelClassName;
 		GeneratedClass tmp = generatedClass;

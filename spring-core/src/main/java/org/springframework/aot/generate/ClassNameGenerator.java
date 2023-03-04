@@ -28,7 +28,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * <pre>
- *     用于生成唯一的类名
+ *     用于生成唯一的类名，该类是有状态的，因此对于所有名称的生成都要使用同一个类。生成的唯一类名基于一个目标ClassName和特点名称（比如BeanDefinition、Autowire等）
  * </pre>
  * Generate unique class names based on a target {@link ClassName} and a
  * feature name.
@@ -46,6 +46,7 @@ public final class ClassNameGenerator {
 
 	private static final String AOT_FEATURE = "Aot";
 
+	//包含了包名和全限定类名
 	private final ClassName defaultTarget;
 
 	private final String featureNamePrefix;
@@ -54,6 +55,8 @@ public final class ClassNameGenerator {
 
 
 	/**
+	 * 使用指定的ClassName生成一个新的实例，featureName为空
+	 *
 	 * Create a new instance using the specified {@code defaultTarget} and no
 	 * feature name prefix.
 	 * @param defaultTarget the default target class to use
@@ -75,12 +78,15 @@ public final class ClassNameGenerator {
 	private ClassNameGenerator(ClassName defaultTarget, String featureNamePrefix,
 			Map<String, AtomicInteger> sequenceGenerator) {
 		Assert.notNull(defaultTarget, "'defaultTarget' must not be null");
+		//默认的目标类
 		this.defaultTarget = defaultTarget;
 		this.featureNamePrefix = (!StringUtils.hasText(featureNamePrefix) ? "" : featureNamePrefix);
+		//序列生成器，调用方法会传空的Map
 		this.sequenceGenerator = sequenceGenerator;
 	}
 
 	String getFeatureNamePrefix() {
+		//特性名前缀
 		return this.featureNamePrefix;
 	}
 
@@ -105,9 +111,11 @@ public final class ClassNameGenerator {
 		return generateSequencedClassName(getRootName(featureName, target));
 	}
 
+	//生成类名
 	private String getRootName(String featureName, @Nullable ClassName target) {
 		Assert.hasLength(featureName, "'featureName' must not be empty");
 		featureName = clean(featureName);
+		//判断是否给定了target类，如果没有给的话使用默认的target类，即应用入口类
 		ClassName targetToUse = (target != null ? target : this.defaultTarget);
 		String featureNameToUse = this.featureNamePrefix + featureName;
 		return toName(targetToUse).replace("$", "_") + SEPARATOR + StringUtils.capitalize(featureNameToUse);

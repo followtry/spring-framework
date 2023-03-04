@@ -24,6 +24,10 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.util.Assert;
 
 /**
+ * <pre>
+ *     GenerationContext的默认实现，可以使用该类调用writeGeneratedContent方法将生成的内容刷到磁盘上，但只能调用一次
+ * </pre>
+ *
  * Default {@link GenerationContext} implementation.
  *
  * <p>Generated classes can be flushed out using {@link #writeGeneratedContent()}
@@ -39,10 +43,13 @@ public class DefaultGenerationContext implements GenerationContext {
 
 	private final Map<String, AtomicInteger> sequenceGenerator;
 
+	//持有生成类的容器
 	private final GeneratedClasses generatedClasses;
 
+	//类生成后输出到磁盘或内存的文件句柄
 	private final GeneratedFiles generatedFiles;
 
+	//吃书画后的运行时提示信息
 	private final RuntimeHints runtimeHints;
 
 

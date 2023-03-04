@@ -43,10 +43,13 @@ class BeanRegistrationsAotProcessor implements BeanFactoryInitializationAotProce
 		Map<String, Registration> registrations = new LinkedHashMap<>();
 
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
+			//对已注册的所有Bean都生成RegisteredBean实例
 			RegisteredBean registeredBean = RegisteredBean.of(beanFactory, beanName);
+			//获取到方法生成器（已对registeredBean实例的方法进行了解析和Contribution的收集）
 			BeanDefinitionMethodGenerator beanDefinitionMethodGenerator =
 					beanDefinitionMethodGeneratorFactory.getBeanDefinitionMethodGenerator(registeredBean);
 			if (beanDefinitionMethodGenerator != null) {
+				//将方法生成器放入缓存Map中
 				registrations.put(beanName, new Registration(beanDefinitionMethodGenerator,
 						beanFactory.getAliases(beanName)));
 			}
@@ -55,6 +58,7 @@ class BeanRegistrationsAotProcessor implements BeanFactoryInitializationAotProce
 		if (registrations.isEmpty()) {
 			return null;
 		}
+		//返回已注册Bean的的Contribution
 		return new BeanRegistrationsAotContribution(registrations);
 	}
 

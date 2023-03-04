@@ -50,6 +50,11 @@ import org.springframework.lang.Nullable;
 public interface BeanRegistrationAotProcessor {
 
 	/**
+	 * <pre>
+	 *     AOT方式处理给定的RegisteredBean实例并返回Contributions或者null，处理器可以自由使用他们喜欢的任何技术来分析给定的实例。
+	 *     多数情况下是用反射获取field或者方法。Contribution通常生成在AOT优化应用程序运行时可以使用的源代码或资源文件。
+	 * </pre>
+	 *
 	 * Process the given {@link RegisteredBean} instance ahead-of-time and
 	 * return a contribution or {@code null}.
 	 * <p>

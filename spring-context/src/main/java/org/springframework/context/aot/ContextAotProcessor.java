@@ -117,23 +117,28 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 	protected ClassName performAotProcessing(GenericApplicationContext applicationContext) {
 		//文件系统生成文件对象实例，还未操作文件
 		FileSystemGeneratedFiles generatedFiles = createFileSystemGeneratedFiles();
-		//用于AOT处理的上下文，持有序列生成器，生成类管理器，类生成器，文件生成器和运行时提示
+		//用于AOT处理的上下文，持有序列生成器，生成类管理器，生成资源后续要写入的文件信息和运行时提示
 		DefaultGenerationContext generationContext = new DefaultGenerationContext(createClassNameGenerator(), generatedFiles);
 		//处理ApplicationContext及其BeanFactory以生成表示bean工厂状态的代码，以及可以在运行时在受限环境中使用的必要提示。
 		ApplicationContextAotGenerator generator = new ApplicationContextAotGenerator();
+		//生成所有能探测到的类信息
 		ClassName generatedInitializerClassName = generator.processAheadOfTime(applicationContext, generationContext);
-		//注册入口的提示信息
+		//在reflect-config.json文件中注册入口类的信息
 		registerEntryPointHint(generationContext, generatedInitializerClassName);
 		//将所有生成的类信息都写入到文件中
 		generationContext.writeGeneratedContent();
-		//将所有的hint提示都写入文件中
+		//将所有的hint提示都写入文件中。文件包括：serialization-config.json，proxy-config.json，reflect-config.json，resource-config.json，jni-config.json
 		writeHints(generationContext.getRuntimeHints());
-		//写入镜像文件配置
+		//将镜像信息写入到native-image.properties文件中
 		writeNativeImageProperties(getDefaultNativeImageArguments(getApplicationClass().getName()));
 		return generatedInitializerClassName;
 	}
 
 	/**
+	 * <pre>
+	 *     使用应用入口点的类作为默认的目标使用来配置标准的ClassNameGenerator
+	 * </pre>
+	 *
 	 * Callback to customize the {@link ClassNameGenerator}.
 	 * <p>By default, a standard {@link ClassNameGenerator} using the configured
 	 * {@linkplain #getApplicationClass() application entry point} as the default
@@ -169,7 +174,9 @@ public abstract class ContextAotProcessor extends AbstractAotProcessor<ClassName
 		TypeReference generatedType = TypeReference.of(generatedInitializerClassName.canonicalName());
 		TypeReference applicationType = TypeReference.of(getApplicationClass());
 		ReflectionHints reflection = generationContext.getRuntimeHints().reflection();
+		//注册原始入口类的反射信息
 		reflection.registerType(applicationType);
+		//注册基于入口类生成的实现ApplicationContextInitializer接口的类的反射信息
 		reflection.registerType(generatedType, typeHint -> typeHint.onReachableType(applicationType)
 				.withConstructor(Collections.emptyList(), ExecutableMode.INVOKE));
 	}

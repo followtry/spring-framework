@@ -96,7 +96,9 @@ class BeanDefinitionMethodGeneratorFactory {
 		if (isExcluded(registeredBean)) {
 			return null;
 		}
+		//获取所有符合该registeredBean实例的Contribution
 		List<BeanRegistrationAotContribution> contributions = getAotContributions(registeredBean);
+		//生成方法生成器并返回
 		return new BeanDefinitionMethodGenerator(this, registeredBean,
 				currentPropertyName, contributions);
 	}

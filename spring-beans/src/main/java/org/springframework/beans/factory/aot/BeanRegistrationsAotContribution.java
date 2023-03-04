@@ -32,6 +32,9 @@ import org.springframework.javapoet.CodeBlock;
 import org.springframework.javapoet.MethodSpec;
 
 /**
+ * <pre>
+ *     用于注册BeanDefinition信息和别名。该类是给应用入口类使用的，用于生成注册信息和BeanDefinitions信息以及应用上下文初始化信息
+ * </pre>
  * AOT contribution from a {@link BeanRegistrationsAotProcessor} used to
  * register bean definitions and aliases.
  *
@@ -46,6 +49,7 @@ class BeanRegistrationsAotContribution
 
 	private static final String BEAN_FACTORY_PARAMETER_NAME = "beanFactory";
 
+	//持有Bean方法
 	private final Map<String, Registration> registrations;
 
 	BeanRegistrationsAotContribution(Map<String, Registration> registrations) {
@@ -57,20 +61,26 @@ class BeanRegistrationsAotContribution
 	public void applyTo(GenerationContext generationContext,
 			BeanFactoryInitializationCode beanFactoryInitializationCode) {
 
+		//取到入口类并生成BeanFactoryRegistrations信息
 		GeneratedClass generatedClass = generationContext.getGeneratedClasses()
 				.addForFeature("BeanFactoryRegistrations", type -> {
 					type.addJavadoc("Register bean definitions for the bean factory.");
 					type.addModifiers(Modifier.PUBLIC);
 				});
+		//初始化类代码生成器
 		BeanRegistrationsCodeGenerator codeGenerator = new BeanRegistrationsCodeGenerator(generatedClass);
+		//生成类的registerBeanDefinitions方法及方法体内各个bean的注册信息
 		GeneratedMethod generatedBeanDefinitionsMethod = codeGenerator.getMethods().add("registerBeanDefinitions", method ->
 				generateRegisterBeanDefinitionsMethod(method, generationContext, codeGenerator));
 		beanFactoryInitializationCode.addInitializer(generatedBeanDefinitionsMethod.toMethodReference());
+
+		//生成类的registerAliases方法及方法体内各个bean的注册信息
 		GeneratedMethod generatedAliasesMethod = codeGenerator.getMethods().add("registerAliases",
 				this::generateRegisterAliasesMethod);
 		beanFactoryInitializationCode.addInitializer(generatedAliasesMethod.toMethodReference());
 	}
 
+	//生成BeanDefinition方法的代码片段
 	private void generateRegisterBeanDefinitionsMethod(MethodSpec.Builder method,
 			GenerationContext generationContext,
 			BeanRegistrationsCode beanRegistrationsCode) {
@@ -80,12 +90,14 @@ class BeanRegistrationsAotContribution
 		method.addParameter(DefaultListableBeanFactory.class,
 				BEAN_FACTORY_PARAMETER_NAME);
 		CodeBlock.Builder code = CodeBlock.builder();
+		//遍历所有的registrations信息，并将其注册信息生成代码片段
 		this.registrations.forEach((beanName, registration) -> {
 			MethodReference beanDefinitionMethod = registration.methodGenerator
 					.generateBeanDefinitionMethod(generationContext,
 							beanRegistrationsCode);
 			CodeBlock methodInvocation = beanDefinitionMethod.toInvokeCodeBlock(
 					ArgumentCodeGenerator.none(), beanRegistrationsCode.getClassName());
+			//将各registration的BeanDefinition信息都在入口类的BeanFactoryRegistrations中注册
 			code.addStatement("$L.registerBeanDefinition($S, $L)",
 					BEAN_FACTORY_PARAMETER_NAME, beanName,
 					methodInvocation);

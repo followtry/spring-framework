@@ -72,7 +72,7 @@ class ApplicationContextInitializationCodeGenerator implements BeanFactoryInitia
 		this.generatedClass.reserveMethodNames(INITIALIZE_METHOD);
 	}
 
-
+	//生成Java类的类型信息
 	private void generateType(TypeSpec.Builder type) {
 		type.addJavadoc(
 				"{@link $T} to restore an application context based on previous AOT processing.",

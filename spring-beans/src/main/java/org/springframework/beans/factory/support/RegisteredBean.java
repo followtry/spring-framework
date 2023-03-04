@@ -32,6 +32,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * <pre>
+ *     标识注册在BeanFactory中的Bean，但不一定需要实例化。提供对包含了bean和bean那么的工厂访问，对于内部bean，可能已经生成了bean名称。
+ * </pre>
+ *
  * A {@code RegisteredBean} represents a bean that has been registered with a
  * {@link BeanFactory}, but has not necessarily been instantiated. It provides
  * access to the bean factory that contains the bean as well as the bean name.

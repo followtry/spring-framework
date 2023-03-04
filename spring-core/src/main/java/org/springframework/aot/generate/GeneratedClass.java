@@ -46,6 +46,7 @@ public final class GeneratedClass {
 
 	private final Consumer<TypeSpec.Builder> type;
 
+	//存储该类的内部类信息
 	private final Map<ClassName, GeneratedClass> declaredClasses;
 
 	private final Map<MethodName, AtomicInteger> methodNameSequenceGenerator;
@@ -67,6 +68,7 @@ public final class GeneratedClass {
 		this.enclosingClass = enclosingClass;
 		this.name = name;
 		this.type = type;
+		//初始化了持有method的集合对象
 		this.methods = new GeneratedMethods(name, this::generateSequencedMethodName);
 		this.declaredClasses = new ConcurrentHashMap<>();
 		this.methodNameSequenceGenerator = new ConcurrentHashMap<>();

@@ -44,6 +44,7 @@ public interface GeneratedFiles {
 	 */
 	default void addSourceFile(JavaFile javaFile) {
 		String className = javaFile.packageName + "." + javaFile.typeSpec.name;
+		//输出内容
 		addSourceFile(className, javaFile::writeTo);
 	}
 

@@ -36,6 +36,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * <pre>
+ *     AOT的SPI处理类，从aot.properties中读取配置信息
+ * </pre>
+ *
  * A collection of AOT services that can be {@link Loader loaded} from
  * a {@link SpringFactoriesLoader} or obtained from a {@link ListableBeanFactory}.
  *
@@ -118,6 +122,7 @@ public final class AotServices<T> implements Iterable<T> {
 	public static Loader factoriesAndBeans(ListableBeanFactory beanFactory) {
 		ClassLoader classLoader = (beanFactory instanceof ConfigurableBeanFactory configurableBeanFactory ?
 				configurableBeanFactory.getBeanClassLoader() : null);
+		//从aot.properties文件中获取的SPI配置信息
 		return factoriesAndBeans(getSpringFactoriesLoader(classLoader), beanFactory);
 	}
 

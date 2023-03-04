@@ -365,6 +365,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 			ProtectionDomain protectionDomain = getProtectionDomain();
 			synchronized (classLoader) { // just in case
 				// SPRING PATCH BEGIN
+				//生成Class
 				gen = ReflectUtils.defineClass(className, b, classLoader, protectionDomain, contextClass);
 				// SPRING PATCH END
 			}

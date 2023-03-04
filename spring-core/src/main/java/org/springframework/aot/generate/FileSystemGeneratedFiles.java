@@ -88,6 +88,7 @@ public class FileSystemGeneratedFiles implements GeneratedFiles {
 		Path relativePath = root.resolve(path).toAbsolutePath().normalize();
 		Assert.isTrue(relativePath.startsWith(root), "'path' must be relative");
 		try {
+			//通过copy文件方式将输入流写入到指定的路径上
 			try (InputStream inputStream = content.getInputStream()) {
 				Files.createDirectories(relativePath.getParent());
 				Files.copy(inputStream, relativePath);

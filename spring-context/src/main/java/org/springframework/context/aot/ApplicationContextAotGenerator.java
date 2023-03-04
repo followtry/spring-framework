@@ -58,7 +58,12 @@ public class ApplicationContextAotGenerator {
 			DefaultListableBeanFactory beanFactory = applicationContext.getDefaultListableBeanFactory();
 			ApplicationContextInitializationCodeGenerator codeGenerator =
 					new ApplicationContextInitializationCodeGenerator(generationContext);
-			//执行代码生成
+			/**
+			 * BeanFactoryInitializationAotContribution的集合，执行AOT处理工作。
+			 * 在构造方法里就已经将所有需要执行的BeanFactoryInitializationAotProcessor给执行了，
+			 * 执行完后会生成BeanFactoryInitializationAotContribution。
+			 * 而applyTo就是遍历所有的BeanFactoryInitializationAotContribution根据其内收集的信息生成对应的资源文件
+			 */
 			new BeanFactoryInitializationAotContributions(beanFactory).applyTo(generationContext, codeGenerator);
 			return codeGenerator.getGeneratedClass().getName();
 		});

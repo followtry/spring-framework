@@ -63,6 +63,7 @@ class BeanFactoryInitializationAotContributions {
 			List<BeanFactoryInitializationAotProcessor> processors) {
 		List<BeanFactoryInitializationAotContribution> contributions = new ArrayList<>();
 		for (BeanFactoryInitializationAotProcessor processor : processors) {
+			//每个AOT的贡献类先执行一遍处理
 			BeanFactoryInitializationAotContribution contribution = processor
 					.processAheadOfTime(beanFactory);
 			if (contribution != null) {
